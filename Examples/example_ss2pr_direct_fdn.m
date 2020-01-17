@@ -1,4 +1,4 @@
-% Example for ss2pr_direct_fdn
+% Example for dss2pr_direct
 % 
 % Sebastian J. Schlecht, Sunday, 13. January 2019
 clear; clc; close all;
@@ -22,13 +22,13 @@ tic
 [res.EAI, pol.EAI, directTerm.EAI, isConjugatePolePair.EAI] = ss2pr_fdn(delays, matrix, inputGain, outputGain, direct);
 toc
 tic
-[res.eig, pol.eig, directTerm.eig, isConjugatePolePair.eig] = ss2pr_direct_fdn(delays, matrix, inputGain, outputGain, direct,'eig');
+[res.eig, pol.eig, directTerm.eig, isConjugatePolePair.eig] = dss2pr_direct(delays, matrix, inputGain, outputGain, direct,'eig');
 toc
 tic
-[res.polyeig, pol.polyeig, directTerm.polyeig, isConjugatePolePair.polyeig] = ss2pr_direct_fdn(delays, matrix, inputGain, outputGain, direct,'polyeig');
+[res.polyeig, pol.polyeig, directTerm.polyeig, isConjugatePolePair.polyeig] = dss2pr_direct(delays, matrix, inputGain, outputGain, direct,'polyeig');
 toc
 tic
-[res.roots, pol.roots, directTerm.roots, isConjugatePolePair.roots] = ss2pr_direct_fdn(delays, matrix, inputGain, outputGain, direct,'roots');
+[res.roots, pol.roots, directTerm.roots, isConjugatePolePair.roots] = dss2pr_direct(delays, matrix, inputGain, outputGain, direct,'roots');
 toc
 %% plot
 close all;

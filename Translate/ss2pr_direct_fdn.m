@@ -1,5 +1,5 @@
-function [residues, poles, direct, isConjugatePolePair, metaData] = ss2pr_direct_fdn(delays,A,B,C,D,type)
-%ss2pr_direct_fdn - From state-space to poles and residues
+function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr_direct(delays,A,B,C,D,type)
+%dss2pr_direct - From state-space to poles and residues
 % Similar to residues, but with delays. Also, this function supports multiple
 % input and output. Direct and slow version of the algorithms is derived in 
 % Schlecht, S. J., & Habets, E. A. P. (2018). Modal decomposition of
@@ -22,7 +22,7 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = ss2pr_direct
 %    isConjugatePolePair - logical index whether poles are pair or real
 %    metaData - additional output values 
 %
-% See also: ss2pr_fdn,  example_ss2pr_direct_fdn
+% See also: ss2pr_fdn,  example_dss2pr_direct
 % Author: Dr.-Ing. Sebastian Jiro Schlecht, 
 % Aalto University, Finland
 % email address: sebastian.schlecht@aalto.fi
