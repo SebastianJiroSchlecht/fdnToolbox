@@ -15,7 +15,7 @@ example_delayEquivalent
 example_delayMatrix
 example_dss2pr
 example_dss2pr_direct
-example_dss2ss_fdn
+example_dss2ss
 example_dss2tf
 example_generalCharPoly
 example_inversePolynomialMatrix

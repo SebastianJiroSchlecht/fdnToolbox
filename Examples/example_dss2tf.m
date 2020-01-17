@@ -1,4 +1,4 @@
-% Example for ss2tf_fdn
+% Example for dss2tf
 %
 % Sebastian J. Schlecht, Sunday, 13. January 2019
 clear; clc; close all;
