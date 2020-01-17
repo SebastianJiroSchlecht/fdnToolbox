@@ -30,7 +30,7 @@ absorption.a = a;
 loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
 
 %% compute
-irTimeDomain = ss2impz_fdn(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
+irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
 [res, pol, directTerm, isConjugatePolePair,metaData] = ss2pr_fdn(delays, loopMatrix, inputGain, outputGain, direct);
 resLS = impz2res(irTimeDomain, pol, isConjugatePolePair);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);

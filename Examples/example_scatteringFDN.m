@@ -33,7 +33,7 @@ for it = 1:length(matrixTypes)
            feedbackMatrix = randomOrthogonal(N);    
    end
    
-   irTimeDomain.(type) = ss2impz_fdn(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);
+   irTimeDomain.(type) = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);
    [t_abel.(type),echo_dens.(type)] = echoDensity(irTimeDomain.(type), 1024, fs, 0);
    
 end

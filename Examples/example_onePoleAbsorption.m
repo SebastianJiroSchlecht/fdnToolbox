@@ -24,7 +24,7 @@ loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a)
 
 %% compute
 % with absorption
-irTimeDomain = ss2impz_fdn(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
+irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
 tic
 [res, pol, directTerm, isConjugatePolePair, metaData] = ss2pr_fdn(delays, loopMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation');
 toc

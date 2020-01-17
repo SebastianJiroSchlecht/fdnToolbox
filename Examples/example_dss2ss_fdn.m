@@ -1,4 +1,4 @@
-% Example for dss2ss and comparison to ss2impz_fdn
+% Example for dss2ss and comparison to dss2impz
 %
 % Sebastian J. Schlecht Monday, 7. January 2019
 clear; clc; close all;
@@ -24,7 +24,7 @@ impulseResponseLength = 100;
 [num,den] = ss2tf(AA,bb,cc',dd);
 irStateSpace = impz(num,den, impulseResponseLength);
 
-irDelayStateSpace = ss2impz_fdn(impulseResponseLength, m, A, b, c.', d);
+irDelayStateSpace = dss2impz(impulseResponseLength, m, A, b, c.', d);
 
 %% plot
 figure(1); hold on; grid on;

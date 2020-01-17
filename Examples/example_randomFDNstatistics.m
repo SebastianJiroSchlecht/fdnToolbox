@@ -20,7 +20,7 @@ feedbackMatrix = randomOrthogonal(N);
 % feedbackMatrix = hadamard(N)/sqrt(N); 
 
 %% Modal decomposition
-irTimeDomain = ss2impz_fdn(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);
+irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);
 
 [res, pol, directTerm, isConjugatePolePair, metaData] = ss2pr_fdn(delays, feedbackMatrix, inputGain, outputGain, direct);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength,'fast');

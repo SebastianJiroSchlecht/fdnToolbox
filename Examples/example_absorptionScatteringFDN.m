@@ -32,7 +32,7 @@ RT_NY = 0.5; % seconds
 loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
 
 %% compute impulse response and poles/zeros and reverberation time
-irTimeDomain = ss2impz_fdn(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct);
+irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct);
 [res, pol, directTerm, isConjugatePolePair,metaData] = ss2pr_fdn(delays, loopMatrix, inputGain, outputGain, direct);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 

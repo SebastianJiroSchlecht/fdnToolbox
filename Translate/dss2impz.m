@@ -1,9 +1,9 @@
-function impulseResponse = ss2impz_fdn(irLen, delays, A, B, C, D, varargin)
-%ss2impz_fdn - From state-space to impulse response
+function impulseResponse = dss2impz(irLen, delays, A, B, C, D, varargin)
+%dss2impz - From state-space to impulse response
 % Uses the standard time-domain recursion to compute the impulse response
 % of the given feedback delay network (FDN).
 %
-% Syntax:  impulseResponse = ss2impz_fdn(irLen, delays, A, B, C, D, type)
+% Syntax:  impulseResponse = dss2impz(irLen, delays, A, B, C, D, type)
 %
 % Inputs:
 %    irLen - length of impulse response in samples

@@ -26,7 +26,7 @@ feedbackMatrixDelay = constructDelayFeedbackMatrix(delayIndices,feedbackMatrix);
 inverseMatrix = permute(feedbackMatrixDelay,[2 1 3]); % simple transpos because it is paraunitary
 
 %% compute with delay matrix
-irTimeDomain = ss2impz_fdn(impulseResponseLength, delays, feedbackMatrixDelay, inputGain, outputGain, direct);
+irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrixDelay, inputGain, outputGain, direct);
 [res, pol, directTerm, isConjugatePolePair, metaData] = ss2pr_fdn(delays, feedbackMatrixDelay, inputGain, outputGain, direct);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 

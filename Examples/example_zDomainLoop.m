@@ -52,7 +52,7 @@ fnames = fieldnames(matrixTF);
 
 for it = 1:length(fnames)
     type = fnames{it};
-    irTimeDomain = ss2impz_fdn(impulseResponseLength, delays, matrixTF.(type), inputGain, outputGain, direct);
+    irTimeDomain = dss2impz(impulseResponseLength, delays, matrixTF.(type), inputGain, outputGain, direct);
     [res, pol, directTerm, isConjugatePolePair,metaData] = ss2pr_fdn(delays, matrixTF.(type), inputGain, outputGain, direct);
     irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
     
