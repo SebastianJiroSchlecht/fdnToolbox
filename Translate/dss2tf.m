@@ -1,10 +1,10 @@
-function [tfB,tfA] = dss2tf_fdn(delays,A,B,C,D)
-%dss2tf_fdn - From state-space to transfer functions
+function [tfB,tfA] = dss2tf(delays,A,B,C,D)
+%dss2tf - From state-space to transfer functions
 % Similar to ss2tf, but with delays. Also, this function supports multiple
 % input and output. The computation is derived from block matrix form, see:
 % https://en.wikipedia.org/wiki/Determinant#Block_matrices
 %
-% Syntax:  [tfB,tfA] = dss2tf_fdn(delays,A,B,C,D)
+% Syntax:  [tfB,tfA] = dss2tf(delays,A,B,C,D)
 %
 % Inputs:
 %    delays - delays in samples of size [1,N]

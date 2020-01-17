@@ -2,7 +2,7 @@ function [b,a] = onePoleAbsorption(RT_DC, RT_NY, delays, fs)
 % onePoleAbsorption - Design one-pole absorption filters according to specified T60
 %
 % see Jot, J. M., & Chaigne, A. (1991). Digital delay networks for
-% designing artificial reverberators (pp. 1–12). Presented at the Proc.
+% designing artificial reverberators (pp. 1-12). Presented at the Proc.
 % Audio Eng. Soc. Conv., Paris, France.
 %
 % Syntax:  [b,a] = onePoleAbsorption(RT_DC, RT_NY, delays, fs)

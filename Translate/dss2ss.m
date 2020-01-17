@@ -1,11 +1,11 @@
-function [AA, bb, cc, dd] = dss2ss_fdn(m, A, b, c, d)
-%dss2ss_fdn - delay state-space to standard state-space
+function [AA, bb, cc, dd] = dss2ss(m, A, b, c, d)
+%dss2ss - delay state-space to standard state-space
 %reproduced from Rocchesso, D., & Smith, J. O., III. (1997). Circulant and
 % elliptic feedback delay networks for artificial reverberation.  IEEE
-% Trans. Speech, Audio Process., 5(1), 51–63.
+% Trans. Speech, Audio Process., 5(1), 51-63.
 % http://doi.org/10.1109/89.554269
 %
-% Syntax:  AA = dss2ss_fdn(m, A)
+% Syntax:  AA = dss2ss(m, A)
 %
 % Inputs:
 %    m - vector of delays in samples (min 3 samples)
@@ -21,8 +21,8 @@ function [AA, bb, cc, dd] = dss2ss_fdn(m, A, b, c, d)
 %    dd - state-space direct gains (optional)
 %
 % Example: 
-%    dss2ss_fdn([3 4], orth(randn(2)))
-%    [AA,bb,cc,dd] = dss2ss_fdn([3 4], orth(randn(2)), randn(2,1), randn(2,1), randn(1))
+%    dss2ss([3 4], orth(randn(2)))
+%    [AA,bb,cc,dd] = dss2ss([3 4], orth(randn(2)), randn(2,1), randn(2,1), randn(1))
 %
 % Other m-files required: none
 % Subfunctions: none

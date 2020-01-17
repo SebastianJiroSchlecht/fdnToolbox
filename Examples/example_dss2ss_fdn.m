@@ -1,4 +1,4 @@
-% Example for dss2ss_fdn and comparison to ss2impz_fdn
+% Example for dss2ss and comparison to ss2impz_fdn
 %
 % Sebastian J. Schlecht Monday, 7. January 2019
 clear; clc; close all;
@@ -12,7 +12,7 @@ c = randn(N,1);
 d = randn(1,1);
 
 %% State-space transition matrix 
-[AA,bb,cc,dd] = dss2ss_fdn(m, A, b, c, d);
+[AA,bb,cc,dd] = dss2ss(m, A, b, c, d);
 
 %% All eigenvalues lie on the unit circle
 e = eig(AA);

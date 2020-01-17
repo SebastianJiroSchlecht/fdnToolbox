@@ -3,7 +3,7 @@ function matrix = constructParaunitaryFromElementals( N, degree )
 % Construct paraunitary matrix as a sucession of random parunitary delays
 % and rotations. The details are outlined in
 % Vaidyanathan, P. P. (1993). Multirate Systems and Filter Banks (pp.
-% 1–928). Englewood Cliffs, NJ: Prentice Hall. p. 732
+% 1-928). Englewood Cliffs, NJ: Prentice Hall. p. 732
 %
 % Syntax:  matrix = constructParaunitartyMatrix( N, degree )
 %

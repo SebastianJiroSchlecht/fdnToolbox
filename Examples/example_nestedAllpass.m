@@ -9,7 +9,7 @@ g = [0.3 0.6 0.11];
 
 %% Nested Allpass
 [matrix, inputGain, outputGain, direct] = nestedAllpass(g)
-[num,den] = dss2tf_fdn(delays,matrix,inputGain,outputGain,direct)
+[num,den] = dss2tf(delays,matrix,inputGain,outputGain,direct)
 [numSym,denSym] = dss2tfSym(delays,matrix,inputGain,outputGain,direct)
 
 isA = isAllpassFDN(matrix, inputGain, outputGain, direct)

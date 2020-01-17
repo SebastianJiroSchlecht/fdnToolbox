@@ -2,7 +2,7 @@ function [p,m] = generalCharPoly(d, A)
 %generalCharPoly - compute generalized characteristic polynomial
 % as described in Schlecht, S. J., & Habets, E. A. P. (2015). Time-varying
 % feedback matrices in feedback delay networks and their application in
-% artificial reverberation. J. Acoust. Soc. Amer., 138(3), 1389–1398.
+% artificial reverberation. J. Acoust. Soc. Amer., 138(3), 1389-1398.
 % http://doi.org/10.1121/1.4928394
 %
 % Syntax:  p = generalCharPoly(d,A)

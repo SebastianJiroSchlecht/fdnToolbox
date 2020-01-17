@@ -18,7 +18,7 @@ delays = randi([50,100],[1,N]);
 A = randomOrthogonal(N);
 
 %% ss -> tf -> impz
-[tfB,tfA] = dss2tf_fdn(delays,A,B,C,D);
+[tfB,tfA] = dss2tf(delays,A,B,C,D);
 irTF = mtf2impz(tfB,tfA,impulseResponseLength);
 polesTF = roots(tfA);
 

@@ -1,6 +1,6 @@
 function isA = isAllpassFDN(matrix, inputGain, outputGain, direct, varargin)
 %Test whether FDN is allpass
-% see Michaletzky, G. Factorization Of Discrete–Time All–Pass Functions
+% see Michaletzky, G. Factorization Of Discrete-Time All-Pass Functions
 %
 % Sebastian J. Schlecht, Saturday, 28 December 2019
 

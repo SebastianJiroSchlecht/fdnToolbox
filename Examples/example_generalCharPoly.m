@@ -1,7 +1,7 @@
 % example generalCharPoly and generalCharPolySym
 %
 % see Schlecht, S. J., & Habets, E. A. P. (2017). On lossless feedback
-% delay networks. IEEE Trans. Signal Process., 65(6), 1554–1564.
+% delay networks. IEEE Trans. Signal Process., 65(6), 1554-1564.
 % http://doi.org/10.1109/TSP.2016.2637323 
 % Sebastian J. Schlecht Monday, 7.January 2019
 clear; clc; close all;

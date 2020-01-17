@@ -5,8 +5,8 @@ function [poles,quality, metaData] = refinePolePositions(poles, loop, varargin)
 % 67(20)https://dx.doi.org/10.1109/tsp.2019.2937286 
 % 
 % see Bini, D. A., & Noferini, V. (2013). Solving polynomial eigenvalue
-% problems by means of the Ehrlich–Aberth method. Linear Algebra Appl.,
-% 439(4), 1130–1149. http://doi.org/10.1016/j.laa.2013.02.024
+% problems by means of the Ehrlich-Aberth method. Linear Algebra Appl.,
+% 439(4), 1130-1149. http://doi.org/10.1016/j.laa.2013.02.024
 %
 % Syntax: [poles,quality, metaData] = refinePolePositions(poles, loop, varargin)
 %

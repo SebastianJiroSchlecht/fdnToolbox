@@ -12,7 +12,7 @@ example_absorptionScatteringFDN
 example_allpassFilterFDN
 example_delayEquivalent
 example_delayMatrix
-example_dss2ss_fdn
+example_dss2ss
 example_generalCharPoly
 example_inversePolynomialMatrix
 example_losslessMatrixGallery

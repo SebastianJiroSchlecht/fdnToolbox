@@ -35,7 +35,7 @@ N = length(delays);
 %% Find poles
 switch type
     case 'eig'
-        AA = dss2ss_fdn(delays, A);
+        AA = dss2ss(delays, A);
         polEig = eig(AA);
         poles = polEig.';
     case 'roots'
