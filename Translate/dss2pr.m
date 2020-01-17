@@ -1,11 +1,11 @@
-function [residues, poles, direct, isConjugatePolePair, metaData] = ss2pr_fdn(delays,A,B,C,D,varargin)
-%ss2pr_fdn - From state-space to poles and residues
+function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delays,A,B,C,D,varargin)
+%dss2pr - From state-space to poles and residues
 % Similar to residues, but with delays. Also, this function supports multiple
 % input and output. The algorithms is derived in 
 % Schlecht, S. J., & Habets, E. A. P. (2018). Modal decomposition of
 % feedback delay networks. IEEE Trans. Signal Process., submitted.
 %
-% Syntax:  [residues, poles, direct, isConjugatePolePair, metaData] = ss2pr_fdn(delays,absorption,A,B,C,D,deflationType)
+% Syntax:  [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delays,absorption,A,B,C,D,deflationType)
 %
 % Inputs:
 %    delays - delays in samples of size [1,N]
@@ -23,7 +23,7 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = ss2pr_fdn(de
 %    isConjugatePolePair - logical index whether poles are pair or real
 %    metaData - additional output values 
 %
-% See also: example_ss2pr_fdn
+% See also: example_dss2pr
 % Author: Dr.-Ing. Sebastian Jiro Schlecht, 
 % Aalto University, Finland
 % email address: sebastian.schlecht@aalto.fi

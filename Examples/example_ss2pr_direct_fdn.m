@@ -19,7 +19,7 @@ matrix = randn(N);
 
 %% compute
 tic
-[res.EAI, pol.EAI, directTerm.EAI, isConjugatePolePair.EAI] = ss2pr_fdn(delays, matrix, inputGain, outputGain, direct);
+[res.EAI, pol.EAI, directTerm.EAI, isConjugatePolePair.EAI] = dss2pr(delays, matrix, inputGain, outputGain, direct);
 toc
 tic
 [res.eig, pol.eig, directTerm.eig, isConjugatePolePair.eig] = dss2pr_direct(delays, matrix, inputGain, outputGain, direct,'eig');

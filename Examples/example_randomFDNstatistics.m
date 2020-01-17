@@ -22,7 +22,7 @@ feedbackMatrix = randomOrthogonal(N);
 %% Modal decomposition
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);
 
-[res, pol, directTerm, isConjugatePolePair, metaData] = ss2pr_fdn(delays, feedbackMatrix, inputGain, outputGain, direct);
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength,'fast');
 
 difference = irTimeDomain - irResPol;

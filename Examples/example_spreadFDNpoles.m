@@ -25,7 +25,7 @@ feedbackMatrix.Spread = randomOrthogonal(N) * GainMatrix * randomOrthogonal(N);
 %% Modal decomposition / Impulse Response / Energy Decay Curve
 for it = 1:length(types)
     type = types{it};
-    [res.(type), pol.(type), directTerm.(type), isConjugatePolePair.(type)] = ss2pr_fdn(delays, feedbackMatrix.(type), inputGain, outputGain, direct);
+    [res.(type), pol.(type), directTerm.(type), isConjugatePolePair.(type)] = dss2pr(delays, feedbackMatrix.(type), inputGain, outputGain, direct);
     irResPol.(type) = pr2impz(res.(type), pol.(type), directTerm.(type), isConjugatePolePair.(type), impulseResponseLength, 'lowMemory'); 
     edc.(type) = EDC(irResPol.(type));
 end

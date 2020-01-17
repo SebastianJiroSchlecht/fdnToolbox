@@ -1,4 +1,4 @@
-% Example for ss2pr_fdn and impz2res
+% Example for dss2pr and impz2res
 %
 % (c) Sebastian Jiro Schlecht:  23. April 2018
 clear; clc; close all;
@@ -27,7 +27,7 @@ loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a)
 
 %% compute
 irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
-[res, pol, directTerm, isConjugatePolePair, metaData] = ss2pr_fdn(delays, loopMatrix, inputGain, outputGain, direct);
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 [res_IR,b0,b1] = impz2res(irTimeDomain, pol, isConjugatePolePair);
 

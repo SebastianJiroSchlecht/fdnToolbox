@@ -23,7 +23,7 @@ irTF = mtf2impz(tfB,tfA,impulseResponseLength);
 polesTF = roots(tfA);
 
 %% ss -> pr -> impz
-[res, pol, direct, isConjugatePolePair] = ss2pr_fdn(delays,A,B,C,D);
+[res, pol, direct, isConjugatePolePair] = dss2pr(delays,A,B,C,D);
 irPR = pr2impz(res, pol, direct, isConjugatePolePair, impulseResponseLength);
 irPR = permute(irPR,[2 3 1]);
 

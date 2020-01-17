@@ -27,14 +27,14 @@ inverseMatrix = permute(feedbackMatrixDelay,[2 1 3]); % simple transpos because 
 
 %% compute with delay matrix
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrixDelay, inputGain, outputGain, direct);
-[res, pol, directTerm, isConjugatePolePair, metaData] = ss2pr_fdn(delays, feedbackMatrixDelay, inputGain, outputGain, direct);
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrixDelay, inputGain, outputGain, direct);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 
 difference = irTimeDomain - irResPol;
 matMax = permute(max(abs(difference),[],1),[2 3 1])
 
 %% compute delay equivalent FDN
-[res2, pol2, directTerm2, isConjugatePolePair2, metaData2] = ss2pr_fdn(delays+extraDelay, feedbackMatrix, inputGain, outputGain, direct);
+[res2, pol2, directTerm2, isConjugatePolePair2, metaData2] = dss2pr(delays+extraDelay, feedbackMatrix, inputGain, outputGain, direct);
 
 
 %% plot

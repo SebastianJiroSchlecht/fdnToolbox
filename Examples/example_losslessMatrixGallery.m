@@ -21,7 +21,7 @@ for it = 1:length(matrixTypes)
    type = matrixTypes{it};
    
    feedbackMatrix.(type) = losslessMatrixGallery(N,type);
-%    [res.(type), pol.(type)] = ss2pr_fdn(delays, feedbackMatrix.(type), inputGain, outputGain, direct);   
+%    [res.(type), pol.(type)] = dss2pr(delays, feedbackMatrix.(type), inputGain, outputGain, direct);   
 end
 
 %% Plot

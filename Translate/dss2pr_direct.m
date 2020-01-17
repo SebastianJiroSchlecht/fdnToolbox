@@ -5,7 +5,7 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr_direc
 % Schlecht, S. J., & Habets, E. A. P. (2018). Modal decomposition of
 % feedback delay networks. IEEE Trans. Signal Process., submitted.
 %
-% Syntax:  [residues, poles, direct, isConjugatePolePair, metaData] = ss2pr_fdn(delays,A,B,C,D,type)
+% Syntax:  [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delays,A,B,C,D,type)
 %
 % Inputs:
 %    delays - delays in samples of size [1,N]
@@ -22,7 +22,7 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr_direc
 %    isConjugatePolePair - logical index whether poles are pair or real
 %    metaData - additional output values 
 %
-% See also: ss2pr_fdn,  example_dss2pr_direct
+% See also: dss2pr,  example_dss2pr_direct
 % Author: Dr.-Ing. Sebastian Jiro Schlecht, 
 % Aalto University, Finland
 % email address: sebastian.schlecht@aalto.fi

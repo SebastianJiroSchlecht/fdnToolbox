@@ -26,7 +26,7 @@ loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a)
 % with absorption
 irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
 tic
-[res, pol, directTerm, isConjugatePolePair, metaData] = ss2pr_fdn(delays, loopMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation');
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation');
 toc
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength,'lowMemory');
 
@@ -34,7 +34,7 @@ difference = irTimeDomain - irResPol;
 matMax = permute(max(abs(difference(1:end)),[],1),[2 3 1])
 
 % no absorption
-[no_res, no_pol, no_directTerm, no_isConjugatePolePair] = ss2pr_fdn(delays, feedbackMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation');
+[no_res, no_pol, no_directTerm, no_isConjugatePolePair] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation');
 no_irResPol = pr2impz(no_res, no_pol, no_directTerm, no_isConjugatePolePair, impulseResponseLength,'lowMemory');
 
 %% min max bounds

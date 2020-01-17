@@ -33,7 +33,7 @@ absorptionFeedbackMatrix = matrixConvolution(feedbackMatrix, absorptionMatrix);
 
 %% compute impulse response and poles/zeros
 irTimeDomain = dss2impz(impulseResponseLength, delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
-[res, pol, directTerm, isConjugatePolePair,metaData] = ss2pr_fdn(delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
+[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 
 difference = irTimeDomain - irResPol;

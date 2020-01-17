@@ -28,7 +28,7 @@ loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a)
 
 %% compute
 [MinCurve,MaxCurve,w] = poleBoundaries(delays, absorption, feedbackMatrix);
-[res, pol, directTerm, isConjugatePolePair] = ss2pr_fdn(delays, loopMatrix, inputGain, outputGain, direct);
+[res, pol, directTerm, isConjugatePolePair] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct);
 
 %% plot
 figure(1); hold on; grid on;
