@@ -1,9 +1,9 @@
 # fdnToolbox
-Matlab Toolbox for Feedack Delay Networks (FDNs). This is a pre-release version, 
+Matlab Toolbox for Feedback Delay Networks (FDNs). This is a pre-release version. An accompanying paper is in preparation. 
 
-Feedback delay networks (FDNs) are recursive filters, which are widely used for artificial reverberation and decorrelation. This toolbox implements a wide range of variants and analysis methods
+Feedback delay networks (FDNs) are recursive filters, which are widely used for artificial reverberation and decorrelation. This toolbox implements a wide range of variants and analysis methods.
 
-* Feedback Matrix designs, scalar, delay and filter matrices
+* Feedback Matrix designs, scalar, delay, and filter matrices
 * Absorption filter design
 * Time-varying matrix design
 * Modal decomposition for spectral analysis
