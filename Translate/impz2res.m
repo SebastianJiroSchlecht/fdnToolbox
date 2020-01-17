@@ -1,12 +1,12 @@
-function [residues,b0,b1] = impz2res_fdn(ir, poles, isConjugatePolePair)
-%impz2res_fdn - Compute residues from impulse response and poles
+function [residues,b0,b1] = impz2res(ir, poles, isConjugatePolePair)
+%impz2res - Compute residues from impulse response and poles
 %Given a set of poles and the resulting time-domain impulse response, the
 %residues can be computed via a least-squares problem. More details can be
 %found in Bank, B. (2018). Converting infinite impulse response filters to
 % parallel form [Tips & Tricks]. IEEE Signal Process. Mag., 35(3), 124-130.
 % http://doi.org/10.1109/MSP.2018.2805358
 %
-% Syntax:  [res,b0,b1] = impz2res_fdn(ir, poles, isConjugatePolePair)
+% Syntax:  [res,b0,b1] = impz2res(ir, poles, isConjugatePolePair)
 %
 % Inputs:
 %    ir - impulse response
