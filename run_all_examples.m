@@ -1,0 +1,34 @@
+% run all examples
+
+%% generate names
+files = dir('*/example_*');
+fileNames = {files.name};
+fprintf('%s\n',fileNames{:})
+
+%% Run
+example_absorptionFilters
+example_absorptionFiltersFDN
+example_absorptionScatteringFDN
+example_allpassFilterFDN
+example_delayEquivalent
+example_delayMatrix
+example_dss2ss_fdn
+example_generalCharPoly
+example_inversePolynomialMatrix
+example_losslessMatrixGallery
+example_nestedAllpass
+example_newtonStep
+example_onePoleAbsorption
+example_paraunitaryFDN
+example_poleBoundaries
+example_processFDN
+example_proportionalAbsorption
+example_randomFDNstatistics
+example_reversedGCP
+example_scatteringFDN
+example_spreadFDNpoles
+example_ss2pr_direct_fdn
+example_ss2pr_fdn
+example_ss2tf_fdn
+example_timeVaryingFDN
+example_zDomainLoop
