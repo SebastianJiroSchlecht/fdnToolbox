@@ -1,11 +1,11 @@
-function response = pr2impz_fdn(residues, poles, direct, isConjugatePolePair, impulseResponseLength, type)
-%pr2impz_fdn - From poles and residues to impulse response
+function response = pr2impz(residues, poles, direct, isConjugatePolePair, impulseResponseLength, type)
+%pr2impz - From poles and residues to impulse response
 % Each pole and residue form an exponential decaying sinusoid. The sum of
 % these sinusoids is the impulse response. The algorithms is presented in
 % Schlecht, S. J., & Habets, E. A. P. (2018). Modal decomposition of
 % feedback delay networks. IEEE Trans. Signal Process., submitted.
 %
-% Syntax:  response = pr2impz_fdn(residues, poles, direct, isConjugatePolePair, impulseResponseLength, type)
+% Syntax:  response = pr2impz(residues, poles, direct, isConjugatePolePair, impulseResponseLength, type)
 %
 % Inputs:
 %    residues - matrix of system residues

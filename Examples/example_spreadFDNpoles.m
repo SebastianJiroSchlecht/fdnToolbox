@@ -26,7 +26,7 @@ feedbackMatrix.Spread = randomOrthogonal(N) * GainMatrix * randomOrthogonal(N);
 for it = 1:length(types)
     type = types{it};
     [res.(type), pol.(type), directTerm.(type), isConjugatePolePair.(type)] = ss2pr_fdn(delays, feedbackMatrix.(type), inputGain, outputGain, direct);
-    irResPol.(type) = pr2impz_fdn(res.(type), pol.(type), directTerm.(type), isConjugatePolePair.(type), impulseResponseLength, 'lowMemory'); 
+    irResPol.(type) = pr2impz(res.(type), pol.(type), directTerm.(type), isConjugatePolePair.(type), impulseResponseLength, 'lowMemory'); 
     edc.(type) = EDC(irResPol.(type));
 end
 

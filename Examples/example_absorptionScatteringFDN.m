@@ -34,7 +34,7 @@ loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a)
 %% compute impulse response and poles/zeros and reverberation time
 irTimeDomain = ss2impz_fdn(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct);
 [res, pol, directTerm, isConjugatePolePair,metaData] = ss2pr_fdn(delays, loopMatrix, inputGain, outputGain, direct);
-irResPol = pr2impz_fdn(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
+irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 
 difference = irTimeDomain - irResPol;
 fprintf('Maximum devation betwen time-domain and pole-residues is %f\n', permute(max(abs(difference),[],1),[2 3 1]));

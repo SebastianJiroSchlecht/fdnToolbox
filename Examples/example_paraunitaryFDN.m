@@ -25,7 +25,7 @@ isP = isParaunitary( feedbackMatrix )
 %% Compute impulse response and poles/zeros
 irTimeDomain = ss2impz_fdn(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);
 [res, pol, directTerm, isConjugatePolePair, metaData] = ss2pr_fdn(delays, feedbackMatrix, inputGain, outputGain, direct, 'inverseMatrix', revMatrix);
-irResPol = pr2impz_fdn(res, pol, directTerm, isConjugatePolePair, impulseResponseLength, 'lowMemory');
+irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength, 'lowMemory');
 
 %% Evaluate IR Difference between time-domain recursion and poles/zeros
 difference = irTimeDomain - irResPol;
