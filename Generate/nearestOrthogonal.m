@@ -5,3 +5,4 @@ function B = nearestOrthogonal(A)
 
 [U,~,V] = svd(A);
 B = U*V';
+

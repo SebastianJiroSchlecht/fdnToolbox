@@ -27,16 +27,11 @@ originalMatrix = orth(randn(N))
 inputMatrix = abs(originalMatrix)
 
 % naive solution
-classicSolution = nearestOrthogonal(inputMatrix);
+classicSolution = nearestOrthogonal(inputMatrix)
     
 % problem solution matrix
 signAgnosticSolution = nearestSignAgnosticOrthogonal(inputMatrix)
 
-
-
-% absolute difference matrix
-abs(signAgnosticSolution) - abs(originalMatrix)
-
 % mean value difference
-norm(abs(signAgnosticSolution) - abs(originalMatrix),'fro') / N^2
 norm(abs(classicSolution) - abs(originalMatrix),'fro') / N^2
+norm(abs(signAgnosticSolution) - abs(originalMatrix),'fro') / N^2

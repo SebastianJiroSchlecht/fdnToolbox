@@ -1,4 +1,4 @@
-function U = nearestSignAgnosticOrthogonal(A, varargin)
+function bestMatrix = nearestSignAgnosticOrthogonal(A, varargin)
 %nearestSignAgnosticOrthogonal - Nearest orthogonal matrix ignoring signs
 % Find matrix U with U*U^T=I which minimizes || A - |U| ||_F, where |.| is
 % the element-wise absolute value. This problem is non-convex and only a
@@ -39,7 +39,7 @@ Tolerance = p.Results.Tolerance;
 A = sinkhornKnopp(abs(A).^2).^0.5;
 
 %% Init search
-U = nearestOrthogonal(A);
+bestMatrix = nearestOrthogonal(A);
 bestError = Inf;
 
 for it = 1:MaximumTrails
@@ -53,9 +53,9 @@ for it = 1:MaximumTrails
     B = signVariableExchange(newOrthogonal, A);
     
     %% Evaluate
-    distance = norm(A - abs(U),'fro');
+    distance = norm(A - abs(B),'fro');
     if distance < bestError
-        U = B;
+        bestMatrix = B;
         bestError = distance;
         if bestError < Tolerance
            return; % best possible found
