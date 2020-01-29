@@ -13,31 +13,30 @@
 % 3) Repeat from 1) if any sign changed
 %
 % This approach guarantees on each step to improve the error norm. Below is
-% given an example for N=4. First an orthogonal matrix A is generated, and
+% given an example for N=8. First an orthogonal matrix A is generated, and
 % then matrix B is A without signs. 
 %
 %
 clear; clc; close all;
 
-N = 4;
+N = 8;
 % original matrix
-A = orth(randn(N))
+originalMatrix = orth(randn(N))
 
 % problem target matrix
-B = abs(A)
+inputMatrix = abs(originalMatrix)
 
 % naive solution
-[U,~,V] = svd(B);
-D = U*V'
+classicSolution = nearestOrthogonal(inputMatrix);
     
 % problem solution matrix
-C = nearestSignAgnosticOrthogonal(B)
+signAgnosticSolution = nearestSignAgnosticOrthogonal(inputMatrix)
 
 
 
 % absolute difference matrix
-abs(C) - abs(A)
+abs(signAgnosticSolution) - abs(originalMatrix)
 
 % mean value difference
-norm(abs(C) - abs(A),'fro') / N^2
-norm(abs(D) - abs(A),'fro') / N^2
+norm(abs(signAgnosticSolution) - abs(originalMatrix),'fro') / N^2
+norm(abs(classicSolution) - abs(originalMatrix),'fro') / N^2

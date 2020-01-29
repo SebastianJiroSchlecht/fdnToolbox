@@ -1,4 +1,4 @@
-function U = nearestSignAgnosticOrthogonal(A)
+function U = nearestSignAgnosticOrthogonal(A, varargin)
 %nearestSignAgnosticOrthogonal - Nearest orthogonal matrix ignoring signs
 % Find matrix U with U*U^T=I which minimizes || A - |U| ||_F, where |.| is
 % the element-wise absolute value. This problem is non-convex and only a
@@ -12,30 +12,29 @@ function U = nearestSignAgnosticOrthogonal(A)
 %
 % Inputs:
 %    A - Input square matrix. Signs will be ignored.
-%    input2 - Description
-%    input3 - Description
+%    MaximumTrails (Optional) - Number of trails
+%    Tolerance (Optional) - Convergence tolerance
 %
 % Outputs:
 %    U - Nearest orthogonal matrix ignoring the signs
 %
 % Example: 
-%    Line 1 of example
-%    Line 2 of example
-%    Line 3 of example
+%    nearestSignAgnosticOrthogonal(orth(randn(4)),'MaximumIterations',10000)
 %
-% Other m-files required: none
-% Subfunctions: none
-% MAT-files required: none
-%
-% See also: OTHER_FUNCTION_NAME1,  OTHER_FUNCTION_NAME2
 % Author: Dr.-Ing. Sebastian Jiro Schlecht, 
 % Aalto University, Finland
 % email address: sebastian.schlecht@aalto.fi
 % Website: sebastianjiroschlecht.com
 % 29. January 2020; Last revision: 29. January 2020
 
-% TODO clean docu
+%% Input Parser
+p = inputParser;
+p.addParameter('MaximumTrails', 10^5, @(x) isnumeric(x) );
+p.addParameter('Tolerance', eps*10^5, @(x) isnumeric(x) );
+parse(p,varargin{:});
 
+MaximumTrails = p.Results.MaximumTrails;
+Tolerance = p.Results.Tolerance;
 %% Scale input matrix to doubly stochastic 
 A = sinkhornKnopp(abs(A).^2).^0.5;
 
@@ -43,25 +42,31 @@ A = sinkhornKnopp(abs(A).^2).^0.5;
 U = nearestOrthogonal(A);
 bestError = Inf;
 
-for it = 1:10000
-    newOrthogonal = sign(randn(size(A)));
-    newOrthogonal(1,:) = 1; % normalize first row and column
-    newOrthogonal(:,1) = 1;
+for it = 1:MaximumTrails
     
+    %% Generate new normalized sign matrix
+    newOrthogonal = sign(randn(size(A)));
+    newOrthogonal = newOrthogonal .* newOrthogonal(1,:);
+    newOrthogonal = newOrthogonal .* newOrthogonal(:,1);
+    
+    %% Perform optimization
     B = signVariableExchange(newOrthogonal, A);
+    
+    %% Evaluate
     distance = norm(A - abs(U),'fro');
     if distance < bestError
         U = B;
         bestError = distance;
+        if bestError < Tolerance
+           return; % best possible found
+        end
     end
 end
 
 
 
-
-
-
 function newOrthogonal = signVariableExchange(newOrthogonal, Absolute)
+% Perform the variable exchange optimization
 
 Orthogonal = -newOrthogonal;
 
@@ -75,7 +80,7 @@ while any(sign(newOrthogonal(:)) ~= sign(Orthogonal(:)))
     newOrthogonal = U*V';
     
     if(counter > maxIter)
-       disp('Too many iterations')
+       warning('Variable exchange optimization did not converge within %d iterations', maxIter)
        break; 
     end
 end
