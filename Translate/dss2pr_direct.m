@@ -63,7 +63,7 @@ end
 
 %% Compute residues
 loopMatrix = zDomainStandardLoop( delays, A);
-[residues,direct,undrivenResidues] = computeResidues(poles,loopMatrix,B,C,D);
+[residues,direct,undrivenResidues] = dss2res(poles,loopMatrix,B,C,D);
 
 metaData.undrivenResidues = undrivenResidues;
 

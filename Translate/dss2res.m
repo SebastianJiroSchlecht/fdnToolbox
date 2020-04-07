@@ -1,10 +1,10 @@
-function [drivenRes,directTerm,undrivenResidues] = computeResidues(poles,loop,B,C,D)
-%computeResidues - Residues from poles and state space
+function [drivenRes,directTerm,undrivenResidues] = dss2res(poles,loop,B,C,D)
+%dss2res - Residues from poles and state space
 %see Schlecht, S., Habets, E. (2019). Modal
 %Decomposition of Feedback Delay Networks IEEE Trans. Signal Process.
 %67(20)https://dx.doi.org/10.1109/tsp.2019.2937286
 %
-% Syntax:  [drivenRes,directTerm,undrivenResidues] = computeResidues(poles,loop,B,C,D)
+% Syntax:  [drivenRes,directTerm,undrivenResidues] = dss2res(poles,loop,B,C,D)
 %
 % Inputs:
 %    poles - Pole locations
