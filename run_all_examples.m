@@ -13,6 +13,7 @@ example_allpassFilterFDN
 example_complexOscillatorBank
 example_delayEquivalent
 example_delayMatrix
+example_delayMatrixDensity
 example_dss2pr
 example_dss2pr_direct
 example_dss2ss
