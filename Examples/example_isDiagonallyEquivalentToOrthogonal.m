@@ -9,7 +9,13 @@ Q = orth(randn(N));
 D = diag(randn(N,1)+1);
 E = diag(randn(N,1)+1);
 
-A = D*Q*E;
+A = diagonallyEquivalent(Q,D,E);
 
 %% Check whether A is diagonally equivalent to an orthogonal matrix
 [isDOE,Q2,D2,E2] = isDiagonallyEquivalentToOrthogonal(A)
+
+
+%% Test with diagonallyEquivalent
+B = diagonallyEquivalent(Q,D,inv(D));
+
+[isDOS,Q,D] = isDiagonallySimilarToOrthogonal(B, 'tol', 10^-10)

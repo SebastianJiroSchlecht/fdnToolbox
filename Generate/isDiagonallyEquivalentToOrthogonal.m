@@ -1,4 +1,6 @@
 function [isDOE,Q,D,E] = isDiagonallyEquivalentToOrthogonal(A)
+% Find Q = E*A*D with E,D diagonal and Q orthogonal.
+%  
 % see Berman, A., Parlett, B., Plemmons, R. (1981). Diagonal Scaling to an
 % Orthogonal Matrix SIAM Journal on Algebraic Discrete Methods  2(1),
 % 57-65. https://dx.doi.org/10.1137/0602008
@@ -14,6 +16,10 @@ C = inv(A) ./ A.';
 
 D2 = U(:,1) * sqrt(S(1,1));
 E2 = V(:,1)' * sqrt(S(1,1));
+
+% normalize signs
+E2 = E2 .* sign(D2)';
+D2 = D2 .* sign(D2);
 
 % D2*E2 - C
 D = diag(sqrt(D2));
