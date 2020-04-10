@@ -1,3 +1,5 @@
+% Example for added density with a delay feedback matrix
+%
 % Sebastian J. Schlecht, Thursday, 9. April 2020
 clear; clc; close all;
 
