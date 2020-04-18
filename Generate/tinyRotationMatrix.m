@@ -24,13 +24,14 @@ function rotationMatrix = tinyRotationMatrix(N,delta,varargin)
 %% Input Parser
 p = inputParser;
 p.addOptional('spread',0.1);
+p.addOptional('logMatrix',randn(N));
 parse(p,varargin{:});
 
 spread = p.Results.spread;
+x = p.Results.logMatrix;
 
 %% Generate skew symmetric matrix
-x = randn(N);
-skewSymmetric = x - x';
+skewSymmetric = (x - x')/2;
 
 [v,e] = eig(skewSymmetric);
 
@@ -49,3 +50,7 @@ skewSymmetric = real(v* diag(nE)*v');
 skewSymmetric = (skewSymmetric - skewSymmetric') / 2;
 
 rotationMatrix = expm(skewSymmetric);
+
+%% Alternative
+% rotationMatrix = v*diag(exp(nE))*v';
+% nearestOrthogonal

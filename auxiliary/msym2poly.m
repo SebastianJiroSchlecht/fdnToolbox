@@ -31,6 +31,7 @@ P = zeros(size(A,1), size(A,2), degree+1);
 for it1 = 1:size(A,1)
     for it2 = 1:size(A,2)
         pp = sym2poly(A(it1,it2));
-        P(it1,it2,:) = setSubvector(P(it1,it2,:), pp, 'back');
+        l = numel(pp);
+        P(it1,it2,end-l+1:end) = pp;
     end
 end
