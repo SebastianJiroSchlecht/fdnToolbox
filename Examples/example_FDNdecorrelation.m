@@ -1,3 +1,5 @@
+% Example on the decorrelation between different FDN input/output pairs
+%
 % Sebastian J. Schlecht, Thursday, 16. April 2020
 clear; clc; close all;
 
@@ -13,9 +15,8 @@ numOutput = 1;
 inputGain = ones(N,numInput);
 outputGain = ones(numOutput,N);
 direct = zeros(numOutput,numInput);
-m = randi([100,1000],[1,N])
+m = randi([100,1000],[1,N]);
 A = randomOrthogonal(N);
-% A = losslessMatrixGallery(N,'Hadamard');
 
 syms z;
 delays = diag( z.^m );
@@ -23,6 +24,12 @@ adjSym = adjoint(delays - A);
 
 adjMat = msym2poly(adjSym);
 
-%%
+%% compute correlation
+% TODO
 
+
+%% plot
+figure(1)
 plotImpulseResponseMatrix([],adjMat)
+
+

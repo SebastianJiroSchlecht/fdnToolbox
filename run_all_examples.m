@@ -6,8 +6,10 @@ fileNames = {files.name};
 fprintf('%s\n',fileNames{:})
 
 %% Run
+example_FDNdecorrelation
 example_absorptionFilters
 example_absorptionFiltersFDN
+example_absorptionGEQ
 example_absorptionScatteringFDN
 example_allpassFilterFDN
 example_complexOscillatorBank
@@ -19,9 +21,12 @@ example_dss2pr_direct
 example_dss2ss
 example_dss2tf
 example_generalCharPoly
+example_graphicEQ
+example_interpolateMatrix
 example_inversePolynomialMatrix
 example_isDiagonallyEquivalentToOrthogonal
 example_losslessMatrixGallery
+example_nearestSignAgnosticOrthogonal
 example_nestedAllpass
 example_newtonStep
 example_onePoleAbsorption
