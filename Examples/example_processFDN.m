@@ -3,7 +3,7 @@
 %
 % Sebastian J. Schlecht, Sunday, 29 December 2019
 
-[x, fs] = audioread('castanets_dry.m4a');
+[x, fs] = audioread('synth_dry.m4a');
 x = [x; zeros(2*fs,1)];
 
 %% Define FDN
