@@ -59,7 +59,8 @@ switch matrixType
         A = randomOrthogonal(N/2);
         A = allpassInFDN(g, A, 0*g, 0*g, 0);
     case 'nestedAllpass'
-        A = nestedAllpass(rand(1,N)*0.2 + 0.6); %TODO: varargin
+        g = rand(1,N)*0.2 + 0.6;
+        A = nestedAllpass(g);
     case 'SchroederReverberator'
         allpassGain = rand(1,N/2)*0.2 + 0.6;
         combGain = ones(1,N/2);
