@@ -1,4 +1,4 @@
-function A = losslessMatrixGallery(N,matrixType)
+function A = losslessMatrixGallery(N,matrixType,varargin)
 %orthonormalMatrixGallery - Collection of orthonormal matrices
 %
 % Syntax:  A = orthonormalMatrixGallery(N,matrixType)
@@ -28,7 +28,7 @@ function A = losslessMatrixGallery(N,matrixType)
 %% get Types, when no argument is provided
 if nargin == 0
    A = {'orthogonal','Hadamard','circulant','Householder','parallel','series','diagonalConjugated','tinyRotation',...
-       'allpassInFDN','nestedAllpass','SchroederReverberator'};
+       'allpassInFDN','nestedAllpass','SchroederReverberator','AndersonMatrix'};
    return;
 end
 
@@ -53,17 +53,19 @@ switch matrixType
         D = diag(randn(N,1));
         A = D\randomOrthogonal(N)*D;
     case 'tinyRotation'
-        A = tinyRotationMatrix(N,0.01);
+        A = tinyRotationMatrix(N,0.01,varargin{:});
     case 'allpassInFDN'
         g = rand(1,N/2)*0.2 + 0.6;
         A = randomOrthogonal(N/2);
         A = allpassInFDN(g, A, 0*g, 0*g, 0);
     case 'nestedAllpass'
-        A = nestedAllpass(rand(1,N)*0.2 + 0.6);
+        A = nestedAllpass(rand(1,N)*0.2 + 0.6); %TODO: varargin
     case 'SchroederReverberator'
         allpassGain = rand(1,N/2)*0.2 + 0.6;
         combGain = ones(1,N/2);
         A = SchroederReverberator(allpassGain, combGain, ones(1,N/2), ones(1,N/2), 1);
+    case 'AndersonMatrix'
+        A = AndersonMatrix(N,varargin{:});
     otherwise
         error('Not defined');
 end

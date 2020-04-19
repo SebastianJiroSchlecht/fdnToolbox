@@ -33,13 +33,13 @@ plotConfig = {'type','standardSingleColumn','width',plotWidth,'extraAxisOptions'
 
 for it = 1:length(matrixTypes)
     type = matrixTypes{it};
-    figure(it); 
+    figure(it); set(gcf,'color','w');
     plotMatrix(feedbackMatrix.(type))
 %     colorbar
     caxis([-1 1])
     colormap(colorMap);
     
-%     matlab2tikz_sjs(['./Plots/matrix_' type '.tikz'],plotConfig{:})
+    matlab2tikz_sjs(['./Plots/matrix_' type '.tikz'],plotConfig{:})
     % TODO make matlab2tikz dummy
 end
 
@@ -48,7 +48,7 @@ end
 
 
 
-
+% TODO: check below
 
 % figure(1); hold on; grid on;
 % for it = 1:length(matrixTypes)

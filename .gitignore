@@ -1,3 +1,6 @@
 
 .DS_Store
 find_and_replace.m
+*.m~
+*.tikz
+*.pdf
