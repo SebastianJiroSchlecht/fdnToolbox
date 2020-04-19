@@ -40,7 +40,6 @@ for it = 1:length(matrixTypes)
     colormap(colorMap);
     
     matlab2tikz_sjs(['./Plots/matrix_' type '.tikz'],plotConfig{:})
-    % TODO make matlab2tikz dummy
 end
 
 
