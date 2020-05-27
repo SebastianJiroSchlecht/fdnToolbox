@@ -1,4 +1,4 @@
-function matrix = constructParaunitaryFromElementals( N, degree )
+function [matrix,v] = constructParaunitaryFromElementals( N, degree )
 %constructParaunitaryFromElementals - Create random paraunitary matrix
 % Construct paraunitary matrix as a sucession of random parunitary delays
 % and rotations. The details are outlined in
@@ -28,17 +28,12 @@ function matrix = constructParaunitaryFromElementals( N, degree )
 matrix = zeros(N, N, 1);
 matrix(:,:,1) = orth(randn(N));
 
+v = randn(N,degree-1);
+v = v ./ sqrt(sum(v.^2,1)); 
 for it=2:degree
-    v = randn(N,1);
-    rot = degreeOneLossless(v);
-    matrix = matrixConvolution(matrix,rot);
+    V = degreeOneLossless(v(:,it-1));
+    matrix = matrixConvolution(matrix,V);
 end
 
 
-function rot = degreeOneLossless(v)
-N = length(v);
-v = v / norm(v);
-V = v*v';
 
-rot(:,:,1) = eye(N) - V;
-rot(:,:,2) = V;

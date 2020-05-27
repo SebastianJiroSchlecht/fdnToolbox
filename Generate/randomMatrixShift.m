@@ -1,4 +1,4 @@
-function [matrix, matrixRev] = randomMatrixShift(maxShift, matrix, matrixRev )
+function [matrix, matrixRev, randLeftShift, randRightShift] = randomMatrixShift(maxShift, matrix, matrixRev )
 %randomMatrixShift - Shift polynomial matrix entries randomly in time
 %
 % Syntax:   [matrix, matrixRev] = randomMatrixShift(maxShift, matrix, matrixRev )
@@ -11,6 +11,8 @@ function [matrix, matrixRev] = randomMatrixShift(maxShift, matrix, matrixRev )
 % Outputs:
 %    matrix - Shifted matrix
 %    matrixRev (optional) - In/Reverse of shifted matrix
+%    randRightShift - Samples of right shift
+%    randLeftShift - Samples of left shift
 %
 % Example:
 %    Line 1 of example
@@ -33,9 +35,12 @@ N = size(matrix,1);
 if maxShift >= N
     randLeftShift = randperm(maxShift,N);
     randRightShift = randperm(maxShift,N);
+elseif maxShift <= 0
+    randLeftShift = zeros(1,N);
+    randRightShift = zeros(1,N);
 else
-    randLeftShift = randi(maxShift,N);
-    randRightShift = randi(maxShift,N);
+    randLeftShift = randi(maxShift,1,N);
+    randRightShift = randi(maxShift,1,N);
 end
 
 randLeftShift = randLeftShift - min(randLeftShift);
