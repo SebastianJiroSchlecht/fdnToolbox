@@ -22,7 +22,7 @@ function [AA, bb, cc, dd] = dss2ss(m, A, b, c, d)
 %
 % Example: 
 %    dss2ss([3 4], orth(randn(2)))
-%    [AA,bb,cc,dd] = dss2ss([3 4], orth(randn(2)), randn(2,1), randn(2,1), randn(1))
+%    [AA,bb,cc,dd] = dss2ss([3 4], orth(randn(2)), randn(2,1), randn(1,2), randn(1))
 %
 % Other m-files required: none
 % Subfunctions: none
@@ -38,7 +38,7 @@ N = size(A,1);
 
 if nargin == 2 
     b = ones(N,1);
-    c = ones(N,1);
+    c = ones(1,N);
     d = ones(1,1);
 end
 
@@ -65,7 +65,7 @@ NN = size(AA,1);
 bb = zeros(NN,1);
 bb((-N:-1)+end+1) = b;
 
-cc = zeros(NN,1);
+cc = zeros(1,NN);
 cc((-N:-1)+end+1-N) = c;
 
 dd = d;

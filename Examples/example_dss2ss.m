@@ -8,7 +8,7 @@ N = 3;
 m = [13 19 23];
 A = randomOrthogonal(N) * diag(rand(N,1)) * randomOrthogonal(N);
 b = randn(N,1);
-c = randn(N,1);
+c = randn(1,N);
 d = randn(1,1);
 
 %% State-space transition matrix 
@@ -21,10 +21,10 @@ fprintf('The pole magnitudes are between %f and %f.\n',min(abs(e)),max(abs(e)))
 %% Compare impulse response
 impulseResponseLength = 100;
 
-[num,den] = ss2tf(AA,bb,cc',dd);
+[num,den] = ss2tf(AA,bb,cc,dd);
 irStateSpace = impz(num,den, impulseResponseLength);
 
-irDelayStateSpace = dss2impz(impulseResponseLength, m, A, b, c.', d);
+irDelayStateSpace = dss2impz(impulseResponseLength, m, A, b, c, d);
 
 %% plot
 figure(1); hold on; grid on;

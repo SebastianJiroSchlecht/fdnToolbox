@@ -4,8 +4,6 @@ function [isA, P] = isAllpassFDN(matrix, inputGain, outputGain, direct, varargin
 %
 % Sebastian J. Schlecht, Saturday, 28 December 2019
 
-% TODO: change outputGain orientation
-
 %% Input parser
 persistent p
 if isempty(p)
@@ -26,7 +24,7 @@ P = dlyap(matrix,inputGain*inputGain');
 %% verify
 U = [matrix, inputGain; outputGain, direct];
 PP = blkdiag(P,eye(size(direct)));
-testMatrix = U * PP * U' - PP
+testMatrix = U * PP * U' - PP;
 
 isA = isAlmostZero(testMatrix,'tol',tol);
 %isDiag(P)
