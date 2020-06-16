@@ -4,7 +4,7 @@
 % Sebastian J. Schlecht, Sunday, 29 December 2019
 
 [x, fs] = audioread('synth_dry.m4a');
-x = [x; zeros(2*fs,1)];
+x = [x(:,1); zeros(2*fs,1)];
 
 %% Define FDN
 N = 8;
