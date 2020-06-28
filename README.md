@@ -1,10 +1,9 @@
 # FDNTB: The Feedback Delay Network Toolbox
-Matlab Toolbox for Feedback Delay Networks (FDNs). 
+Matlab Toolbox for Feedback Delay Networks (FDNs). The accompanying paper is
 
-An accompanying paper is was submitted to DAFx 2020:
+*Sebastian J. Schlecht, "FDNTB: The Feedback Delay Network Toolbox", DAFx 2020, Vienna, Austria.*
 
-*Sebastian J. Schlecht, "FDNTB: The Feedback Delay Network Toolbox", submitted to DAFx 2020, Vienna, Austria.*
- 
+If you use this toolbox for your research, please cite the accompanying paper.
 
 Feedback delay networks (FDNs) are recursive filters, which are widely used for artificial reverberation and decorrelation. This toolbox implements a wide range of variants and analysis methods.
 
@@ -19,5 +18,6 @@ A wide range of applications is demonstrated in the example folders.
 To run all example files, please call 
 
 ```
+startup
 run_all_examples
 ```

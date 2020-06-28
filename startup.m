@@ -2,7 +2,7 @@
 
 clear; clc; close all;
 
-restoredefaultpath;
+% restoredefaultpath;
 
 addpath(genpath('./'))
 
