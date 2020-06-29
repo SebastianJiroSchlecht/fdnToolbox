@@ -1,7 +1,8 @@
-function isZ = isAlmostZero(A, varargin)
+function [isZ, maxVal] = isAlmostZero(A, varargin)
 %Test whether matrix / vector is almost zero in absolute values
 %
 % Sebastian J. Schlecht, Saturday, 28 December 2019
+% TODO
 
 %% Input parser
 persistent p
@@ -13,4 +14,5 @@ end
 p.parse(varargin{:});
 tol = p.Results.tol;
 
-isZ = max(abs(A),[],'all') < tol;
+maxVal = max(abs(A),[],'all');
+isZ = maxVal < tol;
