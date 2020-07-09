@@ -1,5 +1,7 @@
 % Example for absorption graphic equalizer (GEQ) in FDN
 %
+% TODO: This example is not finished yet. 
+%
 % (c) Sebastian Jiro Schlecht:  23. April 2018
 clear; clc; close all;
 
@@ -8,7 +10,7 @@ rng(5)
 fs = 48000;
 impulseResponseLength = fs*2;
 
-%% define FDN
+% define FDN
 N = 4;
 numInput = 1;
 numOutput = 1;
@@ -18,7 +20,7 @@ direct = zeros(numOutput,numInput);
 delays = randi([500,2000],[1,N]);
 feedbackMatrix = randomOrthogonal(N);
 
-%% absorption filters
+% absorption filters
 centerFrequencies = [ 63, 125, 250, 500, 1000, 2000, 4000, 8000]; % Hz
 T60frequency = [1, centerFrequencies fs];
 
@@ -27,9 +29,9 @@ targetT60 = [3; 3; 2.5; 2.3; 2.1; 1.5; 1.1; 0.8; 0.6; 0.4];  % seconds
 [absorption.b,absorption.a] = absorptionGEQ(targetT60, delays, fs);
 loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
 
-%% TODO fix absorption filters
+% TODO fix absorption filters
 
-%% compute impulse response and poles/zeros
+% compute impulse response and poles/zeros
 % irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct);
 % [res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct);
 % irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
@@ -58,5 +60,8 @@ loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a)
 % xlabel('Frequency [hz]')
 % ylabel('Pole RT60 [s]')
 % legend({'Target Curve','Poles','Minimum','Maximum','T60 Late','T60 Early'})
+
+%% Test: TODO: not written yet
+assert(1 == 1)
 
 

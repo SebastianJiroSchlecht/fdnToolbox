@@ -13,14 +13,14 @@ pp = find_ndim(mat,3,'last');
 switch direction
     case 'left'
         requiredSpace = pp + shift';
-        additionalSpace = max(requiredSpace - size(mat,3));
+        additionalSpace = max(requiredSpace(:)) - size(mat,3);
         mat = cat(3,mat,zeros(N,N,additionalSpace));
         for it = 1:N
             mat( it, :, :) = circshift( mat( it, :, :), shift(it), 3 );
         end
     case 'right'
         requiredSpace = pp + shift;
-        additionalSpace = max(requiredSpace - size(mat,3));
+        additionalSpace = max(requiredSpace(:)) - size(mat,3);
         mat = cat(3,mat,zeros(N,N,additionalSpace));
         for it = 1:N
             mat( :, it, :) = circshift( mat( :, it, :), shift(it), 3 );

@@ -1,5 +1,9 @@
 % Example for FDN with allpass filters in the loop
 %
+% Schroeder allpass filters can be inserted into FDN loop after the delay
+% lines to increase the echo density. Allpass FDNs are also still lossless
+% and all poles lie on the unit circle.
+%
 % Sebastian Jiro Schlecht, Sunday, 29 December 2019
 
 clear; clc; close all;
@@ -8,7 +12,7 @@ rng(5)
 fs = 48000;
 impulseResponseLength = fs/4;
 
-%% Define FDN
+% Define FDN
 N = 4;
 numInput = 1;
 numOutput = 1;
@@ -19,7 +23,7 @@ delays = randi([200,900],[1,N]);
 
 feedbackMatrix = randomOrthogonal(N);
 
-%% Allpass Filter
+% Allpass Filter
 filterLen = 7;
 a = 0.01*randn(N,filterLen);
 a(:,1) = 1;
@@ -29,15 +33,15 @@ absorption.a = a;
 
 loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
 
-%% compute
+% compute
 irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
 [res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct);
 resLS = impz2res(irTimeDomain, pol, isConjugatePolePair);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 
 difference = irTimeDomain - irResPol;
-matMax = permute(max(abs(difference),[],1),[2 3 1])
-%% plot
+
+% plot
 close all;
 
 figure(1); hold on; grid on;
@@ -58,4 +62,8 @@ plot(angle(pol),(mag2db(abs(pol))),'x');
 xlabel('Pole Angle [rad]')
 ylabel('Pole Magnitude [dB]')
 
+%% Test: Impulse Response Accuracy
+assert( isAlmostZero(difference))
 
+%% Test: FDN is lossless 
+assert( isAlmostZero( abs(pol) - 1) )
