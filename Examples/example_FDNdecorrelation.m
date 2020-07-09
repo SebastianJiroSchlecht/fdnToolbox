@@ -1,5 +1,7 @@
 % Example on the decorrelation between different FDN input/output pairs
 %
+% TODO: This example is not finished yet
+%
 % Sebastian J. Schlecht, Thursday, 16. April 2020
 clear; clc; close all;
 
@@ -8,7 +10,7 @@ rng(5)
 fs = 48000;
 impulseResponseLength = fs*2;
 
-%% define FDN
+% define FDN
 N = 4;
 numInput = 1;
 numOutput = 1;
@@ -24,12 +26,13 @@ adjSym = adjoint(delays - A);
 
 adjMat = msym2poly(adjSym);
 
-%% compute correlation
+% compute correlation
 % TODO
 
-
-%% plot
+% plot
 figure(1)
 plotImpulseResponseMatrix([],adjMat)
 
+%% Test: to be written TODO
+assert(1 == 1)
 

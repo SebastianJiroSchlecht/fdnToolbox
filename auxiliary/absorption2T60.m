@@ -29,8 +29,14 @@ function [T60,frequency] = absorption2T60( filterCoefficients, delays, nfft, fs 
 
 filterLength = length(filterCoefficients);
 
+% [response,frequency] = freqz(filterCoefficients, 1, nfft, fs);
+
 response = fft(filterCoefficients,nfft,1);
 frequency = linspace(0,fs,length(response)).';
+
+response = response(1:end/2, :);
+frequency = frequency(1:end/2);
+
 
 totalDelay = delays + filterLength/2;
 
