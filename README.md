@@ -21,3 +21,14 @@ To run all example files, please call
 startup
 run_all_examples
 ```
+
+## Required Dependencies
+
+* MATLAB 2017b or newer
+* Signal Processing Toolbox
+* Symbolic Math Toolbox
+* DSP System Toolbox
+
+The toolbox was tested on
+* OSX 10.14.6, MATLAB R2019a
+* Windows 10, MATLAB R2017b 

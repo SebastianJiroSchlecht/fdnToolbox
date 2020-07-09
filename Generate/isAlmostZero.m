@@ -14,5 +14,5 @@ end
 p.parse(varargin{:});
 tol = p.Results.tol;
 
-maxVal = max(abs(A),[],'all');
+maxVal = max(abs(A(:)));
 isZ = maxVal < tol;

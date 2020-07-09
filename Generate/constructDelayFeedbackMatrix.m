@@ -25,7 +25,7 @@ function delayMatrix = constructDelayFeedbackMatrix(delayIndices,feedbackMatrix)
 % 27 December 2019; Last revision: 27 December 2019
 
 N = size(feedbackMatrix,1);
-degree = max(delayIndices,[],'all');
+degree = max(delayIndices(:));
 
 delayMatrix = zeros(N, N, degree);
 

@@ -4,7 +4,7 @@ function [u,v] = outerSumApproximation( A )
 % Sebastian J. Schlecht, Tuesday, 27 August 2019
 
 %% Transform to exp domain
-maxA = max(A,[],'all');
+maxA = max(A(:));
 
 eA = exp(A/maxA);
 
