@@ -7,7 +7,7 @@ fprintf('%s\n',fileNames{:})
 
 %% Run
 % fileNames = {fileNames{2}, fileNames{13}}
-results = runtests({fileNames{9}})
+results = runtests({fileNames{12}})
 table(results)
 
 % example_FDNdecorrelation
