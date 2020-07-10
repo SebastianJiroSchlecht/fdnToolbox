@@ -8,7 +8,7 @@ clear; clc; close all;
 
 rng(5)
 
-%% Parameters
+% Parameters
 N = 2;
 order = 3;
 delays = ( randi([5,15],[1,N]) );
@@ -22,7 +22,7 @@ switch 'full matrix'
         error('Not defined');
 end
 
-%% Symbolic GCP
+% Symbolic GCP
 syms zz;
 symDelay = diag(zz.^delays);
 symA = mpoly2sym(A,zz);
@@ -33,7 +33,7 @@ Psym = symDelay - symA;
 gcpSym = expand(det(Psym) * zz^degreeDetA);
 [c_GCP,t_GCP] = coeffs(gcpSym,zz);
 
-%% Symbolic Reversed GCP
+% Symbolic Reversed GCP
 symAr = subs(symA,1/zz);
 symInvA = inv(symAr);
 
@@ -43,16 +43,16 @@ gcpSymRev = (-1)^N *  det(symAr) * det(PsymInv) ;
 [c_Rev,t_Rev] = coeffs(gcpSymRev,zz);
 
 
-%% Results
-disp('Matrices are inverse')
+%% Test: Matrices are inverse
 disp(simplify(symA * subs(symInvA,1/zz)))
+assert( isAlmostZero( double(simplify(symA * subs(symInvA,1/zz))) - eye(N))  ) 
 
-disp('Symbolic GCP')
+%% Test: Symbolic GCP
 disp(c_GCP)
 disp(t_GCP)
 
-disp('Reversed Symbolic GCP')
 disp(fliplr(c_Rev))
 disp(fliplr(subs(t_Rev,1/zz)*t_Rev(1)))
 
-
+assert( isAlmostZero( double( c_GCP -  fliplr(c_Rev) )) )
+assert( isAlmostZero( double( t_GCP -  fliplr(subs(t_Rev,1/zz)*t_Rev(1) )) ))

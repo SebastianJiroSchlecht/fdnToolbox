@@ -1,5 +1,8 @@
 % Example zDomain matrix and loop types
 %
+% Demonstrates different matrix types in the FDN processing including
+% scalar matrix, absorption matrix and paraunitary (polynomial) matrix.
+%
 % Sebastian J. Schlecht, Sunday, 29 December 2019
 clear; clc; close all;
 
@@ -7,7 +10,7 @@ rng(1)
 fs = 48000;
 impulseResponseLength = fs;
 
-%% Define FDN
+% Define FDN
 N = 4;
 numInput = 1;
 numOutput = 1;
@@ -16,14 +19,14 @@ outputGain = ones(numOutput,N);
 direct = zeros(numOutput,numInput);
 delays = randi([130 410],[1 N]);
 
-%% Generate absorption filters
+% Generate absorption filters
 RT_DC = 2; % seconds
 RT_NY = 0.5; % seconds
 [onePole.b,onePole.a] = onePoleAbsorption(RT_DC, RT_NY, delays, fs);
 noFilter.b = ones(N,1);
 noFilter.a = ones(N,1);
 
-%% zDomain
+% zDomain
 delayTF = zDomainDelay(delays);
 
 type = 'StableScalarMatrix';
@@ -47,7 +50,7 @@ denominator = matrixConvolution(ones(N),polydiag(onePole.a));
 matrixTF.(type) = zDomainMatrix(numerator,denominator);
 
 
-%% compute impulse response and poles/zeros
+% compute impulse response and poles/zeros
 fnames = fieldnames(matrixTF);
 
 for it = 1:length(fnames)
@@ -82,3 +85,7 @@ for it = 1:length(fnames)
     xlabel('Pole Angle [rad]')
     ylabel('Pole Magnitude [linear]')
 end
+
+%% Test: script finished
+assert(1 == 1);
+

@@ -1,12 +1,16 @@
 % Example for scattering matrices
 %
+% Demonstration of different types of scattering matrices including
+% 'RandomDense','Velvet','fromElementals','noScatter'. Validation is
+% performed with the echo density measure.
+%
 % Sebastian J. Schlecht, Saturday, 28 December 2019
 clear; clc; close all;
 
 fs = 48000;
 impulseResponseLength = fs;
 
-%% Define FDN
+% Define FDN
 N = 4;
 numInput = 1;
 numOutput = 1;
@@ -18,7 +22,7 @@ delays = randi([750,2000],[1,N]);
 numStages = 3;
 matrixTypes = {'RandomDense','Velvet','fromElementals','noScatter'};
 
-%% Impulse response and echo density for all matrix types
+% Impulse response and echo density for all matrix types
 for it = 1:length(matrixTypes)
    type = matrixTypes{it};
    switch type
@@ -38,7 +42,7 @@ for it = 1:length(matrixTypes)
    
 end
 
-%% Plot
+% Plot
 figure(1); hold on; grid on;
 for it = 1:length(matrixTypes)
    plot( irTimeDomain.(matrixTypes{it}) + it*2);      
@@ -53,5 +57,9 @@ end
 legend(matrixTypes)
 xlabel('Time [samples]')
 ylabel('Amplitude and Echo Density [linear]')
+
+
+%% Test: Script finished
+assert(1 == 1)
 
 

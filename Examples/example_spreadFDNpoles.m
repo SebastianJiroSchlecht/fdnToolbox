@@ -1,5 +1,13 @@
 % Example for FDN with spread modal decay
 %
+% Demonstrate FDN not with a homogenous decay but with a certain spread
+% which is also typically observed in shoebox rooms and scattering delay
+% networks. THe spread is evaluated via the modal decomposition.
+%
+% see Schlecht, S., Habets, E. (2019). Modal Decomposition of Feedback
+% Delay Networks IEEE Transactions on Signal Processing  67(20), 5340-5351.
+% https://dx.doi.org/10.1109/tsp.2019.2937286
+%
 % (c) Sebastian Jiro Schlecht:  23. April 2018
 clear; clc; close all;
 
@@ -8,7 +16,7 @@ fs = 48000;
 impulseResponseLength = 2*fs;
 types = {'Proportional', 'Spread'};
 
-%% Define FDN
+% Define FDN
 N = 8;
 numInput = 1;
 numOutput = 1;
@@ -22,7 +30,7 @@ GainMatrix =  diag( gainPerSample.^delays );
 feedbackMatrix.Proportional = randomOrthogonal(N) * GainMatrix;
 feedbackMatrix.Spread = randomOrthogonal(N) * GainMatrix * randomOrthogonal(N);
 
-%% Modal decomposition / Impulse Response / Energy Decay Curve
+% Modal decomposition / Impulse Response / Energy Decay Curve
 for it = 1:length(types)
     type = types{it};
     [res.(type), pol.(type), directTerm.(type), isConjugatePolePair.(type)] = dss2pr(delays, feedbackMatrix.(type), inputGain, outputGain, direct);
@@ -31,7 +39,7 @@ for it = 1:length(types)
 end
 
 
-%% plot
+% plot
 close all;
 
 figure(1); hold on; grid on;
@@ -54,4 +62,5 @@ legend(types)
 xlabel('Pole Angle [rad]')
 ylabel('Pole T60 [seconds]')
 
-
+%% Test: Script finished
+assert(1 == 1)
