@@ -63,7 +63,7 @@ xlabel('Pole Angle [rad]')
 ylabel('Pole Magnitude [dB]')
 
 %% Test: Impulse Response Accuracy
-assert( isAlmostZero(difference))
+assert( isAlmostZero(difference, 'tol', 10^-10))
 
 %% Test: FDN is lossless 
 assert( isAlmostZero( abs(pol) - 1) )
