@@ -29,6 +29,16 @@ run_all_examples
 * Symbolic Math Toolbox
 * DSP System Toolbox
 
+* (Control System Toolbox)
+* (Curve Fitting Toolbox)
+* (System Identification Toolbox)
+* (Optimization Toolbox)
+* (Simulink Control Design)
+* (Statistics and Machine Learning Toolbox)
+* (Computer Vision Toolbox)
+
+
 The toolbox was tested on
 * OSX 10.14.6, MATLAB R2019a
 * Windows 10, MATLAB R2017b 
+
