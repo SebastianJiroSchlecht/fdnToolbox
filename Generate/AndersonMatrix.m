@@ -21,9 +21,9 @@ function A = AndersonMatrix(N,varargin)
 %    A = AndersonMatrix(9,3,'circulant')
 %    A = AndersonMatrix(8)
 %
-% Other m-files required: losslessMatrixGallery
+% Other m-files required: fdnMatrixGallery
 %
-% See also: losslessMatrixGallery
+% See also: fdnMatrixGallery
 % Author: Dr.-Ing. Sebastian Jiro Schlecht, 
 % Aalto University, Finland
 % email address: sebastian.schlecht@aalto.fi
@@ -46,7 +46,7 @@ assert( mod(N,K) == 0, 'N needs to be dividable by K.');
 numberOfBlocks = N/K;
 
 for it = 1:numberOfBlocks
-    M{it} = losslessMatrixGallery(K,type,varargin);
+    M{it} = fdnMatrixGallery(K,type,varargin);
 end
 
 A = blkdiag(M{:});

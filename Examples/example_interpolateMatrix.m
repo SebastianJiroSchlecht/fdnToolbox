@@ -12,7 +12,7 @@ clear; clc; close all;
 
 N = 4;
 
-A = losslessMatrixGallery(N,'Hadamard');
+A = fdnMatrixGallery(N,'Hadamard');
 A = A * diag(diag(sign(A)));
 B = eye(N);
 

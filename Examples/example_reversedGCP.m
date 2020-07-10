@@ -26,7 +26,8 @@ end
 syms zz;
 symDelay = diag(zz.^delays);
 symA = mpoly2sym(A,zz);
-degreeDetA = polynomialDegree(det(subs(symA,1/zz)),zz); 
+% degreeDetA = polynomialDegree(det(subs(symA,1/zz)),zz);
+degreeDetA = mpolyDegree(det(subs(symA,1/zz)),zz);
 
 Psym = symDelay - symA;
 

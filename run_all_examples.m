@@ -29,7 +29,7 @@ table(results)
 % example_interpolateMatrix
 % example_inversePolynomialMatrix
 % example_isDiagonallyEquivalentToOrthogonal
-% example_losslessMatrixGallery
+% example_fdnMatrixGallery
 % example_nearestSignAgnosticOrthogonal
 % example_nestedAllpass
 % example_newtonStep

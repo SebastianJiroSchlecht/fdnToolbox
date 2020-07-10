@@ -9,7 +9,7 @@ clear; clc; close all;
 rng(1);
 
 % init source signal
-switch 'melody'
+switch 'sine'
     case 'sine'
         fs = 48000;
         time = linspace(0,4,4*fs)';

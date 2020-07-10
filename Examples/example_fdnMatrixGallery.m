@@ -1,6 +1,6 @@
-% Example for losslessMatrixGallery
+% Example for fdnMatrixGallery
 %
-% Collection of lossless matrices for FDN design from various literature
+% Collection of matrices for FDN design from various literature
 % sources. An overview can be found in 
 %
 % Schlecht, S. (2020). FDNTB: The Feedback Delay Network Toolbox,
@@ -22,12 +22,12 @@ D = zeros(numOutput,numInput);
 delays = randi([50,100],[1,N]);
 
 % Retrieve all matrix types
-matrixTypes = losslessMatrixGallery(); 
+matrixTypes = fdnMatrixGallery(); 
 
 %Poles/zeros for all matrix types
 for it = 1:length(matrixTypes)
    type = matrixTypes{it};   
-   feedbackMatrix.(type) = losslessMatrixGallery(N,type);
+   [feedbackMatrix.(type) supposedLossless.(type)] = fdnMatrixGallery(N,type);
    
    [residues, poles.(type), direct, isConjugatePolePair, metaData] = dss2pr(delays,feedbackMatrix.(type),B,C,D);
    
@@ -54,5 +54,6 @@ end
 
 %% Test: Matrices are lossless
 c = struct2cell(isLossless);
-assert( all([c{:}]) ) % TODO not all matrices are lossless / some are allpass
+sc = struct2cell(supposedLossless);
+assert( all([c{:}] == [sc{:}]) ) % TODO not all matrices are lossless / some are allpass
 

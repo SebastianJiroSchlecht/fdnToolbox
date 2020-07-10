@@ -25,7 +25,7 @@ function P = msym2poly(A)
 % Website: sebastianjiroschlecht.com
 % 28 December 2019; Last revision: 28 December 2019
 
-degree = max(max(polynomialDegree(A)));
+degree = mpolyDegree(A);
 P = zeros(size(A,1), size(A,2), degree+1);
 
 for it1 = 1:size(A,1)
