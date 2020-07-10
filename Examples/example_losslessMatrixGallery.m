@@ -1,29 +1,40 @@
 % Example for losslessMatrixGallery
 %
+% Collection of lossless matrices for FDN design from various literature
+% sources. An overview can be found in 
+%
+% Schlecht, S. (2020). FDNTB: The Feedback Delay Network Toolbox,
+% Proceedings of the 23rd International Conference on Digital Audio Effects
+% (DAFx-20)
+%
 % Sebastian J. Schlecht, Saturday, 28 December 2019
 clear; clc; close all;
 
 rng(2)
 
-%% Define FDN
+% Define FDN
 N = 8;
 numInput = 1;
 numOutput = 1;
-inputGain = ones(N,numInput);
-outputGain = ones(numOutput,N);
-direct = zeros(numOutput,numInput);
+B = ones(N,numInput);
+C = ones(numOutput,N);
+D = zeros(numOutput,numInput);
 delays = randi([50,100],[1,N]);
 
-%% Retrieve all matrix types
+% Retrieve all matrix types
 matrixTypes = losslessMatrixGallery(); 
 
-%% Poles/zeros for all matrix types
+%Poles/zeros for all matrix types
 for it = 1:length(matrixTypes)
    type = matrixTypes{it};   
    feedbackMatrix.(type) = losslessMatrixGallery(N,type);
+   
+   [residues, poles.(type), direct, isConjugatePolePair, metaData] = dss2pr(delays,feedbackMatrix.(type),B,C,D);
+   
+   isLossless.(type) = isAlmostZero( abs(poles.(type)) - 1, 'tol', 10^-10);
 end
 
-%% Plot
+% Plot
 colorMap = [linspace(1,1,256)', linspace(0,1,256)', linspace(0,1,256)'; ...
             linspace(1,0,256)', linspace(1,0,256)', linspace(1,1,256)'];
 
@@ -40,4 +51,8 @@ for it = 1:length(matrixTypes)
     
     matlab2tikz_sjs(['./Plots/matrix_' type '.tikz'],plotConfig{:})
 end
+
+%% Test: Matrices are lossless
+c = struct2cell(isLossless);
+assert( all([c{:}]) ) % TODO not all matrices are lossless / some are allpass
 

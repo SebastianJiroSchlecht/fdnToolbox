@@ -33,5 +33,13 @@ classicSolution = nearestOrthogonal(inputMatrix)
 signAgnosticSolution = nearestSignAgnosticOrthogonal(inputMatrix)
 
 % mean value difference
-norm(abs(classicSolution) - abs(originalMatrix),'fro') / N^2
-norm(abs(signAgnosticSolution) - abs(originalMatrix),'fro') / N^2
+errorClassic = norm(abs(classicSolution) - abs(originalMatrix),'fro') / N^2
+errorSignAgnostic = norm(abs(signAgnosticSolution) - abs(originalMatrix),'fro') / N^2
+
+%% Test: Solutions are orthogonal
+assert (isParaunitary(classicSolution))
+assert (isParaunitary(signAgnosticSolution))
+
+%% Test: Improved error
+assert ( errorSignAgnostic < errorClassic );
+

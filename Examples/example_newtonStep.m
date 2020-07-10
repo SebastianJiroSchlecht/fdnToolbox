@@ -1,6 +1,10 @@
 % Example for various ways to compute the Newton step in the modal
 % decomposition.
 %
+% see Schlecht, S., Habets, E. (2019). Modal Decomposition of Feedback
+% Delay Networks IEEE Transactions on Signal Processing  67(20), 5340-5351.
+% https://dx.doi.org/10.1109/tsp.2019.2937286
+%
 % Sebastian J. Schlecht, Friday, 23 August 2019
 clear; clc; close all;
 
@@ -9,11 +13,11 @@ rng(5)
 fs = 48000;
 gainPerSample = db2mag(RT602slope(1,fs));
 
-%% Define FDN
+% Define FDN
 N = 2;
 delays = 10+( randi([5,15],[1,N]) );
 
-%% generate Matrix
+% generate Matrix
 switch 'general'
     case 'simple'
         A(:,:,4) = orth(randn(N));
@@ -47,10 +51,10 @@ A = matrixConvolution(G,A);
 invA = matrixConvolution(invA,inv(G));
 degA = polyDegree(detPolynomial(A,'z^-1'),'z^-1')
 numberOfPoles = sum(delays) + degA
-%% Test value
+% Test value
 z = 0.95 * exp(1i * 0.7);
 
-%% Symbolic
+% Symbolic
 syms zz;
 symDelay = diag(zz.^delays);
 symA = mpoly2sym(A,zz);
@@ -61,14 +65,14 @@ PsymDer = diff(Psym);
 psym = zz^degA * det(Psym);
 psymDer = diff(psym);
 invNewtonSymPoly = psymDer / psym;
-double(subs(invNewtonSymPoly,z))
+invNewtonSymPolyDouble = double(subs(invNewtonSymPoly,z))
 
 
 invNewtonSym = ( trace( Psym \ PsymDer ) + degA/zz);
-double(subs(invNewtonSym,z))
+invNewtonSymDouble = double(subs(invNewtonSym,z))
 
 
-%% Symbolic Reverse
+% Symbolic Reverse
 symAr = subs(symA,1/zz); % According to definition
 symArDer = diff(symAr);
 
@@ -90,13 +94,13 @@ psymRevDer = diff(psymRev);
 
 reversedNewton = subs(psymRevDer,1/zz) / subs(psymRev,1/zz) ;
 invNewtonSymRevPoly = numberOfPoles / zz - reversedNewton / zz^2;
-double(subs(invNewtonSymRevPoly,z))
+invNewtonSymRevPolyDouble = double(subs(invNewtonSymRevPoly,z))
 
 reversedNewton = trace( subs(PsymRev,1/zz)  \  subs(PsymRevDer,1/zz) + subs(symInvAA,1/zz) * subs(symArDer,1/zz) ) ;
 invNewtonSymRev = numberOfPoles / zz - reversedNewton / zz^2;
-double(subs(invNewtonSymRev,z))
+invNewtonSymRevDouble = double(subs(invNewtonSymRev,z))
 
-%% Direct Matrix
+% Direct Matrix
 zDelay = zDomainDelay(delays);
 zA = tfMatrix(A,ones(N),'z^-1');
 zADer = derive(zA);
@@ -107,19 +111,27 @@ gcpDirectDer = z^degA * det(Pz) * ( trace( inv( Pz ) * PzDer) + degA/z);
 
 invNewtonDirect = gcpDirectDer/gcpDirect
 
-%% GCP
+% GCP
 gcp = generalCharPoly( delays, A ); % implicit multiplication with z^degA
 gcpDer = polyder(gcp);
 gcpVal = polyval(gcp,z);
 gcpDerVal =  polyval(gcpDer,z);
 invNewtonGCP = gcpDerVal / gcpVal
 
-%% Loop
+% Loop
 loop = zDomainStandardLoop(delays, A, invA);
 invNewtonLoop = trace( loop.at(z)  \ loop.der(z)  ) + degA/z
 
-%% Reverse Loop
+% Reverse Loop
 iz = 1/z;
 reversedNewton = trace( loop.atRev(iz)  \ loop.derRev(iz) ) + trace(  loop.invFeedbackTF.at(iz) * loop.feedbackTF.der(1/iz) / -iz^2 );
 invNewtonLoopR = loop.numberOfDelayUnits / z - reversedNewton / z^2
 
+%% Test: Inverse Newton step
+assert( isAlmostZero( invNewtonGCP - invNewtonSymPolyDouble) )
+assert( isAlmostZero( invNewtonGCP - invNewtonSymDouble) )
+assert( isAlmostZero( invNewtonGCP - invNewtonSymRevPolyDouble) )
+assert( isAlmostZero( invNewtonGCP - invNewtonSymRevDouble) )
+assert( isAlmostZero( invNewtonGCP - invNewtonDirect) )
+assert( isAlmostZero( invNewtonGCP - invNewtonLoop) )
+assert( isAlmostZero( invNewtonGCP - invNewtonLoopR) )
