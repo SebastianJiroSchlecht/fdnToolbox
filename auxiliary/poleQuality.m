@@ -18,5 +18,9 @@ for it=1:numel(quality)
     else
         quality(it) = rcond(m);    
     end
+    
+    if max(abs(m(:))) > 10^10 % remove degenerate solutions
+        quality(it) = 10^10;
+    end
 end
 
