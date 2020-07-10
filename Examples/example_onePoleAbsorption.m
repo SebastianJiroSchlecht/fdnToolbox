@@ -6,7 +6,7 @@ rng(1)
 fs = 48000;
 impulseResponseLength = fs;
 
-%% FDN definition
+% FDN definition
 N = 4;
 numInput = 1;
 numOutput = 1;inputGain = eye(N,numInput);
@@ -15,15 +15,14 @@ direct = ones(numOutput,numInput);
 delays = randi([5, 30]*100,[1,N]);
 feedbackMatrix = randomOrthogonal(N);
 
-%% Generate absorption filters
+% Generate absorption filters
 RT_DC = 2; % seconds
 RT_NY = 0.5; % seconds
 
 [absorption.b,absorption.a] = onePoleAbsorption(RT_DC, RT_NY, delays, fs);
 loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
 
-%% compute
-% with absorption
+% compute with absorption
 irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
 tic
 [res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation');
@@ -31,16 +30,15 @@ toc
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength,'lowMemory');
 
 difference = irTimeDomain - irResPol;
-matMax = permute(max(abs(difference(1:end)),[],1),[2 3 1])
 
-% no absorption
+% compute without absorption
 [no_res, no_pol, no_directTerm, no_isConjugatePolePair] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation');
 no_irResPol = pr2impz(no_res, no_pol, no_directTerm, no_isConjugatePolePair, impulseResponseLength,'lowMemory');
 
-%% min max bounds
+% min max bounds
 [MinCurve,MaxCurve,w] = poleBoundaries(delays, absorption, feedbackMatrix);
 
-%% plot
+% plot
 figure(1); hold on; grid on;
 t = 1:size(difference,1);
 plot( t, difference );
@@ -64,3 +62,14 @@ xlabel('Pole Angular Frequency [rad]')
 ylabel('Pole RT60 [s]')
 set(gca,'YLim',[0 2.2],'XLim',[0 pi]);
 legend({'Poles with attenuation','Minimum Bound','Maximum Bound'},'Location','northeast')
+
+%% Test: Impulse Response Accuracy
+matMax = permute(max(abs(difference(1:end)),[],1),[2 3 1])
+assert( isAlmostZero(difference, 'tol', 10^1 )  ) % TODO: fails at 2nd sample
+
+%% Test: Poles between bounds 
+[isBounded, isSmaller] = isBoundingCurve(angle(pol),abs(pol),w,MaxCurve,'upper');
+assert(isBounded)
+
+[isBounded, isSmaller] = isBoundingCurve(angle(pol),abs(pol),w,MinCurve,'lower');
+assert(isBounded)

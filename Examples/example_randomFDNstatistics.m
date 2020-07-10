@@ -1,5 +1,13 @@
 % Example for random FDN statistics
 %
+% Statistics of a modal decomposition of a random FDN. The pole angles are
+% almost equidistributed. The residues magnitudes are spread across a large
+% range.
+%
+% see Schlecht, S., Habets, E. (2019). Modal Decomposition of Feedback
+% Delay Networks IEEE Transactions on Signal Processing  67(20), 5340-5351.
+% https://dx.doi.org/10.1109/tsp.2019.2937286
+%
 % (c) Sebastian Jiro Schlecht:  23. April 2018
 clear; clc; close all;
 
@@ -7,7 +15,7 @@ rng(3)
 fs = 48000;
 impulseResponseLength = fs/2;
 
-%% Define FDN
+% Define FDN
 N = 8;
 numInput = 1;
 numOutput = 1;
@@ -19,7 +27,7 @@ delays = randi([500,2000],[1,N]);
 feedbackMatrix = randomOrthogonal(N); 
 % feedbackMatrix = hadamard(N)/sqrt(N); 
 
-%% Modal decomposition
+% Modal decomposition
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);
 
 [res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct);
@@ -28,7 +36,7 @@ irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLen
 difference = irTimeDomain - irResPol;
 maximumDeviationOfImpulseResponse = permute(max(abs(difference),[],1),[2 3 1])
 
-%% plot
+% plot
 close all;
 
 figure(1); hold on; grid on;
@@ -65,7 +73,8 @@ legend([p3,p1,p2],{'Input-Output Drives','Total Res','Undriven Res'})
 ylabel('Likelihood of Occurence')
 xlabel('Residue Magnitude [dB]')
 
-
+%% Test: Script finished
+assert(1 == 1);
 
 
 
