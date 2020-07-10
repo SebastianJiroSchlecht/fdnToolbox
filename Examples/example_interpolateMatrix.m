@@ -1,5 +1,11 @@
 % Interpolate between two orthogonal matrices
 %
+% interpolateOrthogonal routine interpolates two orthogonal matrices such
+% that each interpolant is orthogonal as well.
+%
+% See Schlecht, S., Habets, E. (2015). Practical considerations of
+% time-varying feedback delay networks Proc. Audio Eng. Soc. Conv.
+%
 % Sebastian J. Schlecht, Friday, 10. April 2020
 clear; clc; close all;
 
@@ -15,10 +21,12 @@ T = linspace(0,1,numT);
 for it = 1:numT
     t = T(it);
     C(:,:,it) = interpolateOrthogonal(A,B,t);
-    isParaunitary(C(:,:,it))
+    isP(it) = isParaunitary(C(:,:,it));
 end
 
-%% plot
+% plot
 figure(1);
 plotImpulseResponseMatrix([], C)
 
+%% Test: Interpolants are orthogonal
+assert( all(isP) )

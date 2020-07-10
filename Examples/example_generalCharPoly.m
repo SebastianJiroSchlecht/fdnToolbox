@@ -1,8 +1,14 @@
 % example generalCharPoly and generalCharPolySym
 %
+% Computing the FDN transfer function can be performed with the generalized
+% characteristic polynomial. We provide both a numerical and symbolic code
+% for this. Different combinations also with polynomial and delay matrices
+% are demonstrated.
+%
 % see Schlecht, S. J., & Habets, E. A. P. (2017). On lossless feedback
 % delay networks. IEEE Trans. Signal Process., 65(6), 1554-1564.
 % http://doi.org/10.1109/TSP.2016.2637323 
+%
 % Sebastian J. Schlecht Monday, 7.January 2019
 clear; clc; close all;
 
@@ -22,6 +28,8 @@ d = [2,1];
 p = generalCharPoly(d,A)
 rootsOfP = abs(roots(p)).'
 
+% test
+assert ( ~isAlmostZero(rootsOfP - 1) );
 
 %% Allpass Matrix
 disp('Allpass Matrix');
@@ -31,6 +39,9 @@ A = [-g, 1; 1-g^2, g];
 
 p = generalCharPoly(d,A)
 rootsOfP = abs(roots(p)).'
+
+% test
+assert ( isAlmostZero(rootsOfP - 1) );
 
 %% Diagonally conjugated Matrix
 disp('Diagonally conjugated Matrix');
@@ -42,6 +53,9 @@ A = D * O * inv(D);
 
 p = generalCharPoly(d,A)
 rootsOfP = abs(roots(p)).'
+
+% test
+assert ( isAlmostZero(rootsOfP - 1) );
 
 %% Polynomial Matrix example
 disp('Polynomial Matrix example')
@@ -59,6 +73,9 @@ den = sym2poly(den);
 num = num / den(1)
 den = den / den(1)
 
+% test
+assert( isAlmostZero(p - num) );
+
 %% Polynomial Delay Matrix example
 disp('Polynomial Delay Matrix example')
 
@@ -70,13 +87,16 @@ H = hadamard(N)/sqrt(N);
 A = zeros(N, N, 3);
 A(:,:,end) = H;
 
-p = generalCharPoly(d,A)
-p = generalCharPolySym(d,mpoly2sym(A))
+p1 = generalCharPoly(d,A)
+p2 = generalCharPolySym(d,mpoly2sym(A))
 
 % delay in delay
 A = H;
 additionalDelay = 2;
-p = generalCharPoly(d+additionalDelay,A)
-p = generalCharPolySym(d+additionalDelay,mpoly2sym(A))
+p3 = generalCharPoly(d+additionalDelay,A)
+p4 = generalCharPolySym(d+additionalDelay,mpoly2sym(A))
 
+% test
+assert(isAlmostZero( p1 - p3 ));
+assert(isAlmostZero( p1 - sym2poly(p4) ));
 

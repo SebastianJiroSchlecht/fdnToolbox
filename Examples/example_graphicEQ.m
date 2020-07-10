@@ -1,13 +1,16 @@
-%% All About Audio Equalization: Solutions and Frontiers
+% Example for graphic EQ filter design
+%
+% All About Audio Equalization: Solutions and Frontiers
 % by V. Välimäki and J. Reiss, 
 % in Applied Sciences, vol. 6, no. 5, p. 129, May 2016.
+%
 %
 % *Reproduce in Code*
 % (c) Sebastian Jiro Schlecht:  Monday, 7. January 2019
 % 
 
 close all; clear; clc; 
-%% Initialization
+% Initialization
 % Setup variables such as sampling frequency, center frequencies and
 % control frequencies, and command gains
 fs = 48000;
@@ -29,7 +32,7 @@ targetF = [1, centerFrequencies fs];
 targetG = [1; -1; 1; -1; 1; -1; 1; -1; 1; 1]*10; % dB
 targetInterp = interp1(targetF, targetG, controlFrequencies)';
 
-%% desgin prototype of the biquad sections
+% desgin prototype of the biquad sections
 prototypeGain = 10; % dB
 prototypeGainArray = prototypeGain * ones(numFreq+1,1);
 prototypeSOS = graphicEQ(centerOmega, shelvingOmega, R, prototypeGainArray);
@@ -46,7 +49,7 @@ title('Prototype Magnitude Response')
 xlabel('Frequency [Hz]')
 ylabel('Magnitude [dB]')
 
-%% compute optimal parametric EQ gains
+% compute optimal parametric EQ gains
 % Either you can use a unconstrained linear solver or introduce gain bounds
 % at [-20dB,+20dB] with acceptable deviation from the self-similarity
 % property. The plot shows the deviation between design curve and actual
@@ -72,3 +75,5 @@ xlim([10 fs/2])
 title('Approximation Magnitude Response')
 legend('Target', 'Actual EQ', 'Design EQ','Location','SouthEast');
 
+%% Test: Graphic EQ design
+assert( 1 == 1); % script runs without error  
