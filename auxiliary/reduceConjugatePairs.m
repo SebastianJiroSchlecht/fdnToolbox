@@ -1,9 +1,29 @@
 function [poles, isConjugatePolePair, nonPairedPoles] = reduceConjugatePairs(poles)
-% Find complex conjugate pairs and reduce those with flags isConjugatePolePair
-% 
-% Sebastian J. Schlecht, Sunday, 29 December 2019
+%reduceConjugatePairs - Find complex conjugate pairs and reduce those 
+%Find the nearest neighbor for each pole and from a conjugate set of
+%poles. Pair possible pairs indicated in isConjugatePolePair. 
+%
+% Syntax:  [poles, isConjugatePolePair, nonPairedPoles] = reduceConjugatePairs(poles)
+%
+% Inputs:
+%    poles - vector of poles of a real system with complex conjugate pairs
+%
+% Outputs:
+%    poles - paired poles
+%    isConjugatePolePair - logical values whether pole has conjugate pair
+%    nonPairedPoles - non-paired poles
+%
+% Example: 
+%    p = randn(10,1)+1i*randn(10,1);
+%    [poles, isConjugatePolePair, nonPairedPoles] = reduceConjugatePairs([p, conj(p)])
+%
+% Author: Dr.-Ing. Sebastian Jiro Schlecht, 
+% Aalto University, Finland
+% email address: sebastian.schlecht@aalto.fi
+% Website: sebastianjiroschlecht.com
+% 10 July 2020; Last revision: 10 July 2020
 
-%% Find nearest neighbor pairs
+%% Find nearest neighbor pairs in conjugate set 
 numberOfPoles = length(poles);
 pairIndex = nearestneighbour([real(poles); imag(poles)],[real(poles); -imag(poles)]);
 

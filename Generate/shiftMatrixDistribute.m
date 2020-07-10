@@ -2,6 +2,10 @@ function [shiftLeft] = shiftMatrixDistribute( mat, sparsity, varargin )
 % Shift in polynomial matrix in time-domain such that they don't overlap
 % sparsity = [1,inf] = [dense->sparse]
 %
+% see Schlecht, S., Habets, E. (2020). Scattering in Feedback Delay
+% Networks IEEE/ACM Transactions on Audio, Speech, and Language Processing
+% https://dx.doi.org/10.1109/taslp.2020.3001395
+%
 % Sebastian J. Schlecht, Sunday, 29 December 2019
 
 %% Input parser

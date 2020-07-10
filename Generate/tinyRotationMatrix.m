@@ -6,7 +6,8 @@ function rotationMatrix = tinyRotationMatrix(N,delta,varargin)
 % Inputs:
 %    N - Matrix size 
 %    delta - Mean normalized eigenvalue angle
-%    spread - Spreading of eigenvalue angle 
+%    spread - (optional) Spreading of eigenvalue angle 
+%    logMatrix - (optional) Initial logarithm matrix
 %
 % Outputs:
 %    rotationMatrix - output matrix

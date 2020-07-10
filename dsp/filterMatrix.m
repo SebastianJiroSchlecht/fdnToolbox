@@ -1,5 +1,28 @@
 classdef filterMatrix < handle
-% Wrapper for a matrix of filter objects (FIR, IIR, Scalar)
+%filterMatrix - Wrapper for a matrix of filter objects (FIR, IIR, Scalar)
+% Matrix DSP filters of FIR, IIR, and scalar gains. Each matrix entry is a
+% filter, either dfilt.df2 or dfilt.dffir.
+%
+% Constructor:  filterMatrix(m)
+%
+% Inputs:
+%    m - Filter matrix. Data format is decided by whatFilterType(obj,b,a)
+%
+%
+% Example: 
+%   TODO
+%
+% Other m-files required: none
+% Subfunctions: none
+% MAT-files required: none
+%
+% Author: Dr.-Ing. Sebastian Jiro Schlecht, 
+% Aalto University, Finland
+% email address: sebastian.schlecht@aalto.fi
+% Website: sebastianjiroschlecht.com
+% 10 July 2020; Last revision: 10 July 2020    
+
+% 
 %
 % Sebastian J. Schlecht, Sunday, 29 December 2019
     properties
