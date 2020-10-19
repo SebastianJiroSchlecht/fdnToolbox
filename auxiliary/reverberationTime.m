@@ -51,7 +51,7 @@ for it=1:numBands
 end
 reverberationTimeEarly = -60 ./ pEarly(1,:) / fs;
 reverberationTimeLate = -60 ./ pLate(1,:) / fs;
-powerSpectrum = edr(1,:);
+powerSpectrum = edr(1,:) ./ reverberationTimeLate; % TODO this needs to be checked again
 
 
 
