@@ -1,4 +1,4 @@
-function [b,a] = absorptionGEQ(RT, delays, fs)
+function [filters] = absorptionGEQ(RT, delays, fs)
 % absorptionGEQ - Design GEQ absorption filters according to specified T60
 %
 % Schlecht, S., Habets, E. (2017). Accurate reverberation time control in
@@ -12,7 +12,7 @@ function [b,a] = absorptionGEQ(RT, delays, fs)
 %    fs - Sampling frequency
 %
 % Outputs:
-%    b - Filter numerator
+%    b - Filter numerator % TODO fix output argument documentation
 %    a - Filter denominators
 %
 % Example:
@@ -67,11 +67,13 @@ G = G / prototypeGain; % dB vs control frequencies
 upperBound = [Inf, 2 * prototypeGain * ones(1,numFreq)];
 lowerBound = -upperBound;
 
+filters(1,N) = dfilt.df2sos;
 for it = 1:N
     optG = lsqlin(G, targetInterp * delays(it), [],[],[],[], lowerBound, upperBound); % TODO: fix optimization
     % optG = G\targetInterp; % unconstrained solution
     optimalSOS = graphicEQ( centerOmega, shelvingOmega, R, optG );
-    [b(it,:),a(it,:)] = sos2tf(optimalSOS(2:end,:) ); % TODO fix unstable
+%     [b(it,:),a(it,:)] = sos2tf(optimalSOS(2:end,:) ); % TODO fix unstable
+    filters(it) = dfilt.df2sos(optimalSOS);
 end
 
 

@@ -13,7 +13,8 @@ function output = processFDN(input, delays, A, B, C, D, varargin)
 %    C - output gains of size [out,N]
 %    D - direct gains of size [out,in]
 %    inputType (optional) - either 'splitInput', 'mergeInput'
-%    extraMatrix (optional) - e.g. time-varying matrix 
+%    extraMatrix (optional) - e.g. time-varying matrix
+%    absorptionFilters (optional) - filters of size [N,1]
 %
 % Outputs:
 %    output - matrix of impulse response [length,out,in]
@@ -29,10 +30,12 @@ function output = processFDN(input, delays, A, B, C, D, varargin)
 p = inputParser;
 p.addParameter('inputType','mergeInput',@(x) ischar(x) );
 p.addParameter('extraMatrix',[]);
+p.addParameter('absorptionFilters',[]);
 parse(p,varargin{:});
 
 inputType = p.Results.inputType;
 extraMatrix = p.Results.extraMatrix;
+absorptionFilters = p.Results.absorptionFilters;
 
 %% Process
 numInput = size(B,2);
@@ -42,19 +45,19 @@ switch inputType
     case 'splitInput'
         output = zeros(inputLen, numOutput, numInput);
         for itIn = 1:numInput
-            output(:,:,itIn) = loopSub(input(:,itIn), delays, A, B(:,itIn), C, extraMatrix);
+            output(:,:,itIn) = loopSub(input(:,itIn), delays, A, B(:,itIn), C, extraMatrix, absorptionFilters);
         end
         output = output + permute( input, [1 3 2]) .* permute( D, [3 1 2]) ;
         
     case 'mergeInput'
-        output = loopSub(input, delays, A, B, C, extraMatrix);
-        output = output + input * D.';        
+        output = loopSub(input, delays, A, B, C, extraMatrix, absorptionFilters);
+        output = output + input * D.';
 end
 
 
 
 
-function output = loopSub(input, delays, feedbackMatrix, inputGains, outputGains, extraMatrix)
+function output = loopSub(input, delays, feedbackMatrix, inputGains, outputGains, extraMatrix, absorptionFilters)
 %% FDN loop
 
 maxBlockSize = 2^12;
@@ -81,6 +84,11 @@ while blockStart < inputLen
     block = input(blkInd,:);
        
     delayOutput = DelayFilters.getValues(blkSz);
+    if ~isempty(absorptionFilters)
+       delayOutput = absorptionFilters.filter(delayOutput); 
+    end
+    
+    
     feedback = FeedbackMatrix.filter(delayOutput);
     if ~isempty(extraMatrix)
         feedback = extraMatrix.filter(feedback);
