@@ -45,8 +45,6 @@ irTimeDomain = powerCorrectionFilters.filter(irTimeDomain);
 % 
 [reverberationTimeEarly, reverberationTimeLate, F0, powerSpectrum, edr] = reverberationTime(irTimeDomain, fs);
 
-soundsc(irTimeDomain, fs)
-
 %% plot
 figure(1); hold on; grid on;
 t = 1:size(irTimeDomain,1);
