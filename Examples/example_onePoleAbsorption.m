@@ -30,7 +30,7 @@ absorptionFilters = filterVector(tf2dfiltVector(absorption.b,absorption.a));
 % compute with absorption
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', absorptionFilters);
 tic
-[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation', 'absorptionFilters', absorptionFilters);
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation', 'absorptionFilters', absorptionFilters, 'rejectUnstablePoles', true);
 toc
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength,'lowMemory');
 
