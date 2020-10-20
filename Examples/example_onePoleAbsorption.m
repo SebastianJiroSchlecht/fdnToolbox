@@ -9,11 +9,14 @@ impulseResponseLength = fs;
 % FDN definition
 N = 4;
 numInput = 1;
-numOutput = 1;inputGain = eye(N,numInput);
+numOutput = 1;
+inputGain = eye(N,numInput);
 outputGain = eye(numOutput,N);
 direct = ones(numOutput,numInput);
 delays = randi([5, 30]*100,[1,N]);
 feedbackMatrix = randomOrthogonal(N);
+
+
 
 % Generate absorption filters
 RT_DC = 2; % seconds
@@ -22,10 +25,12 @@ RT_NY = 0.5; % seconds
 [absorption.b,absorption.a] = onePoleAbsorption(RT_DC, RT_NY, delays, fs);
 loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
 
+absorptionFilters = filterVector(tf2dfiltVector(absorption.b,absorption.a));
+
 % compute with absorption
-irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
+irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', absorptionFilters);
 tic
-[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation');
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation', 'absorptionFilters', absorptionFilters);
 toc
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength,'lowMemory');
 

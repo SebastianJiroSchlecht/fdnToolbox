@@ -15,6 +15,8 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 %    D - direct gains of size [out,in]
 %    deflationType (optional) - either 'fullDeflation', 'noDeflation', 'neighborDeflation'
 %    inverseMatrix (optional) - inverse feedback matrix
+%    absorptionFilter (optional) - per delay filter
+%    rejectUnstablePoles (optional) - boolean
 %
 % Outputs:
 %    residues - matrix of system residues
@@ -34,38 +36,44 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 p = inputParser;
 p.addOptional('inverseMatrix', [], @(x) isnumeric(x) );
 p.addOptional('deflationType','fullDeflation',@(x) ischar(x) );
+p.addOptional('absorptionFilters', []);
+p.addOptional('rejectUnstablePoles', false);
+
 parse(p,varargin{:});
 
 deflationType = p.Results.deflationType;
 inverseMatrix = p.Results.inverseMatrix;
-inverseMatrixExists = ~isempty(inverseMatrix);
-
+% inverseMatrixExists = ~isempty(inverseMatrix);
+absorptionFilters = p.Results.absorptionFilters;
+rejectUnstablePoles = p.Results.rejectUnstablePoles;
 
 %% Setup Loop Matrix
 delayTF = zDomainDelay(delays); 
+if isempty(absorptionFilters)
+    feedforwardTF = delayTF;
+else
+    absorptionTF = dfilt2zDomain(absorptionFilters);
+    feedforwardTF = zDomainSeries(delayTF, absorptionTF);
+end
 
 if isnumeric(A)
     if ismatrix(A) % scalar matrix
         matrixTF = zDomainScalarMatrix(A);
         invmatTF = zDomainScalarMatrix(inv(A));
-        loopMatrix = zDomainLoop(delayTF, matrixTF, invmatTF);
+        loopMatrix = zDomainLoop(feedforwardTF, matrixTF, invmatTF);
     elseif ndims(A) == 3 % FIR matrix
         matrixTF = zDomainMatrix(A);
-        if inverseMatrixExists
+        if ~isempty(inverseMatrix)
             invmatrixTF = zDomainMatrix(inverseMatrix);
-            loopMatrix = zDomainLoop(delayTF, matrixTF,invmatrixTF);
+            loopMatrix = zDomainLoop(feedforwardTF, matrixTF, invmatrixTF);
         else
-            loopMatrix = zDomainLoop(delayTF, matrixTF);
+            loopMatrix = zDomainLoop(feedforwardTF, matrixTF);
         end
     else
         error('Not defined');
     end
 else
-    if inverseMatrixExists
-        loopMatrix = zDomainLoop(delayTF, A, inverseMatrix);
-    else
-        loopMatrix = zDomainLoop(delayTF, A);
-    end
+    loopMatrix = zDomainLoop(feedforwardTF, A, inverseMatrix);
 end
 numberOfPoles = loopMatrix.numberOfDelayUnits;
 
@@ -83,6 +91,14 @@ qualityThreshold = 1000 * eps;
 metaData = metaDataRefine;
 metaData.refinedPoles = poles;
 
+%% Reject unstable poles
+if rejectUnstablePoles
+    ind = abs(poles) <= 1;
+    poles = poles(ind);
+    quality = quality(ind);
+end
+
+
 %% Filter high quality poles
 isConverged = quality < qualityThreshold * 1000; % be looser here than in the search 
 poles = poles(isConverged);
@@ -91,6 +107,9 @@ metaData.convergedPoles = poles;
 if length(poles) ~= numberOfPoles
     warning('Poles did not converge: %d instead of %d',length(poles),numberOfPoles);
 end
+
+
+
 
 %% Pair complex-conjugated pairs
 [poles, isConjugatePolePair, metaData.nonPairedPoles] = reduceConjugatePairs(poles);

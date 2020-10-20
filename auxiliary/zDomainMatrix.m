@@ -18,7 +18,11 @@ classdef zDomainMatrix < handle
             end
             
             obj.matrixDer = derive(obj.matrix);
-            obj.numberOfDelayUnits = polyDegree(detPolynomial(numerator,'z^-1'),'z^-1');
+            obj.numberOfDelayUnits = obj.getDelays(numerator);
+        end
+        
+        function delays = getDelays(obj, numerator)
+            delays = polyDegree(detPolynomial(numerator,'z^-1'),'z^-1');
         end
         
         function val = at(obj,z)
