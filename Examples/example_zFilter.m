@@ -61,7 +61,8 @@ legend({'Real Freqz','Imag Freqz', 'Real zFilter','Imag zFilter'})
 xlabel('Frequency [rad]')
 ylabel('Amplitude [lin]')
 
-
+% Test: script finished
+assert(1 == 1);
 
 
 function [hh,dhh] = probeZFilter(z,ww)

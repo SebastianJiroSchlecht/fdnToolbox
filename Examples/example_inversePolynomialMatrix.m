@@ -16,6 +16,7 @@ delays = randi([10,20],[N,1]);
 
 [matrix,revMatrix] = constructCascadedParaunitaryMatrix( N, K, 'matrixType', 'random' );
 
+% TODO clean up inverse matrix
 loop = zDomainStandardLoop(delays, matrix, revMatrix);
 
 % Compute matrices at z

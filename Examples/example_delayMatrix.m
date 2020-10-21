@@ -34,7 +34,8 @@ degree = 20;
 delayIndices = randi(degree,[N N])
 
 feedbackMatrixDelay = constructDelayFeedbackMatrix(delayIndices,H);
-loopMatrix = zDomainLoop(zDomainDelay(delays), zDomainMatrix(feedbackMatrixDelay));
+absorptionMatrix = zScalar(diag(eye(numel(delays))),'isDiagonal',true);
+loopMatrix = zDomainLoop(zDelay(delays), absorptionMatrix, zFIR(feedbackMatrixDelay));
 
 % compute
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrixDelay, inputGain, outputGain, direct);

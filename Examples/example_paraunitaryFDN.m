@@ -31,7 +31,7 @@ K = 3;
 
 % Compute impulse response and poles/zeros
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);
-[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'inverseMatrix', revMatrix);
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength, 'lowMemory');
 
 % Evaluate IR Difference between time-domain recursion and poles/zeros

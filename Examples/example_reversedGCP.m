@@ -14,28 +14,22 @@ order = 3;
 delays = ( randi([5,15],[1,N]) );
 A = sym('a',[N,N,order]);
 
-syms zz;
-switch 'delay filter'
+
+switch 'full matrix'
     case 'full matrix'
         % do nothing
-        symDelay = diag(zz.^delays);
     case 'diagonal matrix'
         A = A .* ( eye(N).*ones(1,1,order) ); 
-        symDelay = diag(zz.^delays);
-    case 'delay filter'
-        A = A(:,:,1);
-        g = sym('g',[1, N]);
-        symDelay = diag(zz.^delays) + diag(g .* zz.^(delays+1));
-        symInvDelay = diag(zz.^delays) + diag(g .* zz.^(delays-1));
     otherwise
         error('Not defined');
 end
 
 % Symbolic GCP
-
+syms zz;
+symDelay = diag(zz.^delays);
 symA = mpoly2sym(A,zz);
 % degreeDetA = polynomialDegree(det(subs(symA,1/zz)),zz);
-degreeDetA = 0; %mpolyDegree(det(subs(symA,1/zz)),zz); % TODO hack
+degreeDetA = mpolyDegree(det(subs(symA,1/zz)),zz);
 
 Psym = symDelay - symA;
 
@@ -46,15 +40,15 @@ gcpSym = expand(det(Psym) * zz^degreeDetA);
 symAr = subs(symA,1/zz);
 symInvA = inv(symAr);
 
-PsymInv = symInvDelay - symInvA;
+PsymInv = symDelay - symInvA;
 
 gcpSymRev = (-1)^N *  det(symAr) * det(PsymInv) ;
 [c_Rev,t_Rev] = coeffs(simplify(gcpSymRev),zz);
 
 
 %% Test: Matrices are inverse
-% disp(simplify(symA * subs(symInvA,1/zz)))
-% assert( isAlmostZero( double(simplify(symA * subs(symInvA,1/zz))) - eye(N))  ) 
+disp(simplify(symA * subs(symInvA,1/zz)))
+assert( isAlmostZero( double(simplify(symA * subs(symInvA,1/zz))) - eye(N))  ) 
 
 %% Test: Symbolic GCP
 disp(c_GCP)

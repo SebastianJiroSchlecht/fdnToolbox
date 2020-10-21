@@ -29,10 +29,10 @@ function loop = zDomainStandardLoop(delays, matrix, revMatrix)
 
 D = zDelay( delays, 'isDiagonal', true );
 A = zFIR ( matrix );
-
+Absorption = zScalar(diag(eye(numel(delays))),'isDiagonal',true);
 if nargin == 3
     invA = zFIR ( revMatrix );
-    loop = zDomainLoop(D, A, invA );
+    loop = zDomainLoop(D, Absorption, A, invA );
 else
-    loop = zDomainLoop(D, A);
+    loop = zDomainLoop(D, Absorption, A);
 end

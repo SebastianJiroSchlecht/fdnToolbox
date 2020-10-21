@@ -33,22 +33,22 @@ type = 'StableScalarMatrix';
 absorption.(type) = noFilter;
 feedbackMatrix.(type) = randomOrthogonal(N) * diag(rand(N,1)) * randomOrthogonal(N);
 inverseMatrix.(type) = inv(feedbackMatrix.(type));
-matrixTF.(type) = zDomainScalarMatrix(feedbackMatrix.(type));
-invmatTF.(type) = zDomainScalarMatrix(inverseMatrix.(type));
+matrixTF.(type) = zScalar(feedbackMatrix.(type));
+% invmatTF.(type) = zScalar(inverseMatrix.(type));
 
 type = 'ParaunitaryFIRMatrix';
 absorption.ParaunitaryFIRMatrix = noFilter;
 [feedbackMatrix.(type),inverseMatrix.(type)] = constructCascadedParaunitaryMatrix(N,3,'matrixType','random');
-matrixTF.(type) = zDomainMatrix(feedbackMatrix.(type));
-invmatTF.(type) = zDomainMatrix(inverseMatrix.(type));
+matrixTF.(type) = zFIR(feedbackMatrix.(type));
+% invmatTF.(type) = zDomainMatrix(inverseMatrix.(type));
 
 type = 'AbsorptionInMatrix';
 absorption.(type) = onePole;
 [feedbackMatrix.(type),~] = constructCascadedParaunitaryMatrix(N,2);
 numerator = matrixConvolution(feedbackMatrix.(type),polydiag(onePole.b));
 denominator = matrixConvolution(ones(N),polydiag(onePole.a));
-matrixTF.(type) = zDomainMatrix(numerator,denominator);
-
+matrixTF.(type) = zTF(numerator,denominator);
+% TODO this case does not work
 
 % compute impulse response and poles/zeros
 fnames = fieldnames(matrixTF);

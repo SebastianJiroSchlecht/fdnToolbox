@@ -39,6 +39,9 @@ classdef filterMatrix < handle
             if isnumeric(m)
                 b = m;
                 a = [];
+            elseif isa(m,'zScalar')
+                b = m.matrix;
+                a = [];
             else
                 b = m.matrix.numerator;
                 a = m.matrix.denominator;
@@ -67,7 +70,7 @@ classdef filterMatrix < handle
                         end
                     end
                 case 'scalar'
-                    obj.matrix = m;
+                    obj.matrix = b;
                 otherwise
                     error('Not Defined');
             end
