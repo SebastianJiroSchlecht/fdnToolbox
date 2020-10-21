@@ -36,7 +36,7 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 p = inputParser;
 p.addOptional('inverseMatrix', [], @(x) isnumeric(x) );
 p.addOptional('deflationType','fullDeflation',@(x) ischar(x) );
-p.addOptional('absorptionFilters', []);
+p.addOptional('absorptionFilters', zScalar(diag(eye(size(A))),'isDiagonal',true));
 p.addOptional('rejectUnstablePoles', false);
 
 parse(p,varargin{:});
@@ -48,20 +48,11 @@ absorptionFilters = p.Results.absorptionFilters;
 rejectUnstablePoles = p.Results.rejectUnstablePoles;
 
 %% Setup Loop Matrix
-% delayTF = zDomainDelay(delays);
 delayTF = zDelay(delays, 'isDiagonal', true);
-if isempty(absorptionFilters)
-    feedforwardTF = delayTF;
-else
-    %     absorptionTF = dfilt2zDomain(absorptionFilters);
-    feedforwardTF = zSeries(delayTF, absorptionFilters);
-end
 
-
-if isnumeric(A) && ismatrix(A) % scalar matrix
+if isnumeric(A) && ismatrix(A) % scalar matrix % TODO clean up
     matrixTF = zFIR(A);
-    invmatTF = zFIR(inv(A));
-    loopMatrix = zDomainLoop(feedforwardTF, matrixTF, invmatTF);
+    loopMatrix = zDomainLoop(delayTF, absorptionFilters, matrixTF);
 else
     error('Not defined');
 end
