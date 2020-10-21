@@ -44,6 +44,9 @@ classdef zDomainLoop < handle
         
         function val = atRev(obj,z)
             val = obj.forwardAtInv(1/z) - inv(at(obj.feedbackTF,1/z));
+            
+            
+%             val = obj.delayTF.at(z) * obj.forwardTF.at(z) - inv(at(obj.feedbackTF,1/z));
         end
         
         
@@ -56,6 +59,11 @@ classdef zDomainLoop < handle
             dFF = obj.forwardDer(1/z);
             
             val = (FF * dFF * FF - FB \ dFB / FB) / z^2;
+%             val1
+            
+            val = obj.forwardDer(z) - obj.feedbackTF.at(1/z) \ obj.feedbackTF.der(1/z) / obj.feedbackTF.at(1/z) / z^2; % (K^-1)' = - K^-1 * K' * K^-1
+%             val
+            ok = 1; 
         end
         
         function step = inverseNewtonStep(obj,z)
@@ -67,6 +75,9 @@ classdef zDomainLoop < handle
                     + trace(obj.forwardAtInv(z)*obj.forwardDer(z)) ...
                     - trace(obj.atRev(iz)\obj.derRev(iz)) / z^2 ...
                     + obj.numberOfMatrixDelays / z;
+                
+                reversedNewton = trace( obj.atRev(1/z)  \ obj.derRev(1/z) ) + trace(  obj.feedbackTF.at(z) \ obj.feedbackTF.der(z) / -(1/z)^2 );
+                step = obj.numberOfDelayUnits / z - reversedNewton / z^2;
             end
         end
     end

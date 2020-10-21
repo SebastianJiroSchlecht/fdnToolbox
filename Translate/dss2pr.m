@@ -33,8 +33,8 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 
 %% Input Parser
 p = inputParser;
-p.addOptional('deflationType','fullDeflation',@(x) ischar(x) );
-p.addOptional('absorptionFilters', zScalar(diag(eye(size(A,1))),'isDiagonal',true));
+p.addOptional('deflationType','fullDeflation' );
+p.addOptional('absorptionFilters', zScalar(diag(eye(numel(delays))),'isDiagonal',true));
 p.addOptional('rejectUnstablePoles', false);
 
 parse(p,varargin{:});
