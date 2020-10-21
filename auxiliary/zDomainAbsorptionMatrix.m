@@ -27,4 +27,4 @@ function matrixTF = zDomainAbsorptionMatrix(feedbackMatrix, absorption_b, absorp
 N = size(feedbackMatrix,2);
 numerator = matrixConvolution(feedbackMatrix,polydiag(absorption_b));
 denominator = matrixConvolution(ones(N),polydiag(absorption_a));
-matrixTF = zDomainMatrix(numerator,denominator);
+matrixTF = zTF(numerator,denominator);

@@ -14,7 +14,6 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 %    C - output gains of size [out,N]
 %    D - direct gains of size [out,in]
 %    deflationType (optional) - either 'fullDeflation', 'noDeflation', 'neighborDeflation'
-%    inverseMatrix (optional) - inverse feedback matrix
 %    absorptionFilter (optional) - per delay filter
 %    rejectUnstablePoles (optional) - boolean
 %
@@ -34,28 +33,28 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 
 %% Input Parser
 p = inputParser;
-p.addOptional('inverseMatrix', [], @(x) isnumeric(x) );
 p.addOptional('deflationType','fullDeflation',@(x) ischar(x) );
-p.addOptional('absorptionFilters', zScalar(diag(eye(size(A))),'isDiagonal',true));
+p.addOptional('absorptionFilters', zScalar(diag(eye(size(A,1))),'isDiagonal',true));
 p.addOptional('rejectUnstablePoles', false);
 
 parse(p,varargin{:});
 
 deflationType = p.Results.deflationType;
-inverseMatrix = p.Results.inverseMatrix;
-% inverseMatrixExists = ~isempty(inverseMatrix);
 absorptionFilters = p.Results.absorptionFilters;
 rejectUnstablePoles = p.Results.rejectUnstablePoles;
 
 %% Setup Loop Matrix
 delayTF = zDelay(delays, 'isDiagonal', true);
 
-if isnumeric(A) && ismatrix(A) % scalar matrix % TODO clean up
-    matrixTF = zFIR(A);
-    loopMatrix = zDomainLoop(delayTF, absorptionFilters, matrixTF);
+if isnumeric(A) % scalar matrix % TODO clean up
+    matrixTF = zFIR(A);   
+elseif isa(A,'zFilter')
+    matrixTF = A;
 else
     error('Not defined');
 end
+loopMatrix = zDomainLoop(delayTF, absorptionFilters, matrixTF);
+
 %     elseif ndims(A) == 3 % FIR matrix
 %         matrixTF = zDomainMatrix(A);
 %         if ~isempty(inverseMatrix)
@@ -72,7 +71,7 @@ end
 % end
 numberOfPoles = loopMatrix.numberOfDelayUnits;
 
-debugEAI_newtonStep(loopMatrix);
+% debugEAI_newtonStep(loopMatrix); % TODO remove
 
 %% Pole initialization
 poleAngles = linspace(0,2*pi,numberOfPoles+1);

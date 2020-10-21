@@ -40,8 +40,8 @@ classdef filterMatrix < handle
                 b = m;
                 a = [];
             else
-                b = m.b;
-                a = m.a;
+                b = m.matrix.numerator;
+                a = m.matrix.denominator;
             end
             
             obj.filterType = obj.whatFilterType(b,a);
