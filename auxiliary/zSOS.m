@@ -12,7 +12,7 @@ classdef zSOS < zFilter
             
             % sos is [n,m,nsos,6]
             [n,m,nsos,len] = size(sos);
-            assert( ~(obj.isDiagonal && m ~= 1), 'For a diagonal filter matrix, provide a vector of filters.');
+            obj.checkShape(m);
             assert( len == 6, 'SOS need to have 6 coefficients');
             
             obj.sos = sos;
@@ -32,9 +32,6 @@ classdef zSOS < zFilter
             end
         end
         
-        function delays = getDelays(obj, numerator)
-            % TODO: strange
-        end
         
         function val = at_(obj,z)
             m(1,1,1,:) = 0:-1:-2;

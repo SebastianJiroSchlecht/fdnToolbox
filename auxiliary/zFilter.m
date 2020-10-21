@@ -6,6 +6,10 @@ classdef zFilter < handle
         isDiagonal = false;
     end
     
+    properties (Constant)
+        default_isDiagonal = false;
+    end
+    
     methods
         function val = at(obj,z)
             if obj.isDiagonal
@@ -25,20 +29,21 @@ classdef zFilter < handle
         
         function parseArguments(obj, arg)
             p = inputParser;
-            p.addOptional('isDiagonal', false);
+            p.addOptional('isDiagonal', obj.default_isDiagonal);
             parse(p,arg{:});
             obj.isDiagonal = p.Results.isDiagonal;
-         end
+        end
                 
+        function checkShape(obj,m)
+           assert( ~(obj.isDiagonal && m ~= 1), 'For a diagonal filter matrix, provide a vector of filters.'); 
+        end
+        
     end
     
     
     methods(Abstract)
         
-         getDelays(obj, numerator)
-            
          
-        
          at_(obj,z)
             
         

@@ -13,7 +13,7 @@ numOutput = 1;
 inputGain = eye(N,numInput);
 outputGain = eye(numOutput,N);
 direct = ones(numOutput,numInput);
-delays = randi([5, 30]*100,[1,N]);
+delays = randi([5, 30]*10,[1,N]);
 feedbackMatrix = randomOrthogonal(N);
 
 
@@ -27,10 +27,14 @@ loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a)
 
 absorptionFilters = filterVector(tf2dfiltVector(absorption.b,absorption.a));
 
+
+zAbsorption = zTF(permute(absorption.a,[1 3 2]),...  %% TODO: hack a b inversion
+                  permute(absorption.b,[1 3 2]),'isDiagonal', true);
+
 % compute with absorption
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', absorptionFilters);
 tic
-[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation', 'absorptionFilters', absorptionFilters, 'rejectUnstablePoles', true);
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation', 'absorptionFilters', zAbsorption, 'rejectUnstablePoles', false); % 
 toc
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength,'lowMemory');
 

@@ -150,13 +150,16 @@ ehrlichAberthStep = 1 ./ (invNewtonStep - deflation);
 function invNewtonStep = computeNewtonStep( it, poles, loop)
 %% Compute inverse Newton step
 pole = poles(it);
-if abs(pole) > 1
-%     reversedNewton = trace( loop.atRev(1/pole)  \ loop.derRev(1/pole) ) + trace(  loop.invMatrix.at(1/pole) * loop.matrixDer.at(pole) / -(1/pole)^2 );
-    reversedNewton = trace( loop.atRev(1/pole)  \ loop.derRev(1/pole) ) + trace(  loop.feedbackTF.at(pole) \ loop.feedbackTF.der(pole) / -(1/pole)^2 );
-    invNewtonStep = loop.numberOfDelayUnits / pole - reversedNewton / pole^2;
-else
-    invNewtonStep = trace( loop.at(pole)  \ loop.der(pole)  ) + loop.numberOfMatrixDelays / pole;
-end
+
+invNewtonStep = loop.inverseNewtonStep(pole);
+
+% if abs(pole) > 1
+% %     reversedNewton = trace( loop.atRev(1/pole)  \ loop.derRev(1/pole) ) + trace(  loop.invMatrix.at(1/pole) * loop.matrixDer.at(pole) / -(1/pole)^2 );
+%     reversedNewton = trace( loop.atRev(1/pole)  \ loop.derRev(1/pole) ) + trace(  loop.feedbackTF.at(pole) \ loop.feedbackTF.der(pole) / -(1/pole)^2 );
+%     invNewtonStep = loop.numberOfDelayUnits / pole - reversedNewton / pole^2;
+% else
+%     invNewtonStep = trace( loop.at(pole)  \ loop.der(pole)  ) + loop.numberOfMatrixDelays / pole;
+% end
 
 
 function [deflation,isExact] = computeDeflation( it, poles, invNewtonStep, DeflationType, numberOfNeighbors, deflationMaxError, steps)

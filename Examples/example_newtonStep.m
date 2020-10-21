@@ -18,8 +18,11 @@ N = 2;
 delays = 10+( randi([5,15],[1,N]) );
 
 % generate Matrix
-switch 'general'
+switch 'simple'
     case 'simple'
+        A = orth(randn(N));
+        invA = inv(A);
+    case 'delay'
         A(:,:,4) = orth(randn(N));
         invA = A; invA(:,:,4) = inv(A(:,:,4));
     case 'twoStages'
@@ -101,11 +104,11 @@ invNewtonSymRev = numberOfPoles / zz - reversedNewton / zz^2;
 invNewtonSymRevDouble = double(subs(invNewtonSymRev,z))
 
 % Direct Matrix
-zDelay = zDomainDelay(delays);
+zZ = zDelay(delays,'isDiagonal',true);
 zA = tfMatrix(A,ones(N),'z^-1');
 zADer = derive(zA);
-Pz = zDelay.at(z) - at(zA,z);
-PzDer = zDelay.der(z) - at(zADer,z);
+Pz = zZ.at(z) - at(zA,z);
+PzDer = zZ.der(z) - at(zADer,z);
 gcpDirect = z^degA * det( Pz );
 gcpDirectDer = z^degA * det(Pz) * ( trace( inv( Pz ) * PzDer) + degA/z);
 
@@ -119,13 +122,15 @@ gcpDerVal =  polyval(gcpDer,z);
 invNewtonGCP = gcpDerVal / gcpVal
 
 % Loop
-loop = zDomainStandardLoop(delays, A, invA);
+loop = zDomainStandardLoop(delays, A);
 invNewtonLoop = trace( loop.at(z)  \ loop.der(z)  ) + degA/z
 
 % Reverse Loop
 iz = 1/z;
-reversedNewton = trace( loop.atRev(iz)  \ loop.derRev(iz) ) + trace(  loop.invFeedbackTF.at(iz) * loop.feedbackTF.der(1/iz) / -iz^2 );
+% reversedNewton = trace( loop.atRev(iz)  \ loop.derRev(iz) ) + trace(  loop.invFeedbackTF.at(iz) * loop.feedbackTF.der(z) / -iz^2 );
+reversedNewton = trace( loop.atRev(iz)  \ loop.derRev(iz) ) + trace(  loop.feedbackTF.at(z) \ loop.feedbackTF.der(z) / -iz^2 );
 invNewtonLoopR = loop.numberOfDelayUnits / z - reversedNewton / z^2
+
 
 %% Test: Inverse Newton step
 assert( isAlmostZero( invNewtonGCP - invNewtonSymPolyDouble) )

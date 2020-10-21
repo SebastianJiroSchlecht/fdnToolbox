@@ -5,25 +5,21 @@ classdef zDelay < zFilter
     end
     
     methods
-        function obj = zDelay(delays)
+        function obj = zDelay(delays, varargin)
+            obj.parseArguments(varargin);
             
-            obj.isDiagonal = true; % TODO: not nessarily
+            obj.delays = delays;
             
-            obj.delays = delays(:);
-            
-            obj.numberOfDelayUnits = sum(obj.delays);
+            obj.numberOfDelayUnits = sum(obj.delays); % TODO not for full delay matrices
             
         end
         
-        function delays = getDelays(obj, numerator)
-            % TODO: strange
-        end
         
-        function val = at(obj,z)
+        function val = at_(obj,z)
             val = (z.^obj.delays);
         end
         
-        function val = der(obj,z) 
+        function val = der_(obj,z) 
             val = (z.^(obj.delays-1) .* obj.delays);
         end
     end

@@ -1,7 +1,7 @@
 function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delays,A,B,C,D,varargin)
 %dss2pr - From state-space to poles and residues
 % Similar to residues, but with delays. Also, this function supports multiple
-% input and output. The algorithms is derived in 
+% input and output. The algorithms is derived in
 % Schlecht, S. J., & Habets, E. A. P. (2018). Modal decomposition of
 % feedback delay networks. IEEE Trans. Signal Process., submitted.
 %
@@ -23,10 +23,10 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 %    poles - system poles
 %    direct - direct gain
 %    isConjugatePolePair - logical index whether poles are pair or real
-%    metaData - additional output values 
+%    metaData - additional output values
 %
 % See also: example_dss2pr
-% Author: Dr.-Ing. Sebastian Jiro Schlecht, 
+% Author: Dr.-Ing. Sebastian Jiro Schlecht,
 % Aalto University, Finland
 % email address: sebastian.schlecht@aalto.fi
 % Website: sebastianjiroschlecht.com
@@ -48,34 +48,40 @@ absorptionFilters = p.Results.absorptionFilters;
 rejectUnstablePoles = p.Results.rejectUnstablePoles;
 
 %% Setup Loop Matrix
-delayTF = zDomainDelay(delays); 
+% delayTF = zDomainDelay(delays);
+delayTF = zDelay(delays, 'isDiagonal', true);
 if isempty(absorptionFilters)
     feedforwardTF = delayTF;
 else
-    absorptionTF = dfilt2zDomain(absorptionFilters);
-    feedforwardTF = zDomainSeries(delayTF, absorptionTF);
+    %     absorptionTF = dfilt2zDomain(absorptionFilters);
+    feedforwardTF = zSeries(delayTF, absorptionFilters);
 end
 
-if isnumeric(A)
-    if ismatrix(A) % scalar matrix
-        matrixTF = zDomainScalarMatrix(A);
-        invmatTF = zDomainScalarMatrix(inv(A));
-        loopMatrix = zDomainLoop(feedforwardTF, matrixTF, invmatTF);
-    elseif ndims(A) == 3 % FIR matrix
-        matrixTF = zDomainMatrix(A);
-        if ~isempty(inverseMatrix)
-            invmatrixTF = zDomainMatrix(inverseMatrix);
-            loopMatrix = zDomainLoop(feedforwardTF, matrixTF, invmatrixTF);
-        else
-            loopMatrix = zDomainLoop(feedforwardTF, matrixTF);
-        end
-    else
-        error('Not defined');
-    end
+
+if isnumeric(A) && ismatrix(A) % scalar matrix
+    matrixTF = zFIR(A);
+    invmatTF = zFIR(inv(A));
+    loopMatrix = zDomainLoop(feedforwardTF, matrixTF, invmatTF);
 else
-    loopMatrix = zDomainLoop(feedforwardTF, A, inverseMatrix);
+    error('Not defined');
 end
+%     elseif ndims(A) == 3 % FIR matrix
+%         matrixTF = zDomainMatrix(A);
+%         if ~isempty(inverseMatrix)
+%             invmatrixTF = zDomainMatrix(inverseMatrix);
+%             loopMatrix = zDomainLoop(feedforwardTF, matrixTF, invmatrixTF);
+%         else
+%             loopMatrix = zDomainLoop(feedforwardTF, matrixTF);
+%         end
+%     else
+%         error('Not defined');
+%     end
+% else
+%     loopMatrix = zDomainLoop(feedforwardTF, A, inverseMatrix);
+% end
 numberOfPoles = loopMatrix.numberOfDelayUnits;
+
+debugEAI_newtonStep(loopMatrix);
 
 %% Pole initialization
 poleAngles = linspace(0,2*pi,numberOfPoles+1);
@@ -100,7 +106,7 @@ end
 
 
 %% Filter high quality poles
-isConverged = quality < qualityThreshold * 1000; % be looser here than in the search 
+isConverged = quality < qualityThreshold * 1000; % be looser here than in the search
 poles = poles(isConverged);
 metaData.convergedPoles = poles;
 

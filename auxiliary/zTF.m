@@ -9,6 +9,10 @@ classdef zTF < zFilter
         function obj = zTF(b,a,varargin)
             obj.parseArguments(varargin);
             
+            [n,m,len] = size(b);
+            [n,m,len] = size(a);
+            obj.checkShape(m);
+            
             obj.matrix = tfMatrix(b,a,'z^-1');
             
             obj.matrixDer = derive(obj.matrix);

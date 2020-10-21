@@ -25,11 +25,13 @@ function loop = zDomainStandardLoop(delays, matrix, revMatrix)
 % Website: sebastianjiroschlecht.com
 % 29 December 2019; Last revision: 29 December 2019
 
-D = zDomainDelay( delays );
-A = zDomainMatrix ( matrix );
+% TODO: remove reverse matrix
+
+D = zDelay( delays, 'isDiagonal', true );
+A = zFIR ( matrix );
 
 if nargin == 3
-    invA = zDomainMatrix ( revMatrix );
+    invA = zFIR ( revMatrix );
     loop = zDomainLoop(D, A, invA );
 else
     loop = zDomainLoop(D, A);

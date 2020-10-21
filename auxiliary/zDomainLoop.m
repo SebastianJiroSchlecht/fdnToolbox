@@ -35,19 +35,39 @@ classdef zDomainLoop < handle
         end
         
         function val = atRev(obj,z)
-            if isempty(obj.invFeedbackTF)
-                val = obj.forwardTF.at(z) - inv(at(obj.feedbackTF,1/z));
-            else
-                val = obj.forwardTF.at(z) - obj.invFeedbackTF.at(z);
-            end        
+%             if isempty(obj.invFeedbackTF)
+                val = inv(obj.forwardTF.at(1/z)) - inv(at(obj.feedbackTF,1/z));
+%             else
+%                 val = inv(obj.forwardTF.at(1/z)) - obj.invFeedbackTF.at(z);
+%             end        
         end
         
+
+        
         function val = derRev(obj,z)
-            if isempty(obj.invFeedbackTF)
-                val = obj.forwardTF.der(z) - obj.feedbackTF.at(1/z) \ obj.feedbackTF.der(1/z) / obj.feedbackTF.at(1/z) / z^2; % (K^-1)' = - K^-1 * K' * K^-1
+%             if isempty(obj.invFeedbackTF)
+                % (K^-1)' = - K^-1 * K' * K^-1
+                FB = obj.feedbackTF.at(1/z);
+                dFB = obj.feedbackTF.der(1/z);
+                
+                FF = obj.forwardTF.at(1/z);
+                dFF = obj.forwardTF.der(1/z);
+                
+                val = (FF \ dFF / FF - FB \ dFB / FB) / z^2; 
+%             else
+%                 val = obj.forwardTF.der(z) - obj.invFeedbackTF.der(z);
+%             end          
+        end
+        
+        function step = inverseNewtonStep(obj,z)
+            iz = 1/z;
+            if (abs(z) <= 1)
+                step = trace( obj.at(z)  \ obj.der(z)  ) + obj.numberOfMatrixDelays / z;
             else
-                val = obj.forwardTF.der(z) - obj.invFeedbackTF.der(z);
-            end          
+                step = trace(obj.feedbackTF.at(z)\obj.feedbackTF.der(z)) ...
+                    + trace(obj.forwardTF.at(z)\obj.forwardTF.der(z)) ...
+                    - trace(obj.atRev(iz)\obj.derRev(iz)) / z^2;
+            end
         end
     end
 end
