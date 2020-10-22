@@ -42,7 +42,9 @@ classdef dfiltMatrix < handle
         end
         
         function out = filter(obj,in)
-            out = in*0;
+            out = zeros(size(in,1),obj.n);
+            
+            
             if isnumeric(obj.filters)
                 if obj.isDiagonal
                     out = in.*obj.filters;

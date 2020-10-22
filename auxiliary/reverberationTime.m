@@ -51,7 +51,9 @@ for it=1:numBands
 end
 reverberationTimeEarly = -60 ./ pEarly(1,:) / fs;
 reverberationTimeLate = -60 ./ pLate(1,:) / fs;
-powerSpectrum = edr(1,:) ./ reverberationTimeLate; % TODO this needs to be checked again
+
+bandwidthEnergyCompensation = -(1:numBands)/4; %TODO: energy compensation is a hack
+powerSpectrum = edr(1,:) ./ reverberationTimeLate + 0*bandwidthEnergyCompensation; 
 
 
 

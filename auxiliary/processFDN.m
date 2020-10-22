@@ -39,7 +39,13 @@ absorptionFilters = p.Results.absorptionFilters;
 
 %% Process
 numInput = size(B,2);
-numOutput = size(C,1);
+
+if isnumeric(C) % TODO not pretty
+    numOutput = size(C,1);
+else
+    numOutput = C.n;
+end
+
 inputLen = size(input,1);
 switch inputType
     case 'splitInput'
@@ -64,14 +70,14 @@ maxBlockSize = 2^12;
 DelayFilters = feedbackDelay(maxBlockSize,delays);
 FeedbackMatrix = zFilter2dfilt(feedbackMatrix);
 InputGains = filterMatrix(inputGains);
-OutputGains = filterMatrix(outputGains);
+OutputGains = zFilter2dfilt(outputGains);
 absorptionFilters = zFilter2dfilt(absorptionFilters); 
 
 
 blkSz = min([min(delays), maxBlockSize]);
 
 inputLen = size(input,1);
-output = zeros(inputLen, OutputGains.numberOfOutputs);
+output = zeros(inputLen, OutputGains.n);
 
 %% Time-domain recursion
 blockStart = 0;

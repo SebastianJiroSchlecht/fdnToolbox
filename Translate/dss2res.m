@@ -18,23 +18,25 @@ function [drivenRes,directTerm,undrivenResidues] = dss2res(poles,loop,B,C,D)
 %    directTerm - Direct component
 %    undrivenResidues - Residues without input and output relation
 %
-% Example: 
-%   
+% Example:
+%
 %
 % Other m-files required: none
 % Subfunctions: none
 % MAT-files required: none
 %
-% See also: 
-% Author: Dr.-Ing. Sebastian Jiro Schlecht, 
+% See also:
+% Author: Dr.-Ing. Sebastian Jiro Schlecht,
 % Aalto University, Finland
 % email address: sebastian.schlecht@aalto.fi
 % Website: sebastianjiroschlecht.com
 % 29 December 2019; Last revision: 29 December 2019
 
+B = convert2zFilter(B);
+C = convert2zFilter(C);
 
-numberOfInputs = size(B,2);
-numberOfOutputs = size(C,1);
+numberOfInputs = B.m;
+numberOfOutputs = C.n;
 numberOfPoles = length(poles);
 
 %% compute undriven residues
@@ -48,22 +50,21 @@ undrivenResidues = 1 ./ r_denominator;
 %% filter multipoles (as they are not resolved before)
 isMultiplePoles = isnan(undrivenResidues) | isinf(undrivenResidues);
 if sum(isMultiplePoles) > 0
-   warning('There are multipoles. The residues are set to zero.'); 
-   undrivenResidues(isMultiplePoles) = 0;
-   r_denominator(isMultiplePoles) = Inf;
+    warning('There are multipoles. The residues are set to zero.');
+    undrivenResidues(isMultiplePoles) = 0;
+    r_denominator(isMultiplePoles) = Inf;
 end
 
 %% Compute driven residues
 r_nominator = zeros(numberOfPoles,numberOfOutputs,numberOfInputs);
-for itOut = 1:numberOfOutputs
-    for itIn = 1:numberOfInputs
-        for it = 1:numberOfPoles
-            b = B(:,itIn);
-            c = C(itOut,:);
-            r_nominator(it,itOut,itIn) = c*adjugate( loop.at(poles(it)) )* b ;
-        end
-    end
+for it = 1:numberOfPoles
+    pole = poles(it);
+    b = B.at(pole);
+    c = C.at(pole);
+    l = loop.at(pole);
+    
+    r_nominator(it,:,:) = c*adjugate(l)* b;
 end
 
 drivenRes = r_nominator ./ r_denominator ;
-directTerm = D;
+directTerm = D; % TODO change to filter

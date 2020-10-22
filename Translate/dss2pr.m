@@ -55,20 +55,9 @@ else
 end
 loopMatrix = zDomainLoop(delayTF, absorptionFilters, matrixTF);
 
-%     elseif ndims(A) == 3 % FIR matrix
-%         matrixTF = zDomainMatrix(A);
-%         if ~isempty(inverseMatrix)
-%             invmatrixTF = zDomainMatrix(inverseMatrix);
-%             loopMatrix = zDomainLoop(feedforwardTF, matrixTF, invmatrixTF);
-%         else
-%             loopMatrix = zDomainLoop(feedforwardTF, matrixTF);
-%         end
-%     else
-%         error('Not defined');
-%     end
-% else
-%     loopMatrix = zDomainLoop(feedforwardTF, A, inverseMatrix);
-% end
+B = convert2zFilter(B);
+C = convert2zFilter(C);
+
 numberOfPoles = loopMatrix.numberOfDelayUnits;
 
 % debugEAI_newtonStep(loopMatrix); % TODO remove
@@ -78,6 +67,9 @@ poleAngles = linspace(0,2*pi,numberOfPoles+1);
 poleAngles = poleAngles(1:end-1);
 poles = exp(1i * poleAngles);
 qualityThreshold = 1000 * eps;
+
+%% Initialize Extra Filter Poles directly
+% TODO
 
 %% Find poles
 [poles,quality, metaDataRefine] = refinePolePositions(poles, loopMatrix,...
