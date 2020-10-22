@@ -23,13 +23,7 @@ RT_DC = 2; % seconds
 RT_NY = 0.5; % seconds
 
 [absorption.b,absorption.a] = onePoleAbsorption(RT_DC, RT_NY, delays, fs);
-loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
-
-absorptionFilters = filterVector(tf2dfiltVector(absorption.b,absorption.a));
-
-
-zAbsorption = zTF(permute(absorption.b,[1 3 2]),...  
-                  permute(absorption.a,[1 3 2]),'isDiagonal', true); % TODO change onePoleAbsorption output
+zAbsorption = zTF(absorption.b, absorption.a,'isDiagonal', true); 
 
 % compute with absorption
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);

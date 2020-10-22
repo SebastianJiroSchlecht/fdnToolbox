@@ -14,8 +14,8 @@ function [b,a] = onePoleAbsorption(RT_DC, RT_NY, delays, fs)
 %    fs - Sampling frequency
 %
 % Outputs:
-%    b - Filter numerator
-%    a - Filter denominators
+%    b - Filter numerator of size [N,1,1]
+%    a - Filter denominators of size [N,1,2]
 %
 % Example: 
 %    [b,a] = onePoleAbsorption(2, 1, [100, 130], 48000)
@@ -40,9 +40,9 @@ alpha = RT_NY / RT_DC;
 bp = K * log(10) / 80 * (1 - 1/alpha^2) * 2/3;
 
 filterLen = 2;
-a = 0.0*randn(N,filterLen);
-a(:,1) = 1;
-a(:,2) = -bp;
+a = 0.0*randn(N,1,filterLen);
+a(:,1,1) = 1;
+a(:,1,2) = -bp;
 
 b = zeros(N,1);
-b(:,1) = k.*(1-bp) ;
+b(:,1,1) = k.*(1-bp) ;

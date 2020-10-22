@@ -42,6 +42,7 @@ A = convert2zFilter(A);
 B = convert2zFilter(B);
 C = convert2zFilter(C);
 numInput = B.m;
+numOutput = C.n;
 inputLen = size(input,1);
 
 %% Process

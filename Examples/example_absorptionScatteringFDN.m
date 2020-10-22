@@ -33,11 +33,11 @@ RT_DC = 2; % seconds
 RT_NY = 0.5; % seconds
 
 [absorption.b,absorption.a] = onePoleAbsorption(RT_DC, RT_NY, delays + approximation, fs);
-loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
+zAbsorption = zTF(absorption.b, absorption.a,'isDiagonal', true); 
 
 % compute impulse response and poles/zeros and reverberation time
-irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct);
-[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct);
+irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
+[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 
 difference = irTimeDomain - irResPol;

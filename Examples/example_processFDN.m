@@ -24,16 +24,15 @@ maxShift = 30;
 % absorption filters including delay of scattering matrix
 [approximation,approximationError] = matrixDelayApproximation(feedbackMatrix);
 
-RT_DC = 2; % seconds
+RT_DC = 2; % secondss
 RT_NY = 0.5; % seconds
 
 [absorption.b,absorption.a] = onePoleAbsorption(RT_DC, RT_NY, delays + approximation, fs);
-loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
+zAbsorption = zTF(absorption.b, absorption.a,'isDiagonal', true); 
 
 % compute impulse response and poles/zeros and reverberation time
-output = processFDN(x, delays, loopMatrix, inputGain, outputGain, direct);
+output = processFDN(x, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
 
-% sound
 % soundsc(x,fs);
 % soundsc(output,fs);
 

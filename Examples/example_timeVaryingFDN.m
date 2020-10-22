@@ -36,7 +36,8 @@ RT_DC = 4; % seconds
 RT_NY = 1; % seconds
 
 [absorption.b,absorption.a] = onePoleAbsorption(RT_DC, RT_NY, delays, fs);
-absorptionMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
+zAbsorption = zTF(absorption.b, absorption.a,'isDiagonal', true); 
+
 
 % Process sound for all matrix types
 matrixTypes = {'FastVariation','SlowVariation','NoVariation'};
@@ -58,7 +59,7 @@ for it = 1:length(matrixTypes)
     end
     
     TVmatrix = timeVaryingMatrix(N, modulationFrequency, modulationAmplitude, fs, spread);
-    reverbedSynth.(type) = processFDN(synth, delays, absorptionMatrix, inputGain, outputGain, direct, 'inputType', 'mergeInput', 'extraMatrix', TVmatrix);    
+    reverbedSynth.(type) = processFDN(synth, delays, feedbackMatrix, inputGain, outputGain, direct, 'inputType', 'mergeInput', 'extraMatrix', TVmatrix, 'absorptionFilters', zAbsorption);    
 end
 
 % Plot

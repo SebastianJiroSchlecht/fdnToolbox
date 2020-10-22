@@ -26,15 +26,14 @@ feedbackMatrix = randomOrthogonal(N);
 
 % Absorption filters
 filterLen = 5;
-absorption.a = zeros(N,5);
-absorption.a(:,1) = 1;
+absorption.a = zeros(N,1,5);
+absorption.a(:,1,1) = 1;
 absorption.b = absorption.a;
-
-loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
+zAbsorption = zTF(absorption.b,absorption.a,'isDiagonal',true);
 
 % compute
-irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
-[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct);
+irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput', 'AbsorptionFilters', zAbsorption);
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'AbsorptionFilters', zAbsorption);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 [res_IR,b0,b1] = impz2res(irTimeDomain, pol, isConjugatePolePair);
 

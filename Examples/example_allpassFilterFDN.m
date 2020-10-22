@@ -20,22 +20,18 @@ inputGain = eye(N,numInput);
 outputGain = eye(numOutput,N);
 direct = zeros(numOutput,numInput);
 delays = randi([200,900],[1,N]);
-
 feedbackMatrix = randomOrthogonal(N);
 
 % Allpass Filter
 filterLen = 7;
-a = 0.01*randn(N,filterLen);
-a(:,1) = 1;
-b = a(:,end:-1:1);
-absorption.b = b;
-absorption.a = a;
-
-loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
+allpass.a = 0.01*randn(N,1,filterLen);
+allpass.a(:,:,1) = 1;
+allpass.b = allpass.a(:,:,end:-1:1);
+zAllpass = zTF(allpass.b,allpass.a,'isDiagonal',true);
 
 % compute
-irTimeDomain = dss2impz(impulseResponseLength, delays, loopMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput');
-[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct);
+irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput', 'AbsorptionFilters', zAllpass);
+[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'AbsorptionFilters', zAllpass);
 resLS = impz2res(irTimeDomain, pol, isConjugatePolePair);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 
