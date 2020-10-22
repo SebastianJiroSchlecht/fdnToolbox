@@ -15,6 +15,7 @@ for nn = 1:n
         b = zF.matrix.numerator(nn,mm,:);
         a = zF.matrix.denominator(nn,mm,:);
         d.filters(nn,mm) = dfilt.df2(b,a);
+        d.filters(nn,mm).PersistentMemory = true;
     end
 end
 
