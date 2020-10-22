@@ -9,8 +9,9 @@ classdef zFIR < zFilter
         function obj = zFIR(b,varargin)
             obj.parseArguments(varargin);
             
-            N = size(b,2);
-            obj.matrix = tfMatrix(b,ones(N),'z^-1');
+            [obj.n,obj.m,len] = size(b);
+            
+            obj.matrix = tfMatrix(b,ones(obj.n,obj.m),'z^-1');
             
             obj.matrixDer = derive(obj.matrix);
             obj.numberOfDelayUnits = obj.getDelays(b);

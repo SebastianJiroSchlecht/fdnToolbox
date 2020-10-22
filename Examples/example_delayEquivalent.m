@@ -36,9 +36,11 @@ feedbackMatrix = randomOrthogonal(N);
 feedbackMatrixDelay = constructDelayFeedbackMatrix(delayIndices,feedbackMatrix);
 inverseMatrix = permute(feedbackMatrixDelay,[2 1 3]); % simple transpos because it is paraunitary
 
+matrixFilter = zFIR(feedbackMatrixDelay);
+
 % compute with delay matrix
-irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrixDelay, inputGain, outputGain, direct);
-[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrixDelay, inputGain, outputGain, direct);
+irTimeDomain = dss2impz(impulseResponseLength, delays, matrixFilter, inputGain, outputGain, direct);
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, matrixFilter, inputGain, outputGain, direct);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 
 difference = irTimeDomain - irResPol;

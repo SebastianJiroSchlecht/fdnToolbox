@@ -34,7 +34,7 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 %% Input Parser
 p = inputParser;
 p.addOptional('deflationType','fullDeflation' );
-p.addOptional('absorptionFilters', zScalar(diag(eye(numel(delays))),'isDiagonal',true));
+p.addOptional('absorptionFilters', zScalar(ones(numel(delays),1),'isDiagonal',true));
 p.addOptional('rejectUnstablePoles', false);
 
 parse(p,varargin{:});
@@ -44,7 +44,7 @@ absorptionFilters = p.Results.absorptionFilters;
 rejectUnstablePoles = p.Results.rejectUnstablePoles;
 
 %% Setup Loop Matrix
-delayTF = zDelay(-delays, 'isDiagonal', true);
+delayTF = zDelay(delays(:), 'isDiagonal', true); % TODO: initialize with negative exponent, check (:)
 
 if isnumeric(A) % scalar matrix % TODO clean up
     matrixTF = zFIR(A);   

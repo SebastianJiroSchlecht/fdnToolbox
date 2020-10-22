@@ -26,7 +26,7 @@ feedbackMatrix.Scalar = hadamard(N)/sqrt(N); randomOrthogonal(N);
 
 degree = 50;
 delayIndices = randi(degree,[N 1]) + randi(degree,[1 N]);
-feedbackMatrix.Delay = constructDelayFeedbackMatrix(delayIndices,feedbackMatrix.Scalar);
+feedbackMatrix.Delay = zFIR(constructDelayFeedbackMatrix(delayIndices,feedbackMatrix.Scalar));
 
 
 % compute

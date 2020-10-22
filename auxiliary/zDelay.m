@@ -1,4 +1,5 @@
 classdef zDelay < zFilter
+    % TODO % use delays as negative exponent
     
     properties
         delays
@@ -7,6 +8,9 @@ classdef zDelay < zFilter
     methods
         function obj = zDelay(delays, varargin)
             obj.parseArguments(varargin);
+            [obj.n,obj.m] = size(delays);
+            
+            % TODO check shape
             
             obj.delays = delays;
             
@@ -15,11 +19,11 @@ classdef zDelay < zFilter
         
         
         function val = at_(obj,z)
-            val = (z.^obj.delays);
+            val = (z.^-obj.delays);
         end
         
         function val = der_(obj,z) 
-            val = (z.^(obj.delays-1) .* obj.delays);
+            val = (z.^(-obj.delays-1) .* -obj.delays);
         end
         
         function tf = inverse(obj)

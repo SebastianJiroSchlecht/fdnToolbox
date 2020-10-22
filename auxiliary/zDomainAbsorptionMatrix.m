@@ -24,6 +24,7 @@ function matrixTF = zDomainAbsorptionMatrix(feedbackMatrix, absorption_b, absorp
 % Website: sebastianjiroschlecht.com
 % 29 December 2019; Last revision: 29 December 2019
 
+% TODO change the name
 N = size(feedbackMatrix,2);
 numerator = matrixConvolution(feedbackMatrix,polydiag(absorption_b));
 denominator = matrixConvolution(ones(N),polydiag(absorption_a));

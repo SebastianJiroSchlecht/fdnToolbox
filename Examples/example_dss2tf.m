@@ -41,6 +41,14 @@ legend({'PR Poles','TF Poles'})
 xlabel('Real Axis')
 ylabel('Imaginary Axis')
 
+figure(2); hold on; grid on;
+plot(squeeze(irTF(1,1,:)))
+plot(squeeze(irPR(1,1,:)))
+legend({'TF','PR'})
+xlabel('Time [samples]')
+ylabel('Amplitude [lin]')
+%axis([1 1 1 1])
+
 %% Test: Impulse Response Accuracy
 assert(isAlmostZero(irPR - irTF, 'tol', 10^-10))
 

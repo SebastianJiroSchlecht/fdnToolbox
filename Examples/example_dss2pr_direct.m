@@ -16,24 +16,28 @@ impulseResponseLength = fs/4;
 N = 4;
 numInput = 1;
 numOutput = 1;
-inputGain = eye(N,numInput);
-outputGain = eye(numOutput,N);
+inputGain = ones(N,numInput);
+outputGain = ones(numOutput,N);
 direct = zeros(numOutput,numInput);
 delays = randi([50,100],[1,N]);
-matrix = randn(N); 
-
+matrix = randn(N)/2; 
+impulseResponseLength = 1000;
 % compute
 tic
 [res.EAI, pol.EAI, directTerm.EAI, isConjugatePolePair.EAI] = dss2pr(delays, matrix, inputGain, outputGain, direct);
+ir.EAI = pr2impz(res.EAI, pol.EAI, directTerm.EAI, isConjugatePolePair.EAI, impulseResponseLength);
 toc
 tic
 [res.eig, pol.eig, directTerm.eig, isConjugatePolePair.eig] = dss2pr_direct(delays, matrix, inputGain, outputGain, direct,'eig');
+ir.eig = pr2impz(res.eig, pol.eig, directTerm.eig, isConjugatePolePair.eig, impulseResponseLength);
 toc
 tic
 [res.polyeig, pol.polyeig, directTerm.polyeig, isConjugatePolePair.polyeig] = dss2pr_direct(delays, matrix, inputGain, outputGain, direct,'polyeig');
+ir.polyeig = pr2impz(res.polyeig, pol.polyeig, directTerm.polyeig, isConjugatePolePair.polyeig, impulseResponseLength);
 toc
 tic
 [res.roots, pol.roots, directTerm.roots, isConjugatePolePair.roots] = dss2pr_direct(delays, matrix, inputGain, outputGain, direct,'roots');
+ir.roots = pr2impz(res.roots, pol.roots, directTerm.roots, isConjugatePolePair.roots, impulseResponseLength);
 toc
 
 % plot
@@ -45,6 +49,28 @@ markers = {'x','o','<','>'};
 for it = 1:length(fnames)
     name = fnames{it};
     plot(angle(pol.(name)),mag2db(abs(pol.(name))),markers{it});
+end
+legend(fnames)
+xlabel('Pole Angle [rad]')
+ylabel('Pole Magnitude [dB]')
+
+figure(2); hold on; grid on;
+fnames = fieldnames(pol);
+markers = {'x','o','<','>'};
+for it = 1:length(fnames)
+    name = fnames{it};
+    plot(angle(pol.(name)),mag2db(abs(res.(name))),markers{it});
+end
+legend(fnames)
+xlabel('Pole Angle [rad]')
+ylabel('Pole Magnitude [dB]')
+
+figure(3); hold on; grid on;
+fnames = fieldnames(pol);
+markers = {'x','o','<','>'};
+for it = 1:length(fnames)
+    name = fnames{it};
+    plot(ir.(name));
 end
 legend(fnames)
 xlabel('Pole Angle [rad]')

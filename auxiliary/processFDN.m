@@ -14,7 +14,7 @@ function output = processFDN(input, delays, A, B, C, D, varargin)
 %    D - direct gains of size [out,in]
 %    inputType (optional) - either 'splitInput', 'mergeInput'
 %    extraMatrix (optional) - e.g. time-varying matrix
-%    absorptionFilters (optional) - filters of size [N,1]
+%    absorptionFilters (optional) - filters of size [N,1] % TODO
 %
 % Outputs:
 %    output - matrix of impulse response [length,out,in]
@@ -30,7 +30,7 @@ function output = processFDN(input, delays, A, B, C, D, varargin)
 p = inputParser;
 p.addParameter('inputType','mergeInput',@(x) ischar(x) );
 p.addParameter('extraMatrix',[]);
-p.addParameter('absorptionFilters',[]);
+p.addParameter('absorptionFilters',eye(numel(delays)));
 parse(p,varargin{:});
 
 inputType = p.Results.inputType;
@@ -62,7 +62,7 @@ function output = loopSub(input, delays, feedbackMatrix, inputGains, outputGains
 
 maxBlockSize = 2^12;
 DelayFilters = feedbackDelay(maxBlockSize,delays);
-FeedbackMatrix = filterMatrix(feedbackMatrix);
+FeedbackMatrix = zFilter2dfilt(feedbackMatrix);
 InputGains = filterMatrix(inputGains);
 OutputGains = filterMatrix(outputGains);
 absorptionFilters = zFilter2dfilt(absorptionFilters); 

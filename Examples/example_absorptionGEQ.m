@@ -24,9 +24,10 @@ feedbackMatrix = randomOrthogonal(N);
 centerFrequencies = [ 63, 125, 250, 500, 1000, 2000, 4000, 8000]; % Hz
 T60frequency = [1, centerFrequencies fs];
 targetT60 = [2; 2; 2.5; 2.3; 2.1; 1.5; 1.1; 0.8; 0.7; 0.7];  % seconds
-absorptionFilters = filterVector(absorptionGEQ(targetT60, delays, fs));
+absorptionFilters = (absorptionGEQ(targetT60, delays, fs));
 
-              
+zAbsorption = zSOS(absorptionFilters,'isDiagonal',true);
+
               
 % power correction filter
 targetPower = [0; 0; -2.5; -3; -4; -5; -11; -13; -15; -18];  % dB
@@ -34,12 +35,12 @@ powerCorrectionFilters = dfilt.df2sos(designGEQ(targetPower));
 
 
 % compute impulse response and apply power correction
-irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', absorptionFilters);
+irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
 % irTimeDomain = powerCorrectionFilters.filter(irTimeDomain);
 
 %% compute poles/zeros
 % TODO fix absorption filters
-[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', absorptionFilters);
+[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 
 difference = irTimeDomain - irResPol;

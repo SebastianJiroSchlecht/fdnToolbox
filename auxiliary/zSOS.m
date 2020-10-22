@@ -11,21 +11,21 @@ classdef zSOS < zFilter
             
             
             % sos is [n,m,nsos,6]
-            [n,m,nsos,len] = size(sos);
-            obj.checkShape(m);
+            [obj.n,obj.m,nsos,len] = size(sos);
+            obj.checkShape(obj.m);
             assert( len == 6, 'SOS need to have 6 coefficients');
             
             obj.sos = sos;
             
-            obj.numberOfDelayUnits = n * nsos * 2;
+            obj.numberOfDelayUnits = obj.n * nsos * 2;
             
             
-            for nn = 1:n
-                for mm = 1:m
+            for nn = 1:obj.n
+                for mm = 1:obj.m
                     for ss = 1:nsos 
                         num = squeeze( sos(nn,mm,ss,1:3));
                         den = squeeze( sos(nn,mm,ss,4:6));
-                        [b,a] = negpolyder(num , den );
+                        [b,a] = negpolyder(num , den, true );
                         obj.dsos(nn,mm,ss,:) = [b,a];
                     end
                 end
@@ -61,5 +61,14 @@ classdef zSOS < zFilter
             val = fgh .* ffgghh; 
             
         end
+        
+        function tf = inverse(obj)
+            % Switch the denominator and numerator
+            isos = obj.sos;
+            isos(:,:,:,1:3) = obj.sos(:,:,:,4:6);
+            isos(:,:,:,4:6) = obj.sos(:,:,:,1:3);
+            
+            tf = zSOS(isos, 'isDiagonal', obj.isDiagonal);
+        end 
     end
 end

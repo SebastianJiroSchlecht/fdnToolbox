@@ -43,6 +43,10 @@ classdef zFilter < handle
         function [n,m] = size(obj)
             n = obj.n;
             m = obj.m;
+            
+            if isempty(n) || isempty(m)
+               error('Size is not defined'); 
+            end
         end
     end
     

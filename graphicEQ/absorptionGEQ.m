@@ -36,10 +36,11 @@ N = length(delays);
 targetG = RT602slope(RT,fs); % dB
 
 %% Design delay proportional filters
-filters(1,N) = dfilt.df2sos;
+numberOfBands = numel(targetG) + 1;
+filters = zeros(N,1,numberOfBands,6);
 for it = 1:N
     optimalSOS = designGEQ( targetG * delays(it) );
-    filters(it) = dfilt.df2sos(optimalSOS);
+    filters(it,:,:,:) = optimalSOS;
 end
 
 

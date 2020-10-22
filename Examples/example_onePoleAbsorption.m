@@ -29,7 +29,7 @@ absorptionFilters = filterVector(tf2dfiltVector(absorption.b,absorption.a));
 
 
 zAbsorption = zTF(permute(absorption.b,[1 3 2]),...  
-                  permute(absorption.a,[1 3 2]),'isDiagonal', true);
+                  permute(absorption.a,[1 3 2]),'isDiagonal', true); % TODO change onePoleAbsorption output
 
 % compute with absorption
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);

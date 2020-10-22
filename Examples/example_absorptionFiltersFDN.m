@@ -33,7 +33,7 @@ targetT60 = [targetT60(1,:); targetT60; targetT60(end,:)];
 absorption = absorptionFilters(T60frequency, targetT60, filterOrder, delays, fs);
 absorptionMatrix = polydiag( absorption );
 
-absorptionFeedbackMatrix = matrixConvolution(feedbackMatrix, absorptionMatrix);
+absorptionFeedbackMatrix = zFIR(matrixConvolution(feedbackMatrix, absorptionMatrix));
 
 % compute impulse response and poles/zeros
 irTimeDomain = dss2impz(impulseResponseLength, delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
