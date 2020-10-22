@@ -28,11 +28,11 @@ loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a)
 absorptionFilters = filterVector(tf2dfiltVector(absorption.b,absorption.a));
 
 
-zAbsorption = zTF(permute(absorption.a,[1 3 2]),...  %% TODO: hack a b inversion
-                  permute(absorption.b,[1 3 2]),'isDiagonal', true);
+zAbsorption = zTF(permute(absorption.b,[1 3 2]),...  
+                  permute(absorption.a,[1 3 2]),'isDiagonal', true);
 
 % compute with absorption
-irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', absorptionFilters);
+irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
 tic
 [res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'DeflationType', 'neighborDeflation', 'absorptionFilters', zAbsorption, 'rejectUnstablePoles', false); % 
 toc

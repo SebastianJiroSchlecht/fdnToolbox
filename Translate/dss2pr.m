@@ -44,7 +44,7 @@ absorptionFilters = p.Results.absorptionFilters;
 rejectUnstablePoles = p.Results.rejectUnstablePoles;
 
 %% Setup Loop Matrix
-delayTF = zDelay(delays, 'isDiagonal', true);
+delayTF = zDelay(-delays, 'isDiagonal', true);
 
 if isnumeric(A) % scalar matrix % TODO clean up
     matrixTF = zFIR(A);   

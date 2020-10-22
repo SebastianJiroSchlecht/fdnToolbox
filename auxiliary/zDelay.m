@@ -10,8 +10,7 @@ classdef zDelay < zFilter
             
             obj.delays = delays;
             
-            obj.numberOfDelayUnits = sum(obj.delays); % TODO not for full delay matrices
-            
+            obj.numberOfDelayUnits = sum(abs(obj.delays)); % TODO not for full delay matrices           
         end
         
         
@@ -21,6 +20,10 @@ classdef zDelay < zFilter
         
         function val = der_(obj,z) 
             val = (z.^(obj.delays-1) .* obj.delays);
+        end
+        
+        function tf = inverse(obj)
+            tf = zDelay(-obj.delays, 'isDiagonal', obj.isDiagonal);
         end
     end
 end

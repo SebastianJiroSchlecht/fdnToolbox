@@ -26,6 +26,8 @@ T60frequency = [1, centerFrequencies fs];
 targetT60 = [2; 2; 2.5; 2.3; 2.1; 1.5; 1.1; 0.8; 0.7; 0.7];  % seconds
 absorptionFilters = filterVector(absorptionGEQ(targetT60, delays, fs));
 
+              
+              
 % power correction filter
 targetPower = [0; 0; -2.5; -3; -4; -5; -11; -13; -15; -18];  % dB
 powerCorrectionFilters = dfilt.df2sos(designGEQ(targetPower));

@@ -28,5 +28,13 @@ classdef zScalar < zFilter
         function val = der_(obj,z)
             val = obj.matrixDer;
         end
+        
+        function tf = inverse(obj)
+            if obj.isDiagonal
+                tf = zScalar(1./obj.matrix, 'isDiagonal', obj.isDiagonal);
+            else
+                tf = zScalar(inv(obj.matrix), 'isDiagonal', obj.isDiagonal);
+            end
+        end
     end
 end

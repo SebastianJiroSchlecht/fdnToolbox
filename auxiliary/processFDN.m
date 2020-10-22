@@ -65,6 +65,8 @@ DelayFilters = feedbackDelay(maxBlockSize,delays);
 FeedbackMatrix = filterMatrix(feedbackMatrix);
 InputGains = filterMatrix(inputGains);
 OutputGains = filterMatrix(outputGains);
+absorptionFilters = zFilter2dfilt(absorptionFilters); 
+
 
 blkSz = min([min(delays), maxBlockSize]);
 

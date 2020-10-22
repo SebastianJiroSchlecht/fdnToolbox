@@ -13,8 +13,8 @@ classdef zDomainLoop < handle
     end
     methods
         function obj = zDomainLoop(delayTF, forwardTF, feedbackTF)
-            obj.delayTF = delayTF;
-            obj.forwardTF = forwardTF;
+            obj.delayTF = delayTF.inverse();
+            obj.forwardTF = forwardTF.inverse();
             obj.feedbackTF = feedbackTF;
             
             obj.numberOfMatrixDelays = obj.feedbackTF.numberOfDelayUnits;

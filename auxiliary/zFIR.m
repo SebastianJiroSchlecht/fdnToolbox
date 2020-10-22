@@ -33,5 +33,9 @@ classdef zFIR < zFilter
         function val = der_(obj,z)
             val = obj.matrixDer.at(z);
         end
+        
+        function tf = inverse(obj)
+            tf = zTF(obj.matrix.denominator, obj.matrix.numerator, 'isDiagonal', obj.isDiagonal);
+        end
     end
 end

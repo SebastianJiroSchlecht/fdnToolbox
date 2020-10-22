@@ -9,9 +9,8 @@ classdef zTF < zFilter
         function obj = zTF(b,a,varargin)
             obj.parseArguments(varargin);
             
-            [n,m,len] = size(b);
-            [n,m,len] = size(a);
-            obj.checkShape(m);
+            [obj.n,obj.m,len] = size(a);
+            obj.checkShape(obj.m);
             
             obj.matrix = tfMatrix(b,a,'z^-1');
             
@@ -35,6 +34,10 @@ classdef zTF < zFilter
         
         function val = der_(obj,z)
             val = obj.matrixDer.at(z);
+        end
+        
+        function tf = inverse(obj)
+            tf = zTF(obj.matrix.denominator, obj.matrix.numerator, 'isDiagonal', obj.isDiagonal);
         end
     end
 end

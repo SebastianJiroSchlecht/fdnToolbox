@@ -4,6 +4,8 @@ classdef zFilter < handle
     properties
         numberOfDelayUnits = 0;
         isDiagonal = false;
+        n
+        m
     end
     
     properties (Constant)
@@ -38,15 +40,19 @@ classdef zFilter < handle
            assert( ~(obj.isDiagonal && m ~= 1), 'For a diagonal filter matrix, provide a vector of filters.'); 
         end
         
+        function [n,m] = size(obj)
+            n = obj.n;
+            m = obj.m;
+        end
     end
     
     
     methods(Abstract)
+         % TODO add description
+         inverse(obj) 
         
-         
          at_(obj,z)
-            
-        
+          
         
          der_(obj,z)
             
