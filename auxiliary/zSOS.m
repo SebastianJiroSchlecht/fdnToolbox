@@ -7,18 +7,14 @@ classdef zSOS < zFilter
     
     methods
         function obj = zSOS(sos, varargin)
-            obj.parseArguments(varargin);
-            
-            
             % sos is [n,m,nsos,6]
             [obj.n,obj.m,nsos,len] = size(sos);
+            obj.parseArguments(varargin);
             obj.checkShape(obj.m);
             assert( len == 6, 'SOS need to have 6 coefficients');
             
             obj.sos = sos;
-            
             obj.numberOfDelayUnits = obj.n * nsos * 2;
-            
             
             for nn = 1:obj.n
                 for mm = 1:obj.m

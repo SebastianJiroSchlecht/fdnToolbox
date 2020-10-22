@@ -7,9 +7,9 @@ classdef zFIR < zFilter
     
     methods
         function obj = zFIR(b,varargin)
-            obj.parseArguments(varargin);
-            
             [obj.n,obj.m,len] = size(b);
+            obj.parseArguments(varargin);
+            obj.checkShape(obj.m);
             
             obj.matrix = tfMatrix(b,ones(obj.n,obj.m),'z^-1');
             

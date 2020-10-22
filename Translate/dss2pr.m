@@ -9,7 +9,8 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 %
 % Inputs:
 %    delays - delays in samples of size [1,N]
-%    A - feedback matrix, scalar or polynomial of size [N,N,(order)]
+%    A - feedback matrix, scalar or polynomial of size [N,N,(order)] % TODO
+%    update
 %    B - input gains of size [N,in]
 %    C - output gains of size [out,N]
 %    D - direct gains of size [out,in]
@@ -44,23 +45,16 @@ absorptionFilters = p.Results.absorptionFilters;
 rejectUnstablePoles = p.Results.rejectUnstablePoles;
 
 %% Setup Loop Matrix
-delayTF = zDelay(delays(:), 'isDiagonal', true); % TODO: initialize with negative exponent, check (:)
+delayTF = zDelay(delays(:), 'isDiagonal', true);
 
-if isnumeric(A) % scalar matrix % TODO clean up
-    matrixTF = zFIR(A);   
-elseif isa(A,'zFilter')
-    matrixTF = A;
-else
-    error('Not defined');
-end
-loopMatrix = zDomainLoop(delayTF, absorptionFilters, matrixTF);
-
+matrixTF = convert2zFilter(A);
 B = convert2zFilter(B);
 C = convert2zFilter(C);
+loopMatrix = zDomainLoop(delayTF, absorptionFilters, matrixTF);
+
+
 
 numberOfPoles = loopMatrix.numberOfDelayUnits;
-
-% debugEAI_newtonStep(loopMatrix); % TODO remove
 
 %% Pole initialization
 poleAngles = linspace(0,2*pi,numberOfPoles+1);

@@ -13,6 +13,7 @@ classdef zScalar < zFilter
         function obj = zScalar(m, varargin)
             [obj.n, obj.m] = size(m);
             obj.parseArguments(varargin);
+            obj.checkShape(obj.m);
             
             assert(ismatrix(m),'Needs a matrix');
             

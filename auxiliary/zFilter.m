@@ -8,10 +8,6 @@ classdef zFilter < handle
         m
     end
     
-    properties (Constant)
-        default_isDiagonal = false;
-    end
-    
     methods
         function val = at(obj,z)
             if obj.isDiagonal
@@ -31,7 +27,7 @@ classdef zFilter < handle
         
         function parseArguments(obj, arg)
             p = inputParser;
-            p.addOptional('isDiagonal', obj.default_isDiagonal);
+            p.addOptional('isDiagonal', false);
             parse(p,arg{:});
             obj.isDiagonal = p.Results.isDiagonal;
         end

@@ -9,6 +9,8 @@ if isnumeric(m)
     else
         zF = zFIR(m);
     end
-else
+elseif isa(m,'zFilter')
     zF = m;
+else
+    error('Type not defined');
 end
