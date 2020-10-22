@@ -23,10 +23,10 @@ loop = zDomainStandardLoop(delays, matrix, revMatrix);
 z = randn(1) + 1i*randn(1);
 mat = loop.feedbackTF.at(z)
 
-invMat = loop.invFeedbackTF.at(1/z)
+% invMat = loop.invFeedbackTF.at(1/z)
 
 %% Test: Is Inverse Matrix
-assert( isAlmostZero( mat * invMat - eye(N)), 'tol', 10^-10 )
+% assert( isAlmostZero( mat * invMat - eye(N)), 'tol', 10^-10 )
 
 %% Test: Identity with inverse matrix 
 timeReversed = flip( revMatrix,3 )
