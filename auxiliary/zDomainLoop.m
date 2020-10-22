@@ -63,7 +63,7 @@ classdef zDomainLoop < handle
 %             obj.delayTF.at(1/z)\obj.delayTF.der(1/z)
             
             % FF * dFF * FF
-            idFF = obj.forwardTF.at(1/z) \ ( obj.forwardTF.der(1/z) / obj.forwardTF.at(1/z) + diag(obj.delayTF.delays*z) ) * obj.delayTF.at(z);
+            idFF = obj.forwardTF.at(1/z) \ ( obj.forwardTF.der(1/z) / obj.forwardTF.at(1/z) + diag(-obj.delayTF.delays*z) ) * obj.delayTF.at(z); % TODO this minus sign is -obj.delayTF.delays  
             
             val = (idFF - idFB) / z^2;
             
