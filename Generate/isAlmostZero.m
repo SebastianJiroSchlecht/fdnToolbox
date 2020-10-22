@@ -1,8 +1,25 @@
 function [isZ, maxVal] = isAlmostZero(A, varargin)
-%Test whether matrix / vector is almost zero in absolute values
+%isAlmostZero - Test whether matrix / vector is almost zero in absolute values
 %
-% Sebastian J. Schlecht, Saturday, 28 December 2019
-% TODO
+% Syntax:  [isZ, maxVal] = isAlmostZero(A, varargin)
+%
+% Inputs:
+%    A - Numerical values to be tested 
+%    tol (optional) - Tolerance value for max deviation from 0. Default: eps*1000
+%
+% Outputs:
+%    isZ - Boolean whether all values in A are almost 0
+%    maxVal - Maximum absolute value in A
+%
+% Example: 
+%    [isZ, maxVal] = isAlmostZero(randn(20,1)*0.000001, 'tol', 0.00001)
+%
+%
+% Author: Dr.-Ing. Sebastian Jiro Schlecht, 
+% Aalto University, Finland
+% email address: sebastian.schlecht@aalto.fi
+% Website: sebastianjiroschlecht.com
+% 23. October 2020; Last revision: 23. October 2020
 
 %% Input parser
 persistent p

@@ -55,5 +55,5 @@ end
 %% Test: Matrices are lossless
 c = struct2cell(isLossless);
 sc = struct2cell(supposedLossless);
-assert( all([c{:}] == [sc{:}]) ) % TODO not all matrices are lossless / some are allpass
+assert( all([c{:}] == [sc{:}]) ) % not all matrices are lossless / some are allpass
 
