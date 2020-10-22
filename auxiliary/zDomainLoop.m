@@ -7,15 +7,20 @@ classdef zDomainLoop < handle
         delayTF
         forwardTF
         feedbackTF
+        feedbackInv
         
         numberOfDelayUnits
         numberOfMatrixDelays
     end
     methods
-        function obj = zDomainLoop(delayTF, forwardTF, feedbackTF)
+        function obj = zDomainLoop(delayTF, forwardTF, feedbackTF, feedbackInv)
             obj.delayTF = delayTF.inverse();
             obj.forwardTF = forwardTF.inverse();
             obj.feedbackTF = feedbackTF;
+            
+            if nargin == 4
+               obj.feedbackInv = feedbackInv; 
+            end
             
             obj.numberOfMatrixDelays = obj.feedbackTF.numberOfDelayUnits;
             obj.numberOfDelayUnits = obj.delayTF.numberOfDelayUnits + obj.forwardTF.numberOfDelayUnits + obj.feedbackTF.numberOfDelayUnits;
@@ -28,6 +33,14 @@ classdef zDomainLoop < handle
         % The delay is inverted explicitely for numerical conditioning
         function val = forwardAtInv(obj,z)
             val = obj.delayTF.at(1/z) / (obj.forwardTF.at(z));
+        end
+        
+        function val = feedbackAtInv(obj,z)
+            if isempty(obj.feedbackInv)
+                val = inv(obj.feedbackTF.at(z));
+            else
+                val = obj.feedbackInv.at(z);
+            end
         end
         
         function val = forwardDer(obj,z)
@@ -43,19 +56,15 @@ classdef zDomainLoop < handle
         end
         
         function val = atRev(obj,z)
-            val = obj.forwardAtInv(1/z) - inv(at(obj.feedbackTF,1/z));
-            
-            
-%             val = obj.delayTF.at(z) * obj.forwardTF.at(z) -
-%             inv(at(obj.feedbackTF,1/z)); % TODO clean up
+            val = obj.forwardAtInv(1/z) - obj.feedbackAtInv(1/z);
         end
         
         
         function val = derRev(obj,z)
             % (K^-1)' = - K^-1 * K' * K^-1
-            FB = obj.feedbackTF.at(1/z);
+            FB = obj.feedbackAtInv(1/z);
             dFB = obj.feedbackTF.der(1/z);
-            idFB = FB \ dFB / FB;
+            idFB = FB * dFB * FB;
             
 %             FF = obj.forwardAtInv(1/z);
 %             dFF = obj.forwardDer(1/z);

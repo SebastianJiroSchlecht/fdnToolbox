@@ -1,12 +1,16 @@
 % Example for zFilter
-% TODO
+% 
+% Testing script for the computation of zFilters and verifaction with a
+% numerical differentation method.
+%
 % Sebastian J. Schlecht, Tuesday, 20. October 2020
 
 clear; clc; close all;
 
+rng(2)
 nfft = 2^14;
 
-%% tf
+%% Test: Transfer function and derivative
 n = 2; % size of filter matrix
 m = 1; %
 order = 5;
@@ -22,10 +26,15 @@ dh = diff(h) ./ diff(ww);
 z = zTF(b,a,'isDiagonal',true);
 [hh,dhh] = probeZFilter(z,ww);
 
+% plot
+plotLines(w,h,hh,dh,dhh)
 
+% Direct and numerical estimation
+assert(isAlmostZero(abs(h - hh)))
+assert(isAlmostZero(abs(dh - dhh(2:end)),'tol',.1))
 
 %% sos
-
+close all;
 nsos = 3; % at least 2
 n = 2; % size of filter matrix
 m = 1; %
@@ -41,6 +50,19 @@ z = zSOS(sos, 'isDiagonal', false);
 [hh,dhh] = probeZFilter(z,ww);
 
 % plot
+plotLines(w,h,hh,dh,dhh)
+
+% Direct and numerical estimation
+assert(isAlmostZero(abs(h - hh)))
+assert(isAlmostZero(abs(dh - dhh(2:end)),'tol',0.1))
+
+
+
+
+
+
+function plotLines(w,h,hh,dh,dhh)
+
 figure(1); hold on; grid on;
 offset = 0.1;
 plot(w,real(h))
@@ -61,11 +83,11 @@ legend({'Real Freqz','Imag Freqz', 'Real zFilter','Imag zFilter'})
 xlabel('Frequency [rad]')
 ylabel('Amplitude [lin]')
 
-%% Test: script finished
-assert(1 == 1);
-
+end
 
 function [hh,dhh] = probeZFilter(z,ww)
+hh = 0*ww;
+dhh = 0*ww;
 for it = 1:numel(ww)
     mat = z.at( ww(it) );
     hh(it) = mat(1,1);

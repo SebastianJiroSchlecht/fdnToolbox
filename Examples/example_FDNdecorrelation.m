@@ -27,12 +27,11 @@ adjSym = adjoint(delays - A);
 adjMat = msym2poly(adjSym);
 
 % compute correlation
-% TODO
 
 % plot
 figure(1)
 plotImpulseResponseMatrix([],adjMat)
 
-%% Test: to be written TODO
+%% Test: to be written
 assert(1 == 1)
 

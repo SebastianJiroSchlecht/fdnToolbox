@@ -14,22 +14,19 @@ N = 3;
 K = 2;
 delays = randi([10,20],[N,1]);
 
-[matrix,revMatrix] = constructCascadedParaunitaryMatrix( N, K, 'matrixType', 'random' );
-
-% TODO clean up inverse matrix
-loop = zDomainStandardLoop(delays, matrix, revMatrix);
+[matrix,matrixInverse] = constructCascadedParaunitaryMatrix( N, K, 'matrixType', 'random' );
+loop = zDomainStandardLoop(delays, matrix, matrixInverse);
 
 % Compute matrices at z
 z = randn(1) + 1i*randn(1);
-mat = loop.feedbackTF.at(z)
-
-% invMat = loop.invFeedbackTF.at(1/z)
+mat = loop.feedbackTF.at(z);
+invMat = loop.feedbackInv.at(1/z);
 
 %% Test: Is Inverse Matrix
-% assert( isAlmostZero( mat * invMat - eye(N)), 'tol', 10^-10 )
+assert( isAlmostZero( mat * invMat - eye(N)), 'tol', 10^-10 )
 
 %% Test: Identity with inverse matrix 
-timeReversed = flip( revMatrix,3 )
+timeReversed = flip( matrixInverse,3 );
 identityCheck = matrixConvolution(matrix,  timeReversed) ;
 identityCheck(:,:,ceil(end/2)) = identityCheck(:,:,ceil(end/2)) - eye(N);
 
