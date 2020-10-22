@@ -1,10 +1,10 @@
-function [filters] = absorptionGEQ(RT, delays, fs)
+function [sos] = absorptionGEQ(RT, delays, fs)
 % absorptionGEQ - Design GEQ absorption filters according to specified T60
 %
 % Schlecht, S., Habets, E. (2017). Accurate reverberation time control in
 % feedback delay networks Proc. Int. Conf. Digital Audio Effects (DAFx)
 %
-% Syntax:  [b,a] = absorptionGEQ(RT, delays, fs)
+% Syntax:  [sos] = absorptionGEQ(RT, delays, fs)
 %
 % Inputs:
 %    RT - Reverberation time in [seconds] at ten frequency bands
@@ -12,11 +12,10 @@ function [filters] = absorptionGEQ(RT, delays, fs)
 %    fs - Sampling frequency
 %
 % Outputs:
-%    b - Filter numerator % TODO fix output argument documentation
-%    a - Filter denominators
+%    sos - Filter SOS of size [numel(delays), 1, 11, 6]
 %
 % Example:
-%    [b,a] = absorptionGEQ(ones(10,1), [100, 130], 48000)
+%    [sos] = absorptionGEQ(ones(10,1), [100, 130], 48000)
 %
 % Other m-files required: none
 % Subfunctions: none
@@ -29,18 +28,17 @@ function [filters] = absorptionGEQ(RT, delays, fs)
 % Website: sebastianjiroschlecht.com
 % 17. January 2020; Last revision: 17. January 2020
 
-N = length(delays);
+numberOfDelays = length(delays);
 
 %% Convert T60 to magnitude response
-
 targetG = RT602slope(RT,fs); % dB
 
 %% Design delay proportional filters
 numberOfBands = numel(targetG) + 1;
-filters = zeros(N,1,numberOfBands,6);
-for it = 1:N
+sos = zeros(numberOfDelays,1,numberOfBands,6);
+for it = 1:numberOfDelays
     optimalSOS = designGEQ( targetG * delays(it) );
-    filters(it,:,:,:) = optimalSOS;
+    sos(it,:,:,:) = optimalSOS;
 end
 
 

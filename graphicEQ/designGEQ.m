@@ -1,15 +1,29 @@
-function [optimalSOS, targetF] = designGEQ ( targetG )
-% Graphic EQ with 10 bands
-%
-% targetG is the target magnitude response in dB of size [10,1]; 
-%
-% TODO: add documentation
-%
+function [sos, targetF] = designGEQ ( targetG )
+%designGEQ - Graphic EQ with 10 bands
 % All About Audio Equalization: Solutions and Frontiers
 % by V. Välimäki and J. Reiss, 
 % in Applied Sciences, vol. 6, no. 5, p. 129, May 2016.
 %
-% Sebastian J. Schlecht, Monday, 19. October 2020
+% Syntax:  [sos, targetF] = designGEQ ( targetG )
+%
+% Inputs:
+%    targetG - target magnitude response in dB of size [10,1]
+%
+% Outputs:
+%    sos - Filter coefficients as SOS of size [10,6]
+%    targetF - Band Center frequencies of size [1,10]
+%
+% Example: 
+%    [sos, targetF] = designGEQ ( 1:10 )
+%
+%
+% See also: OTHER_FUNCTION_NAME1,  OTHER_FUNCTION_NAME2
+% Author: Dr.-Ing. Sebastian Jiro Schlecht, 
+% Aalto University, Finland
+% email address: sebastian.schlecht@aalto.fi
+% Website: sebastianjiroschlecht.com
+% 23. October 2020; Last revision: 23. October 2020
+
 
 % Initialization
 % Setup variables such as sampling frequency, center frequencies and
@@ -50,4 +64,4 @@ lowerBound = -upperBound;
 
 optG = lsqlin(G, targetInterp, [],[],[],[], lowerBound, upperBound);
 % optG = G\targetInterp; % unconstrained solution
-optimalSOS = graphicEQ( centerOmega, shelvingOmega, R, optG );
+sos = graphicEQ( centerOmega, shelvingOmega, R, optG );

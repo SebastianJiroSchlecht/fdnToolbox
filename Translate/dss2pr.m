@@ -9,13 +9,13 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 %
 % Inputs:
 %    delays - delays in samples of size [1,N]
-%    A - feedback matrix, scalar or polynomial of size [N,N,(order)] % TODO
-%    update
-%    B - input gains of size [N,in]
-%    C - output gains of size [out,N]
-%    D - direct gains of size [out,in]
+%    A - feedback matrix, scalar or polynomial of size [N,N,(order)] or
+%    zFilter
+%    B - input gains of size [N,in] or zFilter
+%    C - output gains of size [out,N] or zFilter
+%    D - direct gains of size [out,in] or zFilter
 %    deflationType (optional) - either 'fullDeflation', 'noDeflation', 'neighborDeflation'
-%    absorptionFilter (optional) - per delay filter
+%    absorptionFilter (optional) - per delay filter as zFilter
 %    rejectUnstablePoles (optional) - boolean
 %
 % Outputs:
@@ -45,14 +45,11 @@ absorptionFilters = p.Results.absorptionFilters;
 rejectUnstablePoles = p.Results.rejectUnstablePoles;
 
 %% Setup Loop Matrix
-delayTF = zDelay(delays(:), 'isDiagonal', true);
-
+delayTF = zDelay(delays.', 'isDiagonal', true);
 matrixTF = convert2zFilter(A);
 B = convert2zFilter(B);
 C = convert2zFilter(C);
 loopMatrix = zDomainLoop(delayTF, absorptionFilters, matrixTF);
-
-
 
 numberOfPoles = loopMatrix.numberOfDelayUnits;
 
@@ -80,18 +77,14 @@ if rejectUnstablePoles
     quality = quality(ind);
 end
 
-
 %% Filter high quality poles
 isConverged = quality < qualityThreshold * 1000; % be looser here than in the search
 poles = poles(isConverged);
 metaData.convergedPoles = poles;
 
 if length(poles) ~= numberOfPoles
-    warning('Poles did not converge: %d instead of %d',length(poles),numberOfPoles);
+    warning('Some poles did not converge: %d instead of %d',length(poles),numberOfPoles);
 end
-
-
-
 
 %% Pair complex-conjugated pairs
 [poles, isConjugatePolePair, metaData.nonPairedPoles] = reduceConjugatePairs(poles);
