@@ -26,17 +26,16 @@ delays = randi([50,1000],[1,N]);
 
 feedbackMatrix = randomOrthogonal(N)/1.5;
 
-absorption.a = zeros(N,2);
-absorption.a(:,1) = 1;
-absorption.b = zeros(N,2);
-absorption.b(:,1) = 0.65;
-absorption.b(:,2) = 0.3;
-
-loopMatrix = zDomainAbsorptionMatrix(feedbackMatrix, absorption.b, absorption.a);
+absorption.a = zeros(N,1,2);
+absorption.a(:,1,1) = 1;
+absorption.b = zeros(N,1,2);
+absorption.b(:,1,1) = 0.65;
+absorption.b(:,1,2) = 0.3;
+zAbsorption = zTF(absorption.b,absorption.a,'isDiagonal',true);
 
 % compute
 [MinCurve,MaxCurve,w] = poleBoundaries(delays, absorption, feedbackMatrix);
-[res, pol, directTerm, isConjugatePolePair] = dss2pr(delays, loopMatrix, inputGain, outputGain, direct);
+[res, pol, directTerm, isConjugatePolePair] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
 
 % plot
 figure(1); hold on; grid on;

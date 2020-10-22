@@ -9,7 +9,10 @@ classdef zTF < zFilter
         function obj = zTF(b,a,varargin)
             obj.parseArguments(varargin);
             
+            [bn,bm,len] = size(b);
             [obj.n,obj.m,len] = size(a);
+            assert(bn == obj.n, 'Filter sizes need to match')
+            assert(bm == obj.m, 'Filter sizes need to match')
             obj.checkShape(obj.m);
             
             obj.matrix = tfMatrix(b,a,'z^-1');

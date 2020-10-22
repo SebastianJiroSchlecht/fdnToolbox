@@ -7,7 +7,7 @@ function [MinCurve,MaxCurve,w] = poleBoundaries(delays, absorption, feedbackMatr
 %
 % Inputs:
 %    delays - Vector of delays in FDN in [samples]
-%    absorption - Vector of absorption filters in FDN = (absorption.b, absorption.a)
+%    absorption - Vector of absorption filters of size [numel(delays),1,len]
 %    feedbackMatrix - Matrix of feedback gains / filters
 %    nfft (optional) - Number of Frequency Bins 
 %
@@ -49,8 +49,8 @@ for it = 1:nfft
 end
 
 %% combine with absorption
-b = absorption.b;
-a = absorption.a;
+b = permute(absorption.b, [1 3 2]);
+a = permute(absorption.a, [1 3 2]);
 
 H = zeros(nfft,N);
 G = zeros(nfft,N);
