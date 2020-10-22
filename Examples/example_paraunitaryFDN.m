@@ -27,11 +27,11 @@ delays = ( randi([1250,6500],[1,N]) );
 % Paraunitary Feedback Matrix
 K = 3; 
 [feedbackMatrix, revMatrix] = constructCascadedParaunitaryMatrix( N, K);
-
+zFeedbackMatrix = zFIR(feedbackMatrix);
 
 % Compute impulse response and poles/zeros
-irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);
-[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct);
+irTimeDomain = dss2impz(impulseResponseLength, delays, zFeedbackMatrix, inputGain, outputGain, direct);
+[res, pol, directTerm, isConjugatePolePair, metaData] = dss2pr(delays, zFeedbackMatrix, inputGain, outputGain, direct);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength, 'lowMemory');
 
 % Evaluate IR Difference between time-domain recursion and poles/zeros

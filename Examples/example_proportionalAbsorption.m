@@ -32,7 +32,7 @@ feedbackMatrix = randomOrthogonal(N) * diag(absorption);
 
 % filter matrix version
 feedbackMatrix = constructCascadedParaunitaryMatrix( N, 2, 'gainPerSample', gainPerSample );
-feedbackMatrix = matrixConvolution(feedbackMatrix,polydiag(absorption));
+feedbackMatrix = zFIR(matrixConvolution(feedbackMatrix,polydiag(absorption)));
 
 % compute
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);

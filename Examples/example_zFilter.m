@@ -40,7 +40,7 @@ dh = diff(h) ./ diff(ww);
 z = zSOS(sos, 'isDiagonal', false);
 [hh,dhh] = probeZFilter(z,ww);
 
-%% plot
+% plot
 figure(1); hold on; grid on;
 offset = 0.1;
 plot(w,real(h))
@@ -61,7 +61,7 @@ legend({'Real Freqz','Imag Freqz', 'Real zFilter','Imag zFilter'})
 xlabel('Frequency [rad]')
 ylabel('Amplitude [lin]')
 
-% Test: script finished
+%% Test: script finished
 assert(1 == 1);
 
 

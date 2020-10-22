@@ -27,14 +27,14 @@ for it = 1:length(matrixTypes)
    type = matrixTypes{it};
    switch type
        case 'RandomDense'
-           feedbackMatrix = constructCascadedParaunitaryMatrix(N,numStages);
+           feedbackMatrix = zFIR(constructCascadedParaunitaryMatrix(N,numStages));
        case 'Velvet'
            sparsity = 3;
-           feedbackMatrix = constructVelvetFeedbackMatrix(N,numStages,sparsity);
+           feedbackMatrix = zFIR(constructVelvetFeedbackMatrix(N,numStages,sparsity));
        case 'fromElementals'
-           feedbackMatrix = constructParaunitaryFromElementals(N,N*numStages);
+           feedbackMatrix = zFIR(constructParaunitaryFromElementals(N,N*numStages));
        case 'noScatter'
-           feedbackMatrix = randomOrthogonal(N);    
+           feedbackMatrix = zFIR(randomOrthogonal(N));    
    end
    
    irTimeDomain.(type) = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct);

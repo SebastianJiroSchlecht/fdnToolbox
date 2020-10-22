@@ -38,7 +38,7 @@ powerCorrectionFilters = dfilt.df2sos(designGEQ(targetPower));
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
 % irTimeDomain = powerCorrectionFilters.filter(irTimeDomain);
 
-%% compute poles/zeros
+% compute poles/zeros
 % TODO fix absorption filters
 [res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
@@ -48,7 +48,7 @@ fprintf('Maximum devation betwen time-domain and pole-residues is %f\n', permute
 % 
 [reverberationTimeEarly, reverberationTimeLate, F0, powerSpectrum, edr] = reverberationTime(irTimeDomain, fs);
 
-%% plot
+% plot
 figure(1); hold on; grid on;
 t = 1:size(irTimeDomain,1);
 plot( t, difference(1:end) );

@@ -1,11 +1,10 @@
 function d = zFilter2dfilt(zF)
 
 if ismatrix(zF)
-    [n,m] = size(zF);
     isDiagonal = false;
-    d = dfiltMatrix(n,m,isDiagonal);
-    d.filters = zF;
-    
+    d = makeScalarMatrix(zF,isDiagonal);
+elseif isa(zF,'zScalar')
+    d = makeScalarMatrix(zF.matrix,zF.isDiagonal);
 elseif isa(zF,'zFilter')
     
     if isa(zF,'zSOS')
@@ -40,3 +39,9 @@ elseif isa(zF,'zFilter')
 else
     error('Provide a zFilter or scalar gains');
 end
+
+
+function d = makeScalarMatrix(zF,isDiagonal)
+[n,m] = size(zF);
+d = dfiltMatrix(n,m,isDiagonal);
+d.filters = zF;
