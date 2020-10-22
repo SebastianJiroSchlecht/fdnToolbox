@@ -54,16 +54,29 @@ classdef zDomainLoop < handle
             % (K^-1)' = - K^-1 * K' * K^-1
             FB = obj.feedbackTF.at(1/z);
             dFB = obj.feedbackTF.der(1/z);
+            idFB = FB \ dFB / FB;
             
-            FF = obj.forwardAtInv(1/z);
-            dFF = obj.forwardDer(1/z);
+%             FF = obj.forwardAtInv(1/z);
+%             dFF = obj.forwardDer(1/z);
             
-            val = (FF * dFF * FF - FB \ dFB / FB) / z^2;
-%             val1
+%             obj.delayTF.delays*z
+%             obj.delayTF.at(1/z)\obj.delayTF.der(1/z)
             
-            val = obj.forwardDer(z) - obj.feedbackTF.at(1/z) \ obj.feedbackTF.der(1/z) / obj.feedbackTF.at(1/z) / z^2; % (K^-1)' = - K^-1 * K' * K^-1
+            % FF * dFF * FF
+            idFF = obj.forwardTF.at(1/z) \ ( obj.forwardTF.der(1/z) / obj.forwardTF.at(1/z) + diag(obj.delayTF.delays*z) ) * obj.delayTF.at(z);
+            
+            val = (idFF - idFB) / z^2;
+            
+       
+%             val = obj.forwardDer(z) - obj.feedbackTF.at(1/z) \ obj.feedbackTF.der(1/z) / obj.feedbackTF.at(1/z) / z^2; % (K^-1)' = - K^-1 * K' * K^-1
 %             val
-            ok = 1; 
+
+            
+            
+%             if (max(abs(val1(:) - val(:))) > 0.001)
+%                 ok = 1;
+%             end
+             
         end
         
         function step = inverseNewtonStep(obj,z)
@@ -71,13 +84,17 @@ classdef zDomainLoop < handle
             if (abs(z) <= 1)
                 step = trace( obj.at(z)  \ obj.der(z)  ) + obj.numberOfMatrixDelays / z;
             else
-                step = trace(obj.feedbackTF.at(z)\obj.feedbackTF.der(z)) ...
-                    + trace(obj.forwardAtInv(z)*obj.forwardDer(z)) ...
-                    - trace(obj.atRev(iz)\obj.derRev(iz)) / z^2 ...
-                    + obj.numberOfMatrixDelays / z;
+%                 step = trace(obj.feedbackTF.at(z)\obj.feedbackTF.der(z)) ...
+%                     + trace(obj.forwardAtInv(z)*obj.forwardDer(z)) ...
+%                     - trace(obj.atRev(iz)\obj.derRev(iz)) / z^2 ...
+%                     + obj.numberOfMatrixDelays / z;
                 
                 reversedNewton = trace( obj.atRev(1/z)  \ obj.derRev(1/z) ) + trace(  obj.feedbackTF.at(z) \ obj.feedbackTF.der(z) / -(1/z)^2 );
                 step = obj.numberOfDelayUnits / z - reversedNewton / z^2;
+                
+                if isnan(step)
+                   error('Invalide step due to bad numerical conditioning.') 
+                end
             end
         end
     end
