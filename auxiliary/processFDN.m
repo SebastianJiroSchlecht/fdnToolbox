@@ -37,21 +37,22 @@ inputType = p.Results.inputType;
 extraMatrix = p.Results.extraMatrix;
 absorptionFilters = p.Results.absorptionFilters;
 
-%% Process
-numInput = size(B,2);
-
-if isnumeric(C) % TODO not pretty
-    numOutput = size(C,1);
-else
-    numOutput = C.n;
-end
-
+%% Initialize
+A = convert2zFilter(A);
+B = convert2zFilter(B);
+C = convert2zFilter(C);
+numInput = B.m;
 inputLen = size(input,1);
+
+%% Process
 switch inputType
     case 'splitInput'
         output = zeros(inputLen, numOutput, numInput);
+        splitGain = zeros(1,numInput);
         for itIn = 1:numInput
-            output(:,:,itIn) = loopSub(input(:,itIn), delays, A, B(:,itIn), C, extraMatrix, absorptionFilters);
+            splitGain(:) = 0;
+            splitGain(itIn) = 1;
+            output(:,:,itIn) = loopSub(input .* splitGain, delays, A, B, C, extraMatrix, absorptionFilters);
         end
         output = output + permute( input, [1 3 2]) .* permute( D, [3 1 2]) ;
         
@@ -69,7 +70,7 @@ function output = loopSub(input, delays, feedbackMatrix, inputGains, outputGains
 maxBlockSize = 2^12;
 DelayFilters = feedbackDelay(maxBlockSize,delays);
 FeedbackMatrix = zFilter2dfilt(feedbackMatrix);
-InputGains = filterMatrix(inputGains);
+InputGains = zFilter2dfilt(inputGains);
 OutputGains = zFilter2dfilt(outputGains);
 absorptionFilters = zFilter2dfilt(absorptionFilters); 
 

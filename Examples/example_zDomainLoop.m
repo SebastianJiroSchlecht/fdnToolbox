@@ -33,14 +33,14 @@ type = 'StableScalarMatrix';
 absorption.(type) = noFilter;
 feedbackMatrix.(type) = randomOrthogonal(N) * diag(rand(N,1)) * randomOrthogonal(N);
 inverseMatrix.(type) = inv(feedbackMatrix.(type));
-matrixTF.(type) = zScalar(feedbackMatrix.(type));
-% invmatTF.(type) = zScalar(inverseMatrix.(type));
+matrixTF.(type) = feedbackMatrix.(type);
+% invmatTF.(type) = inverseMatrix.(type);
 
 type = 'ParaunitaryFIRMatrix';
 absorption.ParaunitaryFIRMatrix = noFilter;
 [feedbackMatrix.(type),inverseMatrix.(type)] = constructCascadedParaunitaryMatrix(N,3,'matrixType','random');
-matrixTF.(type) = zFIR(feedbackMatrix.(type));
-% invmatTF.(type) = zDomainMatrix(inverseMatrix.(type));
+matrixTF.(type) = feedbackMatrix.(type);
+% invmatTF.(type) = inverseMatrix.(type);
 
 type = 'AbsorptionInMatrix';
 absorption.(type) = onePole;
@@ -53,7 +53,8 @@ matrixTF.(type) = zTF(numerator,denominator);
 % compute impulse response and poles/zeros
 fnames = fieldnames(matrixTF);
 
-for it = 1:length(fnames)
+%% Test: Impulse Response Accuracy
+for it = 2:length(fnames)
     type = fnames{it};
     irTimeDomain = dss2impz(impulseResponseLength, delays, matrixTF.(type), inputGain, outputGain, direct);
     [res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, matrixTF.(type), inputGain, outputGain, direct);
@@ -62,7 +63,9 @@ for it = 1:length(fnames)
     difference = irTimeDomain - irResPol;
     fprintf('Maximum devation betwen time-domain and pole-residues is %f\n', permute(max(abs(difference),[],1),[2 3 1]));
     
-    %% plot
+    assert(isAlmostZero(difference,'tol',10^0)) % TODO bad due to extra filters
+    
+    % plot
     close all;
     
     figure(1); hold on; grid on;
@@ -86,6 +89,5 @@ for it = 1:length(fnames)
     ylabel('Pole Magnitude [linear]')
 end
 
-%% Test: script finished
-assert(1 == 1);
+
 

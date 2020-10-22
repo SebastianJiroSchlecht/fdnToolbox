@@ -25,7 +25,10 @@ function impulseResponse = dss2impz(irLen, delays, A, B, C, D, varargin)
 % 28 December 2019; Last revision: Friday, 17. January 2020
 
 %% Initialize
-numInput = size(B,2);
+A = convert2zFilter(A);
+B = convert2zFilter(B);
+C = convert2zFilter(C);
+numInput = B.m;
 
 %% Create dirac pulse
 input = zeros(irLen, numInput);

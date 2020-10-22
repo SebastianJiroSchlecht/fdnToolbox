@@ -59,8 +59,6 @@ poleAngles = poleAngles(1:end-1);
 poles = exp(1i * poleAngles);
 qualityThreshold = 1000 * eps;
 
-%% Initialize Extra Filter Poles directly
-% TODO
 
 %% Find poles
 [poles,quality, metaDataRefine] = refinePolePositions(poles, loopMatrix,...
@@ -85,6 +83,11 @@ metaData.convergedPoles = poles;
 if length(poles) ~= numberOfPoles
     warning('Some poles did not converge: %d instead of %d',length(poles),numberOfPoles);
 end
+
+%% Initialize Extra Filter Poles directly
+% TODO
+% filterPoles = loopMatrix.feedbackTF.matrix.poles;
+% poles = [poles filterPoles];
 
 %% Pair complex-conjugated pairs
 [poles, isConjugatePolePair, metaData.nonPairedPoles] = reduceConjugatePairs(poles);

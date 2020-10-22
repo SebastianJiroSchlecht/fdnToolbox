@@ -1,6 +1,6 @@
 classdef zDomainLoop < handle
     % FDN Loop P(z) = Delay(z) * Forward(z) - Backward(z)
-    %
+    % TODO document
     %
     % Sebastian J. Schlecht, Sunday, 29 December 2019
     properties
@@ -46,7 +46,8 @@ classdef zDomainLoop < handle
             val = obj.forwardAtInv(1/z) - inv(at(obj.feedbackTF,1/z));
             
             
-%             val = obj.delayTF.at(z) * obj.forwardTF.at(z) - inv(at(obj.feedbackTF,1/z));
+%             val = obj.delayTF.at(z) * obj.forwardTF.at(z) -
+%             inv(at(obj.feedbackTF,1/z)); % TODO clean up
         end
         
         

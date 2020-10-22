@@ -10,7 +10,7 @@ classdef tfMatrix
     % 1, z^-1, z^-2, z^-3, ...
     %
     % Sebastian J. Schlecht, Wednesday, 21 August 2019
-
+    
     properties
         numerator
         denominator
@@ -44,7 +44,7 @@ classdef tfMatrix
                 
                 % computation acceleration
                 obj.flipNumerator = flip(obj.numerator,3);
-                obj.flipDenominator = flip(obj.denominator,3);            
+                obj.flipDenominator = flip(obj.denominator,3);
             end
         end
         
@@ -94,7 +94,17 @@ classdef tfMatrix
             num = matrixConvolution(obj1.numerator,obj2.numerator);
             den = matrixConvolution(obj1.denominator,obj2.denominator);
             r = tfMatrix(num,den);
-            
+        end
+        
+        function r = poles(obj)
+            R = [];
+            [n,m,len] = size(obj.denominator);
+            for nn = 1:n
+                for mm = 1:m
+                    R = [R roots(obj.denominator(nn,mm,:))];
+                end
+            end
+            r = unique(R);
         end
     end
 end
