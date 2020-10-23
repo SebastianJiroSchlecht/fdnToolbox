@@ -1,0 +1,1 @@
+function F = decay_model(x,xd,expf,w)% x = model coefficients% xd = vector of time points% expf = scaling factor% w = weight vector (for time points)if nargin<4 w=ones(length(xd),1); endif nargin<3 expf=0.4; endy1 = x(1)*exp(x(2)*xd); y2 = x(3);F  = w.*(y1.^2+y2.^2).^(0.5*expf);

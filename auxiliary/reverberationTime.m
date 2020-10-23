@@ -1,7 +1,18 @@
 function [reverberationTimeEarly, reverberationTimeLate, F0, powerSpectrum, edr] = reverberationTime(h, fs)
 % reverberationTime = calculate the reverberation time for impulse response h in seconds (according to fs)
 %
-% Syntax:  [reverberationTimeEarly, reverberationTimeLate, F0, powerSpectrum, edr] = reverberationTime(h, fs)
+% Based on Antsalo, P., Mäkivirta, A., Välimäki, V., Peltonen, T.,
+% Karjalainen, M. (2001). Estimation of Modal Decay Parameters from Noisy
+% Response Measurements Audio Engineering Society Convention 110 
+%
+% Löllmann, H., Vary, P. (2011). Estimation of the frequency dependent
+% reverberation time by means of warped filter-banks International
+% Conference on Acoustics, Speech and Signal Processing (ICASSP)
+% https://dx.doi.org/10.1109/icassp.2011.5946402
+%
+% Syntax:
+% [reverberationTimeEarly, reverberationTimeLate, F0, powerSpectrum, edr] =
+% reverberationTime(h, fs)
 %
 % Inputs:
 %    h - Impulse response
@@ -27,7 +38,7 @@ function [reverberationTimeEarly, reverberationTimeLate, F0, powerSpectrum, edr]
 % 17. January 2020; Last revision: 17. January 2020
 
 %% Filter in octave bands and compute EDR
-[bandH, F0] = filterOctaveBands(h, 3, 8, fs);
+[bandH, F0] = filterOctaveBands(h, 1, 8, fs);
 edr = EDC(bandH);
 edr = bsxfun(@plus, edr, size(F0,2):-1:1);
 time = (1:length(edr))';
@@ -41,25 +52,28 @@ tEarlyLate = zeros(1,numBands);
 for it=1:numBands
     m = max(edr(:,it));
     t = find(edr(:,it) < m - 10,1,'first');
-    tt = find(edr(:,it) < m - 30,1,'first');
+    tt = find(edr(:,it) < m - 60,1,'first');
     if isempty(t) t = round(length(edr)/2); end
     if isempty(tt) tt = length(edr); end
     pEarly(:,it) = polyfit(time(1:t), edr(1:t,it), 1);
-    pLate(:,it) = polyfit(time(t:tt), edr(t:tt,it), 1);
+%     pLate(:,it) = polyfit(time(t:tt), edr(t:tt,it), 1);
+    
+    coeffs=decay2_fit(edr(t:tt,it) - edr(t,it),[],[]);
+    pLate(1,it) = coeffs(2);
     
     tEarlyLate(:,it) = t;
 end
 reverberationTimeEarly = -60 ./ pEarly(1,:) / fs;
 reverberationTimeLate = -60 ./ pLate(1,:) / fs;
 
-bandwidthEnergyCompensation = -(1:numBands)/4; %TODO: energy compensation is a hack
-powerSpectrum = edr(1,:) ./ reverberationTimeLate + 0*bandwidthEnergyCompensation; 
+bandwidthEnergyCompensation = linspace(0,20,numBands);
+powerSpectrum = ((edr(1,:) ) ./ reverberationTimeLate - bandwidthEnergyCompensation); 
 
 
 
 function [y, F0] = filterOctaveBands(x, bandsPerOctave, filterOrder, fs)
 % calculates warped octave filter banks
-switch 'usePrecalculate'
+switch 'useToolbox'
     case 'useToolbox'
         % get valied frequencies
         BandsPerOctave = 1;

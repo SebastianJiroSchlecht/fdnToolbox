@@ -62,6 +62,7 @@ G = G / prototypeGain; % dB vs control frequencies
 upperBound = [Inf, 2 * prototypeGain * ones(1,numFreq)];
 lowerBound = -upperBound;
 
-optG = lsqlin(G, targetInterp, [],[],[],[], lowerBound, upperBound);
+opts = optimset('Display','off');
+optG = lsqlin(G, targetInterp, [],[],[],[], lowerBound, upperBound, [], opts);
 % optG = G\targetInterp; % unconstrained solution
 sos = graphicEQ( centerOmega, shelvingOmega, R, optG );
