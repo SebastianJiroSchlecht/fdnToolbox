@@ -32,3 +32,6 @@ legend({'this'})
 xlabel('Frequency [Hz]')
 ylabel('Power Spectrum')
 set(gca, 'XScale', 'log')
+
+%% Test: script finnished
+assert(1 == 1)
