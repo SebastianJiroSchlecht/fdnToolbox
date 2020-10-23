@@ -1,4 +1,4 @@
-classdef zDomainLoop < handle
+classdef zFDNloop < handle
     % FDN Loop P(z) = Delay(z) * Forward(z) - Backward(z)
     % TODO document
     %
@@ -13,7 +13,7 @@ classdef zDomainLoop < handle
         numberOfMatrixDelays
     end
     methods
-        function obj = zDomainLoop(delayTF, forwardTF, feedbackTF, feedbackInv)
+        function obj = zFDNloop(delayTF, forwardTF, feedbackTF, feedbackInv)
             obj.delayTF = delayTF.inverse();
             obj.forwardTF = forwardTF.inverse();
             obj.feedbackTF = feedbackTF;

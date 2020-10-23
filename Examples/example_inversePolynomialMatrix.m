@@ -15,7 +15,7 @@ K = 2;
 delays = randi([10,20],[N,1]);
 
 [matrix,matrixInverse] = constructCascadedParaunitaryMatrix( N, K, 'matrixType', 'random' );
-loop = zDomainStandardLoop(delays, matrix, matrixInverse);
+loop = zFDNloopSimple(delays, matrix, matrixInverse);
 
 % Compute matrices at z
 z = randn(1) + 1i*randn(1);

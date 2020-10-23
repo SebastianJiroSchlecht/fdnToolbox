@@ -104,7 +104,7 @@ invNewtonSymRev = numberOfPoles / zz - reversedNewton / zz^2;
 invNewtonSymRevDouble = double(subs(invNewtonSymRev,z))
 
 % Direct Matrix
-zZ = zDelay(-delays,'isDiagonal',true);
+zZ = zDelay(-delays.','isDiagonal',true);
 zA = tfMatrix(A,ones(N),'z^-1');
 zADer = derive(zA);
 Pz = zZ.at(z) - at(zA,z);
@@ -122,7 +122,7 @@ gcpDerVal =  polyval(gcpDer,z);
 invNewtonGCP = gcpDerVal / gcpVal
 
 % Loop
-loop = zDomainStandardLoop(delays, A);
+loop = zFDNloopSimple(delays, A);
 invNewtonLoop = trace( loop.at(z)  \ loop.der(z)  ) + degA/z
 
 % Reverse Loop

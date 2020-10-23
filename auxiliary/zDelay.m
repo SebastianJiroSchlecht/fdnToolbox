@@ -9,8 +9,7 @@ classdef zDelay < zFilter
         function obj = zDelay(delays, varargin)
             obj.parseArguments(varargin);
             [obj.n,obj.m] = size(delays);
-            
-            % TODO check shape
+            obj.checkShape(obj.m);
             
             obj.delays = delays;
             

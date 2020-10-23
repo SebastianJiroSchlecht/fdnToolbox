@@ -62,7 +62,7 @@ end
 [poles, isConjugatePolePair] = reduceConjugatePairs(poles);
 
 %% Compute residues
-loopMatrix = zDomainStandardLoop( delays, A);
+loopMatrix = zFDNloopSimple( delays, A);
 [residues,direct,undrivenResidues] = dss2res(poles,loopMatrix,B,C,D);
 
 metaData.undrivenResidues = undrivenResidues;

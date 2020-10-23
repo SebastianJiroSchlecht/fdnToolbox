@@ -49,7 +49,7 @@ delayTF = zDelay(delays.', 'isDiagonal', true);
 matrixTF = convert2zFilter(A);
 B = convert2zFilter(B);
 C = convert2zFilter(C);
-loopMatrix = zDomainLoop(delayTF, absorptionFilters, matrixTF);
+loopMatrix = zFDNloop(delayTF, absorptionFilters, matrixTF);
 
 numberOfPoles = loopMatrix.numberOfDelayUnits;
 
