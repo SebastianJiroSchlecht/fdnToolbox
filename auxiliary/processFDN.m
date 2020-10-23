@@ -8,23 +8,24 @@ function output = processFDN(input, delays, A, B, C, D, varargin)
 % Inputs:
 %    input - input sound [length, numberOfInputs]
 %    delays - delays in samples of size [1,N]
-%    A - feedback matrix, scalar or polynomial of size [N,N,(order)] or TF
-%    B - input gains of size [N,in]
-%    C - output gains of size [out,N]
-%    D - direct gains of size [out,in]
-%    inputType (optional) - either 'splitInput', 'mergeInput'
+%    A - feedback matrix of size [N,N]: scalar, polynomial or zFilter
+%    B - input gains of size [N,in]: like above
+%    C - output gains of size [out,N]: like above
+%    D - direct gains of size [out,in]: only scalar
+%    inputType (optional) - either 'splitInput' (default), 'mergeInput'
 %    extraMatrix (optional) - e.g. time-varying matrix
-%    absorptionFilters (optional) - filters of size [N,1] % TODO
+%    absorptionFilters (optional) - filters of size [N,1]
 %
 % Outputs:
-%    output - matrix of impulse response [length,out,in]
+%    output - multichannel output [length,out] (mergeInput) or
+%    [length,out,in] (splitInput)
 %
 % See also: 
 % Author: Dr.-Ing. Sebastian Jiro Schlecht, 
 % Aalto University, Finland
 % email address: sebastian.schlecht@aalto.fi
 % Website: sebastianjiroschlecht.com
-% 28 December 2019; Last revision: 28 December 2019
+% 28 December 2019; Last revision: 2020-10-23
 
 %% Input Parser
 p = inputParser;
@@ -53,35 +54,34 @@ switch inputType
         for itIn = 1:numInput
             splitGain(:) = 0;
             splitGain(itIn) = 1;
-            output(:,:,itIn) = loopSub(input .* splitGain, delays, A, B, C, extraMatrix, absorptionFilters);
+            output(:,:,itIn) = computeFDNloop(input .* splitGain, delays, A, B, C, extraMatrix, absorptionFilters);
         end
         output = output + permute( input, [1 3 2]) .* permute( D, [3 1 2]) ;
         
     case 'mergeInput'
-        output = loopSub(input, delays, A, B, C, extraMatrix, absorptionFilters);
+        output = computeFDNloop(input, delays, A, B, C, extraMatrix, absorptionFilters);
         output = output + input * D.';
 end
 
 
 
 
-function output = loopSub(input, delays, feedbackMatrix, inputGains, outputGains, extraMatrix, absorptionFilters)
-%% FDN loop
-
+function output = computeFDNloop(input, delays, feedbackMatrix, inputGains, outputGains, extraMatrix, absorptionFilters)
+%% Compute the FDN time domain loop
 maxBlockSize = 2^12;
+blkSz = min([min(delays), maxBlockSize]);
+
+%% Convert to dfilt
 DelayFilters = feedbackDelay(maxBlockSize,delays);
 FeedbackMatrix = dfiltMatrix(feedbackMatrix);
 InputGains = dfiltMatrix(inputGains);
 OutputGains = dfiltMatrix(outputGains);
 absorptionFilters = dfiltMatrix(absorptionFilters); 
 
-
-blkSz = min([min(delays), maxBlockSize]);
-
+%% Time-domain recursion
 inputLen = size(input,1);
 output = zeros(inputLen, OutputGains.n);
 
-%% Time-domain recursion
 blockStart = 0;
 while blockStart < inputLen
     if( blockStart + blkSz < inputLen )
@@ -92,23 +92,26 @@ while blockStart < inputLen
     end
     
     block = input(blkInd,:);
-       
+    
+    %% Delays and Absorption
     delayOutput = DelayFilters.getValues(blkSz);
     if ~isempty(absorptionFilters)
        delayOutput = absorptionFilters.filter(delayOutput); 
     end
     
-    
+    %% Feedback Matrices
     feedback = FeedbackMatrix.filter(delayOutput);
     if ~isempty(extraMatrix)
         feedback = extraMatrix.filter(feedback);
     end
     
+    %% Input and Output
     delayLineInput = InputGains.filter(block) + feedback;
     DelayFilters.setValues(delayLineInput);
     
     output(blkInd,:) = OutputGains.filter(delayOutput);
     
+    %% Move to next block
     DelayFilters.next(blkSz);
     blockStart = blockStart + blkSz;
 end

@@ -21,7 +21,7 @@ classdef zSOS < zFilter
                     for ss = 1:nsos 
                         num = squeeze( sos(nn,mm,ss,1:3));
                         den = squeeze( sos(nn,mm,ss,4:6));
-                        [b,a] = negpolyder(num , den, true );
+                        [b,a] = negpolyder(num , den, 'dontTruncate', true);
                         obj.dsos(nn,mm,ss,:) = [b,a];
                     end
                 end

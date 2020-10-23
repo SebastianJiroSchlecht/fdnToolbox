@@ -1,4 +1,5 @@
 classdef zFilter < handle
+    % TODO
     % Sebastian J. Schlecht, Tuesday, 20. October 2020
     
     properties
@@ -52,8 +53,7 @@ classdef zFilter < handle
          inverse(obj) 
         
          at_(obj,z)
-          
-        
+         
          der_(obj,z)
             
          dfiltType(obj)
