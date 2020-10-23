@@ -13,7 +13,7 @@ function SOS = graphicEQ( centerOmega, shelvingOmega, R, gaindB )
 % Author: Sebastian J Schlecht
 % Date: 24.03.2017
 
-% TODO: not a good name: GEQ2SOS? Add input/output documentation
+
 
 numFreq = length(centerOmega) + length(shelvingOmega) + 1;
 assert( length(gaindB) == numFreq);

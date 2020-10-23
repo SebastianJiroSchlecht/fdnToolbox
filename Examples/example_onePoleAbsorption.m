@@ -68,7 +68,7 @@ legend({'Poles with attenuation','Minimum Bound','Maximum Bound'},'Location','no
 
 %% Test: Impulse Response Accuracy
 matMax = permute(max(abs(difference(1:end)),[],1),[2 3 1])
-assert( isAlmostZero(difference, 'tol', 10^1 )  ) % TODO: fails at 2nd sample
+assert( isAlmostZero(difference, 'tol', 10^-10 )  )
 
 %% Test: Poles between bounds 
 [isBounded, isSmaller] = isBoundingCurve(angle(pol),abs(pol),w,MaxCurve,'upper');

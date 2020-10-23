@@ -14,6 +14,7 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 %    B - input gains of size [N,in] or zFilter
 %    C - output gains of size [out,N] or zFilter
 %    D - direct gains of size [out,in] or zFilter
+%    inverseMatrix (optional) - provide an inverse matrix of A
 %    deflationType (optional) - either 'fullDeflation', 'noDeflation', 'neighborDeflation'
 %    absorptionFilter (optional) - per delay filter as zFilter
 %    rejectUnstablePoles (optional) - boolean
@@ -34,12 +35,14 @@ function [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr(delay
 
 %% Input Parser
 p = inputParser;
+p.addOptional('inverseMatrix', []);
 p.addOptional('deflationType','fullDeflation' );
 p.addOptional('absorptionFilters', zScalar(ones(numel(delays),1),'isDiagonal',true));
 p.addOptional('rejectUnstablePoles', false);
 
 parse(p,varargin{:});
 
+inverseMatrix = p.Results.inverseMatrix;
 deflationType = p.Results.deflationType;
 absorptionFilters = p.Results.absorptionFilters;
 rejectUnstablePoles = p.Results.rejectUnstablePoles;
@@ -49,7 +52,7 @@ delayTF = zDelay(delays.', 'isDiagonal', true);
 matrixTF = convert2zFilter(A);
 B = convert2zFilter(B);
 C = convert2zFilter(C);
-loopMatrix = zFDNloop(delayTF, absorptionFilters, matrixTF);
+loopMatrix = zFDNloop(delayTF, absorptionFilters, matrixTF, inverseMatrix);
 
 numberOfPoles = loopMatrix.numberOfDelayUnits;
 
@@ -84,8 +87,7 @@ if length(poles) ~= numberOfPoles
     warning('Some poles did not converge: %d instead of %d',length(poles),numberOfPoles);
 end
 
-%% Initialize Extra Filter Poles directly
-% TODO
+%% TODO: Initialize Extra Filter Poles directly
 % filterPoles = loopMatrix.feedbackTF.matrix.poles;
 % poles = [poles filterPoles];
 

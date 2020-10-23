@@ -26,8 +26,8 @@ delays = ( randi([1250,6500],[1,N]) );
 
 % Paraunitary Feedback Matrix
 K = 3; 
-[feedbackMatrix, revMatrix] = constructCascadedParaunitaryMatrix( N, K);
-zFeedbackMatrix = zFIR(feedbackMatrix); % TODO add revMatrix
+[feedbackMatrix, feedbackInverse] = constructCascadedParaunitaryMatrix( N, K);
+zFeedbackMatrix = zFIR(feedbackMatrix);
 
 % Compute impulse response and poles/zeros
 irTimeDomain = dss2impz(impulseResponseLength, delays, zFeedbackMatrix, inputGain, outputGain, direct);

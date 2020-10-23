@@ -1,6 +1,6 @@
 classdef zFDNloop < handle
-    % FDN Loop P(z) = Delay(z) * Forward(z) - Backward(z)
-    % TODO document
+    % FDN Loop P(z) = Delay^-1(z) * Forward^-1(z) - Backward(z)
+    % Optionally Backward^-1 can be defined
     %
     % Sebastian J. Schlecht, Sunday, 29 December 2019
     properties
@@ -18,7 +18,7 @@ classdef zFDNloop < handle
             obj.forwardTF = forwardTF.inverse();
             obj.feedbackTF = feedbackTF;
             
-            if nargin == 4
+            if nargin == 4 && ~isempty(feedbackInv)
                obj.feedbackInv = feedbackInv; 
             end
             
@@ -30,7 +30,7 @@ classdef zFDNloop < handle
             val = obj.delayTF.at(z) * obj.forwardTF.at(z);
         end
         
-        % The delay is inverted explicitely for numerical conditioning
+        % The delay matrix is inverted explicitely for numerical conditioning
         function val = forwardAtInv(obj,z)
             val = obj.delayTF.at(1/z) / (obj.forwardTF.at(z));
         end
@@ -66,38 +66,26 @@ classdef zFDNloop < handle
             dFB = obj.feedbackTF.der(1/z);
             idFB = FB * dFB * FB;
             
-%             FF = obj.forwardAtInv(1/z);
-%             dFF = obj.forwardDer(1/z);
-            
-%             obj.delayTF.delays*z
-%             obj.delayTF.at(1/z)\obj.delayTF.der(1/z)
-            
+            % FF = obj.forwardAtInv(1/z);
+            % dFF = obj.forwardDer(1/z);
             % FF * dFF * FF
-            idFF = obj.forwardTF.at(1/z) \ ( obj.forwardTF.der(1/z) / obj.forwardTF.at(1/z) + diag(-obj.delayTF.delays*z) ) * obj.delayTF.at(z); % TODO this minus sign is -obj.delayTF.delays  
+            % Attention: minus sign is -obj.delayTF.delays  
+            idFF = obj.forwardTF.at(1/z) \ ( obj.forwardTF.der(1/z) / obj.forwardTF.at(1/z) + diag(-obj.delayTF.delays*z) ) * obj.delayTF.at(z); 
             
             val = (idFF - idFB) / z^2;
-            
-       
-%             val = obj.forwardDer(z) - obj.feedbackTF.at(1/z) \ obj.feedbackTF.der(1/z) / obj.feedbackTF.at(1/z) / z^2; % (K^-1)' = - K^-1 * K' * K^-1
-%             val
-
-            
-            
-%             if (max(abs(val1(:) - val(:))) > 0.001)
-%                 ok = 1;
-%             end
-             
+                         
         end
         
         function step = inverseNewtonStep(obj,z)
-            iz = 1/z;
+            
             if (abs(z) <= 1)
                 step = trace( obj.at(z)  \ obj.der(z)  ) + obj.numberOfMatrixDelays / z;
             else
-%                 step = trace(obj.feedbackTF.at(z)\obj.feedbackTF.der(z)) ...
-%                     + trace(obj.forwardAtInv(z)*obj.forwardDer(z)) ...
-%                     - trace(obj.atRev(iz)\obj.derRev(iz)) / z^2 ...
-%                     + obj.numberOfMatrixDelays / z;
+                % iz = 1/z;
+                % step = trace(obj.feedbackTF.at(z)\obj.feedbackTF.der(z)) ...
+                %     + trace(obj.forwardAtInv(z)*obj.forwardDer(z)) ...
+                %     - trace(obj.atRev(iz)\obj.derRev(iz)) / z^2 ...
+                %     + obj.numberOfMatrixDelays / z;
                 
                 reversedNewton = trace( obj.atRev(1/z)  \ obj.derRev(1/z) ) + trace(  obj.feedbackTF.at(z) \ obj.feedbackTF.der(z) / -(1/z)^2 );
                 step = obj.numberOfDelayUnits / z - reversedNewton / z^2;

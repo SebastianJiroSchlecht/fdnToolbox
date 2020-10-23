@@ -1,5 +1,8 @@
 classdef zFilter < handle
-    % TODO
+    % z-Domain Filter structure abstract class
+    %
+    % From this multiple classes such as zFIR, zTF, zSOS are derived 
+    %
     % Sebastian J. Schlecht, Tuesday, 20. October 2020
     
     properties
@@ -28,7 +31,7 @@ classdef zFilter < handle
         
         function parseArguments(obj, arg)
             p = inputParser;
-            p.addOptional('isDiagonal', false);
+            p.addOptional('isDiagonal', obj.defaultShape());
             parse(p,arg{:});
             obj.isDiagonal = p.Results.isDiagonal;
         end
@@ -45,19 +48,27 @@ classdef zFilter < handle
                error('Size is not defined'); 
             end
         end
+        
+        function isDiagonal = defaultShape(obj)
+            isDiagonal = false;
+        end
     end
     
     
     methods(Abstract)
-         % TODO add description
+         % inverse filter
          inverse(obj) 
         
+         % raw shape-independent values 
          at_(obj,z)
          
+         % raw shape-independent values of derivative 
          der_(obj,z)
             
+         % corresponding dfilt filter type
          dfiltType(obj)
          
+         % corresponding dfilt parameter format
          dfiltParameter(obj,n,m)
         
     end
