@@ -38,5 +38,13 @@ classdef zFIR < zFilter
         function tf = inverse(obj)
             tf = zTF(obj.matrix.denominator, obj.matrix.numerator, 'isDiagonal', obj.isDiagonal);
         end
+        
+        function type = dfiltType(obj)
+            type = 'dffir';
+        end
+        
+        function val = dfiltParameter(obj,n,m)
+            val = {obj.matrix.numerator(n,m,:)};
+        end
     end
 end

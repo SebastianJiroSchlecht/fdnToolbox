@@ -38,5 +38,13 @@ classdef zScalar < zFilter
                 tf = zScalar(inv(obj.matrix), 'isDiagonal', obj.isDiagonal);
             end
         end
+        
+        function type = dfiltType(obj)
+            type = 'none';
+        end
+        
+        function val = dfiltParameter(obj,n,m)
+            val = obj.matrix(n,m);
+        end
     end
 end

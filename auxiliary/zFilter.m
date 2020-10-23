@@ -56,7 +56,9 @@ classdef zFilter < handle
         
          der_(obj,z)
             
-        
+         dfiltType(obj)
+         
+         dfiltParameter(obj,n,m)
         
     end
 end

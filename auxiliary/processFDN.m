@@ -70,10 +70,10 @@ function output = loopSub(input, delays, feedbackMatrix, inputGains, outputGains
 
 maxBlockSize = 2^12;
 DelayFilters = feedbackDelay(maxBlockSize,delays);
-FeedbackMatrix = zFilter2dfilt(feedbackMatrix);
-InputGains = zFilter2dfilt(inputGains);
-OutputGains = zFilter2dfilt(outputGains);
-absorptionFilters = zFilter2dfilt(absorptionFilters); 
+FeedbackMatrix = dfiltMatrix(feedbackMatrix);
+InputGains = dfiltMatrix(inputGains);
+OutputGains = dfiltMatrix(outputGains);
+absorptionFilters = dfiltMatrix(absorptionFilters); 
 
 
 blkSz = min([min(delays), maxBlockSize]);

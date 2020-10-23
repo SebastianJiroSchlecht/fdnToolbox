@@ -28,5 +28,13 @@ classdef zDelay < zFilter
         function tf = inverse(obj)
             tf = zDelay(-obj.delays, 'isDiagonal', obj.isDiagonal);
         end
+        
+        function type = dfiltType(obj)
+            type = 'none';
+        end
+        
+        function val = dfiltParameter(obj,n,m)
+            val = [];
+        end
     end
 end

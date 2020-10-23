@@ -42,5 +42,15 @@ classdef zTF < zFilter
         function tf = inverse(obj)
             tf = zTF(obj.matrix.denominator, obj.matrix.numerator, 'isDiagonal', obj.isDiagonal);
         end
+        
+        function type = dfiltType(obj)
+            type = 'df2';
+        end
+        
+        function val = dfiltParameter(obj,n,m)
+            b = permute(obj.matrix.numerator(n,m,:),[3 1 2]);
+            a = permute(obj.matrix.denominator(n,m,:),[3 1 2]);
+            val = {b,a};
+        end
     end
 end

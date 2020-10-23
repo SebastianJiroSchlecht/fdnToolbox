@@ -3,18 +3,15 @@ classdef dfiltMatrix < handle
     % Matrix DSP filters of FIR, IIR, and scalar gains. Each matrix entry is a
     % filter, either dfilt.df2 or dfilt.dffir.
     %
-    % Constructor:  dfiltMatrix(m) % TODO check
+    % Constructor:  dfiltMatrix(zF)
     %
     % Inputs:
-    %    m - Filter matrix. Data format is decided by whatFilterType(obj,b,a)
-    %
+    %    zF - zF filter or scalar matrix
     %
     % Example:
-    %   TODO
+    %   d = dfiltMatrix(randn(3))
+    %   d = dfiltMatrix(zFIR(randn(3,3,10)))
     %
-    % Other m-files required: none
-    % Subfunctions: none
-    % MAT-files required: none
     %
     % Author: Dr.-Ing. Sebastian Jiro Schlecht,
     % Aalto University, Finland
@@ -22,9 +19,6 @@ classdef dfiltMatrix < handle
     % Website: sebastianjiroschlecht.com
     % 10 July 2020; Last revision: 10 July 2020
     
-    %
-    %
-    % Sebastian J. Schlecht, Sunday, 29 December 2019
     properties
         filters;
         n
@@ -33,17 +27,38 @@ classdef dfiltMatrix < handle
     end
     
     methods
-        function obj = dfiltMatrix(n,m,isDiagonal)
-            obj.n = n;
-            obj.m = m;
-            obj.isDiagonal = isDiagonal;
+        function obj = dfiltMatrix(zF)
+            if ismatrix(zF)
+                zF = zScalar(zF);
+            end
             
-            %filters(n,m) = dfilt.df2;
+            obj.n = zF.n;
+            obj.m = zF.m;
+            obj.isDiagonal = zF.isDiagonal;
+            
+            if isa(zF,'zScalar')
+                obj.filters = zF.matrix;
+            elseif isa(zF,'zFilter')
+                type = zF.dfiltType();
+                obj.filters = dfilt.(type);
+                obj.filters(obj.n,obj.m) = dfilt.(type);
+                
+                for nn = 1:obj.n
+                    for mm = 1:obj.m
+                        val = zF.dfiltParameter(nn,mm);
+                        obj.filters(nn,mm) = dfilt.(type)(val{:});
+                        obj.filters(nn,mm).PersistentMemory = true;
+                    end
+                end
+                
+            else
+                error('Provide a zFilter or scalar gains');
+            end
         end
+        
         
         function out = filter(obj,in)
             out = zeros(size(in,1),obj.n);
-            
             
             if isnumeric(obj.filters)
                 if obj.isDiagonal

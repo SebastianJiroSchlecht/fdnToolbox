@@ -65,6 +65,14 @@ classdef zSOS < zFilter
             isos(:,:,:,4:6) = obj.sos(:,:,:,1:3);
             
             tf = zSOS(isos, 'isDiagonal', obj.isDiagonal);
-        end 
+        end
+        
+        function type = dfiltType(obj)
+            type = 'df2sos';
+        end
+        
+        function [sos] = dfiltParameter(obj,n,m)
+            sos = {permute(obj.sos(n,m,:,:), [3 4 1 2])};
+        end
     end
 end
