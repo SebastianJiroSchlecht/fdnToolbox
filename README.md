@@ -22,6 +22,10 @@ startup
 run_all_examples
 ```
 
+## Presentation and Demo
+
+[![Alt text for your video](doc/VideoScreenshot.PNG)](http://localhost:1313/publication/schlecht-2020/ "Watch Video on Publication page")
+
 ## Required Dependencies
 
 * MATLAB 2017b or newer
