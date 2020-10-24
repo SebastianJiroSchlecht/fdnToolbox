@@ -24,7 +24,7 @@ run_all_examples
 
 ## Presentation and Demo
 
-[![Alt text for your video](doc/VideoScreenshot.PNG)](http://localhost:1313/publication/schlecht-2020/ "Watch Video on Publication page")
+[![Paper Webpage](doc/VideoScreenshot.png)](http://localhost:1313/publication/schlecht-2020/ "Watch Video on Publication page")
 
 ## Required Dependencies
 
