@@ -18,7 +18,7 @@ impulseResponseLength = fs*2;
 N = 12;
 numInput = 1;
 numOutput = 2; 
-inputGain = [ones(N/2,numInput);zeros(N/2,numInput)];
+inputGain = [ones(N/2,numInput);zeros(N/2,numInput)]; % source in left room
 outputGain = blkdiag(ones(1,N/2),ones(1,N/2)); % play rooms to left and right
 direct = zeros(numOutput,numInput);
 delays = [randi([300,800],[1,N/2]),randi([1000,3000],[1,N/2])];
@@ -48,7 +48,6 @@ zAbsorption = zSOS(absorption,'isDiagonal',true);
 
 % compute impulse response
 irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
-soundsc(irTimeDomain,fs);
 
 % compute poles/zeros
 [res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'absorptionFilters', zAbsorption);
