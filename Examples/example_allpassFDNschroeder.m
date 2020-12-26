@@ -1,81 +1,57 @@
+% Example for Schroeder's Series Allpass
+%
+% Schroeder, M. R. & Logan, B. F. “Colorless” artificial reverberation. IRE
+% Transactions on Audio AU-9, 209–214 (1961).
+%
+% see "Allpass Feedback Delay Networks", Sebastian J. Schlecht, submitted
+% to IEEE TRANSACTIONS ON SIGNAL PROCESSING.
+%
 % Sebastian J. Schlecht, Sunday, 7. June 2020
 %
 % add description; use series generator
-
 clear; clc; close all;
 
 N = 6;
-
 
 g = sym('g', [N,1]);
 m = 2.^(0:N-1)';
 
 syms z
+zm = z.^m; % drop minus for easier readability
 
-zm = z.^m % drop minus for easier readability
+[A, b, c, d] = seriesAllpass(g)
 
-A = diag(-g);
-for i = 1:N
-    for j = 1:N
-        if i > j
-           A(i,j) = (1 - g(j)^2) * prod( g(j+1:i-1) ); 
-        end
-    end
-end
+%% Test: denominator and numerator are reserved
+denominator = coeffs(generalCharPolySym(m, A),z);
+numerator = (coeffs(generalCharPolySym(m, A - b*c/d),z) * d);
 
-for i = 1:N
-%     b(i) = (1./g(i) - g(i)) .* prod(-g(1:i));
-    b(i) = prod(g(1:i-1))
-end
-b = b.';
+assert( all((denominator - fliplr(numerator))==0) ) 
 
-for i = 1:N
-%     c(i) = 1./g(i) * prod( -g(N-i+1:N) ); 
-    c(i) = (1-g(i)^2) * prod( g(i+1:N) )
-end
+%% Test: similarity matrix 
+X = diag(sym('x',[N,1]));
+lyap = A * X * A.' - X + b*b.';
+xx = solve(diag(lyap), diag(X));
 
-d = prod(g)
+X = diag(1 - g.^2) % extracted solution
 
-A
-b
-c
-d
+lyapB = simplify(A * X * A.' - X + b*b.')
+lyapC = simplify(A.' * inv(X) * A - inv(X) + c.'*c)
 
-H = A - b*c/d
-H(2,2)
-%% denominator
-fliplr( coeffs(prod( 1 + g.*zm ),z) )
-coeffs(generalCharPolySym(m, A),z)
+assert(all(lyapB(:)==0))
+assert(all(lyapC(:)==0))
 
-%% numerator
-fliplr( coeffs(prod( g + zm ),z) )
-pretty(coeffs(generalCharPolySym(m, A - b*c/d),z) * d)
-
-%% similarity
-P = diag(sym('p',[N,1]))
-H = A * P * A.' - P + b*b.'
-pp = solve(diag(H), diag(P))
-
-P = diag(1./ (1 - g.^2))
-
-simplify(A * P * A.' - P + b*b.')
-simplify(A.' * inv(P) * A - inv(P) + c.'*c)
-
-
-%% plot
-close all
-
+%% Test: plot
 gg = [0.3, 0.4, 0.5,0.6,0.7,0.8]';
-AA = subs(A,g,gg)
-bb = subs(b,g,gg)
-cc = subs(c,g,gg)
-dd = subs(d,g,gg)
-PP = subs(P,g,gg)
+AA = subs(A,g,gg);
+bb = subs(b,g,gg);
+cc = subs(c,g,gg);
+dd = subs(d,g,gg);
+XX = subs(X,g,gg);
 
-VV = [AA, bb; cc, dd]
+VV = [AA, bb; cc, dd];
 
 figure(1); hold on;
 plotSystemMatrix(AA,bb,cc,dd)
 
 %matlab2tikz_sjs(['./plot/matrix_SchroederSeries.tikz'],'type','standardSingleColumn','height','8.6cm','width','8.6cm');
-
+assert(true) 
