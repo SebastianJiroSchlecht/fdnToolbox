@@ -10,9 +10,9 @@ function [b,c, choice, isValid] = minRankChoiceBruteForce(x0,x1,varargin)
 %    x1 - Second option matrix
 %
 % Outputs:
-%    b - vector such that b * c = X
-%    c - vector such that b * c = X
-%    choice - choice matrix such that X = x0.*(1-choice) + x1.*choice
+%    b - vector such that b * c = R
+%    c - vector such that b * c = R
+%    choice - choice matrix such that R = x0.*(1-choice) + x1.*choice
 %    isValid - there is a valid combination
 %
 %
@@ -24,11 +24,9 @@ function [b,c, choice, isValid] = minRankChoiceBruteForce(x0,x1,varargin)
 % Website: sebastianjiroschlecht.com
 % 16. June 2020; Last revision: 16. June 2020
 
-% TODO: check and rework
-
 %% Input parser
 p = inputParser;
-p.addParameter('tol', 10^-10, @(x) isnumeric(x));
+p.addParameter('tol', 10^-9, @(x) isnumeric(x));
 parse(p,varargin{:});
 
 tol = p.Results.tol;
@@ -63,7 +61,11 @@ end
 
 %% Select best choice
 isValid = err < tol;
-[maxL1,ind] = max( l1norm .* isValid ); % maximize to avoid degenerate solutions
+[~,ind] = max( l1norm .* isValid ); % maximize to avoid degenerate solutions
+if all(isValid == false)
+    warning('No valid solution was found. Pick lowest error solution');
+    [~,ind] = min(err);
+end
 
 choice = mat(Choices(:,ind));
 
