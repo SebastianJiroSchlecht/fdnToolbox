@@ -1,15 +1,15 @@
-function [A,b,c,d,U] = homogeneousAllpassFDN(G, P, varargin)
+function [A,b,c,d,U] = homogeneousAllpassFDN(G, X, varargin)
 %homogeneousAllpassFDN - genereate allpass FDN with homogeneous decay
 % Construct V = [A,b;c d] such V is uniallpass and A = U*G, where U is
-% unitary and G is the gain matrix. P is a design parameter
+% unitary and G is the gain matrix. X is a design parameter
 %
 % see "Allpass Feedback Delay Networks" by Sebastian J. Schlecht
 %
-% Syntax:  [A,b,c,d,U] = homogeneousAllpassFDN(G, P)
+% Syntax:  [A,b,c,d,U] = homogeneousAllpassFDN(G, X)
 %
 % Inputs:
 %    G - Diagonal gain matrix
-%    P - Diagonal design matrix
+%    X - Diagonal design matrix
 %
 % Outputs:
 %    A - Feedback matrix with A = U * G
@@ -32,8 +32,6 @@ function [A,b,c,d,U] = homogeneousAllpassFDN(G, P, varargin)
 % Website: sebastianjiroschlecht.com
 % 16. June 2020; Last revision: 16. June 2020
 
-% TODO: check naming
-
 %% Input parser
 p = inputParser;
 p.addParameter('verbose', false, @(x) islogical(x));
@@ -44,9 +42,9 @@ verbose = p.Results.verbose;
 %% Initialize
 N = size(G,1);
 
-R = G^2 * P;
+R = G^2 * X;
 
-p = diag(P);
+p = diag(X);
 r = diag(R);
 
 
@@ -67,16 +65,16 @@ U = sqrt(beta*alpha.') ./ (p - r.');
 A = U*G;
 d = (-1)^N * det(A);
 b = sqrt(beta);
-c = -(inv(P)*inv(A)*b*d)';
+c = -(inv(X)*inv(A)*b*d)';
 
 %% verify
 if verbose
     U*U.'
     
-    P*U - U*R
+    X*U - U*R
     b*b'*U
     
-    [isA1, PP] = isUniallpass(A, b, c, d)
+    [isA1, XX] = isUniallpass(A, b, c, d)
     
     delays = 2.^(0:N-1);
     [isA2, den, num] = isAllpass(A, b, c, d, delays)

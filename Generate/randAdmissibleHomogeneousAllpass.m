@@ -1,6 +1,6 @@
 function P = randAdmissibleHomogeneousAllpass(G, range)
 %randAdmissibleHomogeneousAllpass - Generate random admissible uniallpass FDN 
-% see Allpass FDN by Sebastian J. Schlecht
+% see "Allpass Feedback Delay Networks" by Sebastian J. Schlecht
 %
 % Syntax:  P = randAdmissibleHomogeneousAllpass(G, range)
 %
@@ -21,8 +21,6 @@ function P = randAdmissibleHomogeneousAllpass(G, range)
 % email address: sebastian.schlecht@aalto.fi
 % Website: sebastianjiroschlecht.com
 % 16. June 2020; Last revision: 16. June 2020
-
-% TODO might need a better name
 
 %% init
 N = size(G,1);
