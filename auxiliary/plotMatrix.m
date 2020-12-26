@@ -32,5 +32,7 @@ xticklabels(1:N(2));
 yticks((1:N(1))+0.5);
 yticklabels(1:N(1));
 
+colormap(blueWhiteRedColormap())
+
 set(gca,'XAxisLocation','top','YAxisLocation','left','ydir','reverse');
 

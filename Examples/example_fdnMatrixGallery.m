@@ -35,9 +35,6 @@ for it = 1:length(matrixTypes)
 end
 
 % Plot
-colorMap = [linspace(1,1,256)', linspace(0,1,256)', linspace(0,1,256)'; ...
-            linspace(1,0,256)', linspace(1,0,256)', linspace(1,1,256)'];
-
 plotWidth = '4.6cm';
 plotConfig = {'type','standardSingleColumn','width',plotWidth,'extraAxisOptions',...
     {'yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=5},scaled y ticks=false'}};
@@ -47,7 +44,6 @@ for it = 1:length(matrixTypes)
     figure(it); set(gcf,'color','w');
     plotMatrix(feedbackMatrix.(type))
     caxis([-1 1])
-    colormap(colorMap);
     
     matlab2tikz_sjs(['./Plots/matrix_' type '.tikz'],plotConfig{:})
 end
