@@ -7,8 +7,6 @@
 % to IEEE TRANSACTIONS ON SIGNAL PROCESSING.
 %
 % Sebastian J. Schlecht, Sunday, 7. June 2020
-%
-% add description; use series generator
 clear; clc; close all;
 
 N = 6;

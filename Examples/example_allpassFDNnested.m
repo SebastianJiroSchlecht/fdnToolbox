@@ -1,80 +1,48 @@
-% Sebastian J. Schlecht, Sunday, 7. June 2020
+% Example for Gardner's Nested Allpass
 %
-% TODO add description; use nested generator 
-
-
+% Gardner, W. G. A real-time multichannel room simulator. J Acoust Soc Am
+% 92, 1–23 (1992).
+%
+% see "Allpass Feedback Delay Networks", Sebastian J. Schlecht, submitted
+% to IEEE TRANSACTIONS ON SIGNAL PROCESSING.
+%
+% Sebastian J. Schlecht, Sunday, 7. June 2020
 clear; clc; close all;
 
 N = 6;
-
+syms z
 
 g = sym('g', [N,1]);
 m = 2.^(0:N-1)';
+zm = z.^m; % drop minus for easier readability
 
-syms z
+[A, b, c, d] = nestedAllpass(g)
 
-zm = z.^m % drop minus for easier readability
+%% Test: denominator and numerator are reserved
+denominator = coeffs(generalCharPolySym(m, A),z);
+numerator = (coeffs(generalCharPolySym(m, A - b*c/d),z) * d);
 
-[den, num] = nestedSym(g,zm)
-
-
-sg = [1; g(1:N-1)];
-for i = 1:N
-    A(i,i) = - g(i)*sg(i);
-    
-    for j = 1:N
-        if i > j
-           A(i,j) = -g(i)*sg(j) * prod(1 - g(j:i-1).^2) ;
-        end
-        
-        if i == j-1
-           A(i,j) = 1;  
-        end
-    end
-end
-
-b = zeros(N,1);
-b(end) = 1;
-
-
-for i = 1:N
-    c(i) = prod(1-g(i:N).^2) * sg(i);
-end
-
-d = g(end);
-
-A
-b
-c
-d
-
-H = A - b*c/d
-H(2,2)
-%% denominator
-fliplr( simplify(coeffs(den,z)) )
-simplify(coeffs(generalCharPolySym(m, A),z))
-
-%% numerator
-fliplr( simplify(coeffs(num,z)))
-(coeffs(generalCharPolySym(m, A - b*c/d),z) * d)
+assert( all((denominator - fliplr(numerator))==0) ) 
 
 %% similarity
-% 
-P = diag(sym('p',[N,1]))
-H = A * P * A.' - P - b*b.'
-pp = solve(diag(H), diag(P))
-pp.p1
-pp.p2
+X = diag(sym('x',[N,1]));
+lyap = A * X * A.' - X + b*b.';
+xx = solve(diag(lyap), diag(X));
 
-for i = 1:N
-    P(i,i) = (-1./ prod(1 - g(i:N).^2));
-end
-simplify(A * P * A.' - P - b*b.')
-simplify(A.' * inv(P) * A - inv(P) - c*c.')
+for i = 1:N % extracted solution
+    X(i,i) = (prod(1 - g(i:N).^2));
+end 
+% for i = 1:N
+%     X(i,i) = simplify(xx.(['x' num2str(i)]));
+% end
 
-%% plot
-close all
+lyapB = simplify(A * X * A.' - X + b*b.')
+lyapC = simplify(A.' * inv(X) * A - inv(X) + c.'*c)
 
+assert(all(lyapB(:)==0))
+assert(all(lyapC(:)==0))
+
+%% Test: plot
 gg = [0.3, 0.4, 0.5,0.6,0.7,0.8]';
 AA = subs(A,g,gg)
 bb = subs(b,g,gg)
@@ -88,22 +56,5 @@ plotSystemMatrix(AA,bb,cc,dd)
 
 matlab2tikz_sjs(['./plot/matrix_SchroederNested.tikz'],'type','standardSingleColumn','height','8.6cm','width','8.6cm');
 
+assert(true)
 
-
-%%
-
-
-function [den, num] = nestedSym(g,zm)
-
-if numel(g) == 1
-    den = 1 + g.*zm;
-    num = g + zm;
-else
-    [denk, numk] = nestedSym(g(1:end-1),zm(1:end-1));
-    
-    den = 1*denk + g(end).*zm(end)*numk;
-    num = g(end)*denk + zm(end)*numk;
-end
-    
-
-end
