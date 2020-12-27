@@ -11,6 +11,7 @@ Feedback delay networks (FDNs) are recursive filters, which are widely used for 
 * Absorption filter design
 * Time-varying matrix design
 * Modal decomposition for spectral analysis
+* Allpass filter design
 * FDN representations such as delay state space, state space, rational polynomials  
 
 A wide range of applications is demonstrated in the example folders.
