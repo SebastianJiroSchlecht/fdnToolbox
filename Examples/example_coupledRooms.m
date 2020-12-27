@@ -70,12 +70,9 @@ ylabel('Reverberation Time [s]')
 legend({'Poles'})
 
 figure(3);
-colorMap = [linspace(1,1,256)', linspace(0,1,256)', linspace(0,1,256)'; ...
-            linspace(1,0,256)', linspace(1,0,256)', linspace(1,1,256)']; % TODO: move to plotMatrix
 plotMatrix(feedbackMatrix)
 caxis([-1 1])
 colorbar
-colormap(colorMap);
 
 %% Test: Script finished
 assert(true)
