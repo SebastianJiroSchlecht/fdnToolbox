@@ -16,17 +16,11 @@ function [b,c, maxError] = lowRankApprox(A,n)
 %    [b,c, maxError] = lowRankApprox(randn(5,2)*randn(2,5),2)
 %    [b,c, maxError] = lowRankApprox(randn(5,2)*randn(2,5),1)
 %
-% Other m-files required: none
-% Subfunctions: none
-% MAT-files required: none
-%
 % Author: Dr.-Ing. Sebastian Jiro Schlecht, 
 % Aalto University, Finland
 % email address: sebastian.schlecht@aalto.fi
 % Website: sebastianjiroschlecht.com
 % 16. June 2020; Last revision: 16. June 2020
-
-% TODO: check
 
 %% Largest n singular values
 [U,S,V] = svds(A,n);
@@ -35,5 +29,3 @@ c = sqrt(S)*V';
 
 %% verify
 maxError = max(abs( b * c - A), [], 'all');
-
-% ok = 1;

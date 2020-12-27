@@ -3,7 +3,5 @@ function A = mat(v)
 %
 % Sebastian J. Schlecht, Saturday, 9. May 2020
 
-% TODO: check
-
 N = sqrt(numel(v));
 A = reshape(v,N,N);

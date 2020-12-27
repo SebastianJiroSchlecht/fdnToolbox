@@ -1,14 +1,10 @@
 function [isA, den, num] = isAllpass(A,b,c,d,m,varargin)
-% Test whether delay state-space is allpass FDN
-%
-% see Allpass FDN by Sebastian J. Schlecht
-%
-% Sebastian J. Schlecht, Thursday, 14. May 2020
-
-
 %isAllpass - Test delay state-space is allpass
-%Computes the rational transfer function and determines whether the
+%Computes the determinant rational transfer function and determines whether the
 %numerator is a reversed version of the denominator.
+%
+% see "Allpass Feedback Delay Networks", Sebastian J. Schlecht, submitted
+% to IEEE TRANSACTIONS ON SIGNAL PROCESSING.
 %
 % Syntax:  [isA, den, num] = isAllpass(A,b,c,d,m,varargin)
 %
@@ -36,8 +32,6 @@ function [isA, den, num] = isAllpass(A,b,c,d,m,varargin)
 % email address: sebastian.schlecht@aalto.fi
 % Website: sebastianjiroschlecht.com
 % 18. June 2020; Last revision: 18. June 2020
-
-% TODO: add note that it is only for determinant
 
 den = generalCharPoly(m, A);
 num = generalCharPoly(m, A - b*inv(d)*c) * (det(d));
