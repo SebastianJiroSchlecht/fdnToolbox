@@ -19,6 +19,13 @@ zm = z.^m; % drop minus for easier readability
 
 [A, b, c, d] = seriesAllpass(g)
 
+% determine similarity
+X = diag(sym('x',[N,1]));
+lyap = A * X * A.' - X + b*b.';
+xx = solve(diag(lyap), diag(X));
+
+X = diag(1 - g.^2) % extracted solution
+
 %% Test: denominator and numerator are reserved
 denominator = coeffs(generalCharPolySym(m, A),z);
 numerator = (coeffs(generalCharPolySym(m, A - b*c/d),z) * d);
@@ -26,12 +33,6 @@ numerator = (coeffs(generalCharPolySym(m, A - b*c/d),z) * d);
 assert( all((denominator - fliplr(numerator))==0) ) 
 
 %% Test: similarity matrix 
-X = diag(sym('x',[N,1]));
-lyap = A * X * A.' - X + b*b.';
-xx = solve(diag(lyap), diag(X));
-
-X = diag(1 - g.^2) % extracted solution
-
 lyapB = simplify(A * X * A.' - X + b*b.')
 lyapC = simplify(A.' * inv(X) * A - inv(X) + c.'*c)
 
