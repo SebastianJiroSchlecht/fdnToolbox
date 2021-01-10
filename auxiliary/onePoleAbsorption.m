@@ -31,18 +31,37 @@ function [b,a] = onePoleAbsorption(RT_DC, RT_NY, delays, fs)
 % Website: sebastianjiroschlecht.com
 % 17. January 2020; Last revision: 17. January 2020
 
-N = length(delays);
+HDc = db2mag( delays * RT602slope( RT_DC, fs ) );
+HNyq = db2mag( delays * RT602slope( RT_NY, fs ) );
 
-K = delays * RT602slope( RT_DC, fs );
-k = db2mag(K);
+[b,a] = designOnePoleFilter(HDc, HNyq);
 
-alpha = RT_NY / RT_DC;
-bp = K * log(10) / 80 * (1 - 1/alpha^2) * 2/3;
 
-filterLen = 2;
-a = 0.0*randn(N,1,filterLen);
+function [b,a] = designOnePoleFilter(HDc, HNyq)
+%designOnePoleFilter - compute one pole filter 
+%
+% Inputs:
+%    HDc - Linear magnitude at DC of size [1, number of filters]
+%    HNyq - Linear magnitude at Nyquist of size [1, number of filters]
+%
+% Outputs:
+%    sos - sos filters of size [6 x number of filters]
+%
+% Example: 
+%    [sos] = designOnePoleFilter(rand(1,3), rand(1,3))
+%
+% Author: Nils Meyer-Kahlen
+% Modified: Dr.-Ing. Sebastian Jiro Schlecht, 
+
+numFilters = numel(HDc);
+
+r = HDc ./ HNyq; 
+
+a1 = (1-r)./(1+r); 
+b0 =  (1-a1) .* HNyq;
+
+b(:,1,1) = b0;
+a(:,1,2) = a1;
 a(:,1,1) = 1;
-a(:,1,2) = -bp;
 
-b = zeros(N,1);
-b(:,1,1) = k.*(1-bp) ;
+
