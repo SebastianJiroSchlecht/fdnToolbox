@@ -35,5 +35,5 @@ input = zeros(irLen, numInput);
 input(1,:) = 1;
 
 %% Time-Domain Recursion
-impulseResponse = processFDN(input, delays, A, B, C, D, varargin{:});
+impulseResponse = processFDN(input, delays, A, B, C, D,'inputType','splitInput', varargin{:});
 
