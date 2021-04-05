@@ -26,7 +26,7 @@ end
 
 % plot
 figure(1);
-plotImpulseResponseMatrix([], C)
+plotImpulseResponseMatrix([], C,'xlabel','Time (samples)','ylabel','Amplitude (lin)','ylim',[-1,1])
 
 %% Test: Interpolants are orthogonal
 assert( all(isP) )

@@ -63,10 +63,7 @@ ylabel('Residue Magnitude [dB]')
 legend({'Residues'})
 
 figure(4); hold on; grid on;
-plotImpulseResponseMatrix(1:size(feedbackMatrix,3),feedbackMatrix);
-legend({'this'})
-xlabel(' ')
-ylabel(' ')
+plotImpulseResponseMatrix(1:size(feedbackMatrix,3),feedbackMatrix,'xlabel','Time (samples)','ylabel','Amplitude (lin)');
 
 % sound
 % soundsc(irTimeDomain,fs)

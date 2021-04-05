@@ -65,7 +65,7 @@ ylabel('Pole RT60 [s]')
 legend({'Poles','T60 Late','T60 Early'})
 
 figure(3); hold on; grid on;
-plotImpulseResponseMatrix(1:size(feedbackMatrix,3),feedbackMatrix);
+plotImpulseResponseMatrix(1:size(feedbackMatrix,3),feedbackMatrix,'xlabel','Time (samples)','ylabel','Amplitude (lin)');
 
 %% Test: Impulse Response Accuracy
 assert( isAlmostZero(difference))
