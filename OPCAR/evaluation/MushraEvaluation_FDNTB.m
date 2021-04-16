@@ -5,15 +5,7 @@ clc
 numberOfFiles = 11;
 names = {'a','b','c','d','e','f','g','h','i','j','k'};
 tests = {'NumerOfModes','Rayleigh','FlippedRayleigh','FDNs'};
-%% read the .txt files
-
-for i = 1:numberOfFiles
-    filename.(names{i}) = ['mushram1_results_',num2str(i),'.txt'];
-    values.(names{i}) =mushram_results(filename.(names{i}));
-    for j = 1 : length(tests)
-        results.(tests{j})(i,:) = values.(names{i})(j,:);
-    end
-end
+load('results.mat');
 
 %% plot
 figure(1);grid on;
@@ -28,7 +20,6 @@ title(tests{1})
 
 %%
 figure(2);grid on;
-%boxplot(exp2(:,2:end),'Labels',{'0.1','2.575','5.05','7.525','10'})
 violinplot(results.(tests{2})(:,2:end))
 xlabel('Rayleigh scaling factor \sigma')
 ylabel('Degree of colorlessness')
