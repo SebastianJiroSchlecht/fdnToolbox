@@ -69,5 +69,5 @@ legend(leg,'Interpreter','latex')
 ylabel('Probability density')
 xlabel('Magnitude [dB]')
 
-matlab2tikz_sjs('./plots/AllpassModeDistribution.tikz','type','standardSingleColumn','height','8.6cm','width','8.6cm',...
-    'extraAxisOptions',{'y tick label style={/pgf/number format/.cd,fixed,fixed zerofill,precision=2,/tikz/.cd}'});
+%matlab2tikz_sjs('./plots/AllpassModeDistribution.tikz','type','standardSingleColumn','height','8.6cm','width','8.6cm',...
+%    'extraAxisOptions',{'y tick label style={/pgf/number format/.cd,fixed,fixed zerofill,precision=2,/tikz/.cd}'});
