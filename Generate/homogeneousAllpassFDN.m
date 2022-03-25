@@ -49,16 +49,25 @@ r = diag(R);
 
 
 %% Construct orthogonal Cauchy-like matrix U
-calA = poly(p);
-calAd = polyder(calA);
+% calA = poly(p);
+% calAd = polyder(calA);
+% 
+% calB = poly(r);
+% calBd = polyder(calB);
+%  
+% alpha = -polyval(calA,r) ./ polyval(calBd,r); 
+% beta = polyval(calB,p) ./ polyval(calAd,p); 
+% 
+% U = sqrt(beta*alpha.') ./ (p - r.');
 
-calB = poly(r);
-calBd = polyder(calB);
- 
-alpha = -polyval(calA,r) ./ polyval(calBd,r); 
-beta = polyval(calB,p) ./ polyval(calAd,p); 
+K = 1 ./ (p - r.');
 
-U = sqrt(beta*alpha.') ./ (p - r.');
+% inv(K) ./ K'is rank one
+betaAlpha = inv(K) ./ K';
+[u,s,v] = svd(betaAlpha);
+beta = -sqrt(s(1,1))*v(:,1);
+U = sqrt(betaAlpha') .* K;
+
 
 %% contruct FDN
 
