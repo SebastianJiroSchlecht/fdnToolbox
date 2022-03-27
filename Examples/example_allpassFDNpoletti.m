@@ -32,4 +32,10 @@ delays = 2.^(0:N-1);
 [isA, den, num] = isAllpass(A, B, C, D, delays)
 assert(isA)
 
+%% Test: check impulse response is paraunitary
+irLen = 1000;
+impulseResponse = dss2impz(irLen, delays, A, B, C, D);
+impulseResponse = permute(impulseResponse,[2 3 1]);
+[isP, testMatrix, maxOffDiagonalValue] = isParaunitary(impulseResponse);
+assert(isP)
 
