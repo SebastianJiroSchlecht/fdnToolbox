@@ -36,7 +36,7 @@ yLabel = p.Results.ylabel;
 Title = p.Results.title;
 xLim = p.Results.xlim;
 yLim = p.Results.ylim;
-plotArg = [fieldnames(p.Unmatched), struct2cell(p.Unmatched)];
+plotArg = [fieldnames(p.Unmatched), struct2cell(p.Unmatched)].';
 
 %% plot
 if isempty(t)
