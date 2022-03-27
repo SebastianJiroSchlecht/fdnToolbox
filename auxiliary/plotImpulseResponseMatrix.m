@@ -53,7 +53,7 @@ for itOut = 1:numberOfOutputs
         plotAxes(itOut,itIn) = subplot(numberOfOutputs, numberOfInputs, sub2ind([numberOfInputs,numberOfOutputs], itIn, itOut));
         hold on; grid on;
         %         plotHandles(itOut,itIn) = reduce_plot(t, ir(:,itOut,itIn),varargin{:});
-        plotHandles(itOut,itIn) = stem(t, ir(:,itOut,itIn),plotArg{:}); 
+        plotHandles(itOut,itIn) = plot(t, ir(:,itOut,itIn),plotArg{:}); 
     end    
 end
 
