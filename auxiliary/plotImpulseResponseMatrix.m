@@ -1,4 +1,4 @@
-function [plotAxes, plotHandles] = plotImpulseResponseMatrix( t, ir, varargin )
+function [plotAxes, plotHandles, commonAx] = plotImpulseResponseMatrix( t, ir, varargin )
 %plotImpulseResponseMatrix - Plot matrix of impulse response / polynomial matrix in subplots
 %
 % Syntax:  [plotAxes, plotHandles] = plotImpulseResponseMatrix( t, ir, varargin )
@@ -11,6 +11,7 @@ function [plotAxes, plotHandles] = plotImpulseResponseMatrix( t, ir, varargin )
 % Outputs:
 %    plotAxes - Matrix of axes handles; size [out, in]
 %    plotHandles - Matrix of axes handles; size [out, in]
+%    commonAx - Struct of commnon axes handles with the joint labels
 %
 % Example: 
 %    [plotAxes, plotHandles] = plotImpulseResponseMatrix( 1:100, randn(3,2,100), 'xlabel','Time (seconds)','ylim',[-1, 1])
