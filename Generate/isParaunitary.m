@@ -42,7 +42,7 @@ N = size(A,2);
 order = size(A,3);
 
 %% Determine paraunitarity
-Aconjugate = permute( flip(A,3), [2 1 3]);
+Aconjugate = permute( conj(flip(A,3)), [2 1 3]);
 
 testMatrix = matrixConvolution(A,Aconjugate);
 
