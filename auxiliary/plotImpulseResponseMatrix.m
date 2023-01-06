@@ -36,7 +36,7 @@ yLabel = p.Results.ylabel;
 Title = p.Results.title;
 xLim = p.Results.xlim;
 yLim = p.Results.ylim;
-plotArg = [fieldnames(p.Unmatched), struct2cell(p.Unmatched)];
+plotArg = [fieldnames(p.Unmatched), struct2cell(p.Unmatched)].';
 
 %% plot
 if isempty(t)
@@ -53,7 +53,7 @@ for itOut = 1:numberOfOutputs
         plotAxes(itOut,itIn) = subplot(numberOfOutputs, numberOfInputs, sub2ind([numberOfInputs,numberOfOutputs], itIn, itOut));
         hold on; grid on;
         %         plotHandles(itOut,itIn) = reduce_plot(t, ir(:,itOut,itIn),varargin{:});
-        plotHandles(itOut,itIn) = stem(t, ir(:,itOut,itIn),plotArg{:}); 
+        plotHandles(itOut,itIn) = plot(t, ir(:,itOut,itIn),plotArg{:}); 
     end    
 end
 
