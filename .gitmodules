@@ -1,3 +1,6 @@
 [submodule "External/Violinplot-Matlab"]
 	path = External/Violinplot-Matlab
 	url = https://github.com/bastibe/Violinplot-Matlab
+[submodule "External/DecayFitNet"]
+	path = External/DecayFitNet
+	url = https://github.com/georg-goetz/DecayFitNet.git

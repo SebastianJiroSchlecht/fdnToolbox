@@ -4,3 +4,5 @@ find_and_replace.m
 *.m~
 *.tikz
 *.pdf
+
+*.asv
