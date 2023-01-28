@@ -15,7 +15,7 @@ irLen = round(10*fs);
 RT60 = 1;
 gainPerSample = db2mag(RT602slope(RT60, fs));
 initialLevel = db2mag(0);
-noiseLevel = db2mag(-90);
+noiseLevel = db2mag(-50);
 
 rir = initialLevel * randn(irLen,1) .* gainPerSample .^ (0:irLen-1)' + randn(irLen,1) * noiseLevel;
 
