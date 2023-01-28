@@ -29,7 +29,7 @@ targetT60 = 0 + 1*[2; 2; 2.2; 2.3; 2.1; 1.5; 1.1; 0.8; 0.7; 0.7];  % seconds
 zAbsorption = zSOS(absorptionGEQ(targetT60, delays, fs),'isDiagonal',true);
 
 % power correction filter
-targetPower = -[5; 5; 5; 3; 2; 1; -1; -3; -5; -5];  % dB
+targetPower = [5; 5; 5; 3; 2; 1; -1; -3; -5; -5];  % dB
 powerCorrectionSOS = designGEQ(targetPower);
 outputFilters = zSOS(permute(powerCorrectionSOS,[3 4 1 2]) .* outputGain);
 
@@ -70,10 +70,11 @@ plot(pow2db(estEdc_),'--');
 rirFBands = octaveFiltering([1; zeros(fs,1)], fs, centerFrequencies);
 bandEnergy = sum(rirFBands.^2,1).';
 
-estimatedLevel = 35 + pow2db(a_est ./ bandEnergy * impulseResponseLength ./ (targetT60(2:end-1) * fs)); 
+gainPerSample = db2mag(RT602slope(targetT60(2:end-1), fs));
+decayEnergy = 1 ./ (1 - gainPerSample.^2);
 
-
-
+estimatedLevel = pow2db(a_est.' ./ bandEnergy.' * impulseResponseLength ./ decayEnergy.')
+% there is an offset because, the FDN is not energy normalized
 
 %% plot
 % figure(1); hold on; grid on;
@@ -86,9 +87,7 @@ estimatedLevel = 35 + pow2db(a_est ./ bandEnergy * impulseResponseLength ./ (tar
  
 figure(2); hold on; grid on;
 plot(T60frequency,targetT60);
-% plot(F0,reverberationTimeLate);
-% plot(F0,reverberationTimeEarly);
-plot(centerFrequencies,t_est)
+plot(centerFrequencies,t_est);
 % plot(rad2hertz(angle(pol),fs),slope2RT60(mag2db(abs(pol)), fs),'x');
 set(gca,'XScale','log');
 xlim([50 fs/2]);
@@ -98,8 +97,8 @@ ylabel('Reverberation Time [s]')
 legend({'Target Curve','T60 Late','Poles'})
 
 figure(3); hold on; grid on;
-plot(T60frequency, targetPower);
-plot(centerFrequencies, estimatedLevel);
+plot(T60frequency, targetPower - mean(targetPower));
+plot(centerFrequencies, estimatedLevel - mean(estimatedLevel));
 set(gca,'XScale','log');
 xlim([50 fs/2]);
 legend({'Target','Estimation'})
