@@ -75,7 +75,7 @@ switch matrixType
     case 'SchroederReverberator'
         allpassGain = rand(1,N/2)*0.2 + 0.6;
         combGain = ones(1,N/2);
-        A = SchroederReverberator(allpassGain, combGain, ones(1,N/2), ones(1,N/2), 1);
+        [A,B,C,D] = SchroederReverberator(allpassGain, combGain, ones(N/2,1), ones(1,N/2), 1);
         isLossless = false;
     case 'AndersonMatrix'
         A = AndersonMatrix(N,varargin{:});

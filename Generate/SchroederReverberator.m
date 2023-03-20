@@ -39,8 +39,8 @@ P = diag(combGain);
 S = APinputGain * c;
 
 matrix = [P, 0*P; S, APmatrix];
-inputGain = [b; 0*APinputGain'];
-outputGain = [APdirect*c; APoutputGain];
+inputGain = [b; 0*APinputGain];
+outputGain = [APdirect*c, APoutputGain];
 direct = d * APdirect;
 
 
