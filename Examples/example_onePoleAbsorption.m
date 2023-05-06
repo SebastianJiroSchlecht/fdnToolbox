@@ -16,13 +16,13 @@ numOutput = 1;
 inputGain = ones(N,numInput);
 outputGain = ones(numOutput,N);
 direct = ones(numOutput,numInput);
-delays = randi([50, 300],[1,N]);
+delays = randi([50, 300]*10,[1,N]);
 feedbackMatrix = randomOrthogonal(N);
 
 % Generate absorption filters
-RT_DC = 2; % seconds
-RT_NY = 0.5; % seconds
-crossover_frequency = 4000; % Hz
+RT_DC = 3; % seconds
+RT_NY = 0.1; % seconds
+crossover_frequency = 12000; % Hz
 
 switch 'firstOrder'
     case 'onePole'

@@ -35,7 +35,12 @@ function [b,a] = firstOrderAbsorption(RT_DC, RT_NY, crossover_frequency, delays,
 HDc = db2mag( delays * RT602slope( RT_DC, fs ) );
 HNyq = db2mag( delays * RT602slope( RT_NY, fs ) );
 
+if crossover_frequency > fs/5 % too high cross-over frequency leads to instable filter; fs/4 is the limit
+    crossover_frequency = fs/5;
+end
 omega = crossover_frequency / fs * 2*pi;
+
+
 
 [b,a] = designFirstOrderShelvingFilter(HDc, HNyq, omega);
 
