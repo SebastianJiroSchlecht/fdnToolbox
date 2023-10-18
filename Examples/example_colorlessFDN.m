@@ -18,12 +18,12 @@ mainDir = fullfile("External", "colorlessFDN");
 fs = 48000;     % sampling frequnecy in Hz
 t60 = 3;        % reverberation time in seconds 
 delaySet = 1;   % [1, 2] delay set to use 
-N = 8;          % [4, 6, 8, 16] size of FDN
+N = 4;          % [4, 6, 8, 16] size of FDN
 irLen = t60*fs; % length of the impulse response
 
 g = 10^(-3/fs/t60);    % gain per sample from (linear)
 
-%% Construct FDN
+%% Construct Opitmized FDN
 
 filename = "param_"+"N"+num2str(N)+"_d"+num2str(delaySet)+".mat";
 
@@ -39,7 +39,7 @@ Ag = double(expm(skew(A))*Gamma); % apply attenuation
 
 % generate impulse response
 ir = dss2impz(irLen, m, Ag, B, C, D);
-sound(ir/max(abs(ir)), fs); 
+soundsc(ir, fs); 
 % modal decomposition
 [residues, ~, ~, ~, ~] = dss2pr(m, Ag, B, C, D);
 
@@ -69,7 +69,7 @@ Ag = double(expm(skew(A))*Gamma); % apply attenuation
 
 % generate impulse response
 ir_init = dss2impz(irLen, m, Ag, B, C, D);
-sound(ir_init/max(abs(ir_init)), fs); 
+soundsc(ir_init, fs); 
 % modal decomposition
 [residues, ~, ~, ~, ~] = dss2pr(m, Ag, B, C, D);
 
@@ -82,6 +82,8 @@ figure(2);
 res = db(abs(residues));
 res = res - mean(res);
 histogram(res,'FaceAlpha',0.1,'BinWidth',1)
+xlabel('Residue Magnitude (dB)')
+ylabel('Number of Modes')
 legend("optim", "init");
 
 %% Functions 
