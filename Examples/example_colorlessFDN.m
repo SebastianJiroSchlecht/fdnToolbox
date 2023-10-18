@@ -18,7 +18,7 @@ mainDir = fullfile("External", "colorlessFDN");
 fs = 48000;     % sampling frequnecy in Hz
 t60 = 3;        % reverberation time in seconds 
 delaySet = 1;   % [1, 2] delay set to use 
-N = 4;          % [4, 6, 8, 16] size of FDN
+N = 8;          % [4, 6, 8, 16] size of FDN
 irLen = t60*fs; % length of the impulse response
 
 g = 10^(-3/fs/t60);    % gain per sample from (linear)
