@@ -97,8 +97,9 @@ end
 fprintf('Final number of poles are: %d of possible %d \n',sum(isConjugatePolePair+1),numberOfPoles);
 
 %% Compute residues
-[residues,direct,undrivenResidues] = dss2res(poles,loopMatrix,B,C,D);
+[residues,direct,undrivenResidues,eigenvectors] = dss2res(poles,loopMatrix,B,C,D);
 
 metaData.undrivenResidues = undrivenResidues;
+metaData.eigenvectors = eigenvectors;
 
 
