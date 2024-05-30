@@ -1,3 +1,19 @@
+% Sebastian J. Schlecht, Tuesday, 28. May 2024
+% Update
+
+% Make a new filter class (with at(z), der(z), time-domain process)
+% - Delay
+% - Matrix
+% - IIR filter
+%
+%
+% Make Sequential and Recursive (with same functions)
+% - Recursive needs a buffer
+%
+% Make a simple FDN from the graph
+
+
+
 % Sebastian J. Schlecht, Wednesday, 01 November 2023
 
 % zFilter might be a good basis
