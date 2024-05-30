@@ -55,6 +55,7 @@ rejectUnstablePoles = p.Results.rejectUnstablePoles;
 % loopMatrix = zFDNloop(delayTF, absorptionFilters, matrixTF, inverseMatrix);
 
 numberOfPoles = F.numberOfDelays;
+numberOfPoles = numberOfPoles + 0;
 
 %% Pole initialization
 poleAngles = linspace(0,2*pi,numberOfPoles+1);

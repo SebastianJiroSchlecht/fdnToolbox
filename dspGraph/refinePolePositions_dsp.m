@@ -150,7 +150,7 @@ ehrlichAberthStep = 1 ./ (invNewtonStep - deflation);
 function invNewtonStep = computeNewtonStep( it, poles, loop)
 %% Compute inverse Newton step
 pole = poles(it);
-invNewtonStep = trace( loop.atLoop(pole,'z')  \ loop.derLoop(pole,'z')  );
+invNewtonStep = trace( loop.atLoop(pole,'z^1')  \ loop.derLoop(pole,'z^1')  );
 
 function [deflation,isExact] = computeDeflation( it, poles, invNewtonStep, DeflationType, numberOfNeighbors, deflationMaxError, steps)
 %% Compute deflation depending on type

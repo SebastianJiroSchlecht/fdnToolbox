@@ -33,7 +33,7 @@ function C=einsum(A,B,iA,iB)
 sA=size(A);
 sB=size(B);
 if nargin==3
-    [iA, iB, final_permutation]=parse(iA, sA, sB);
+    [iA, iB, final_permutation, sA, sB]=parse(iA, sA, sB);
 else
     final_permutation=false;
 end
@@ -74,7 +74,7 @@ end
 
 
 
-function [iA, iB, final_permutation]=parse(s, sA, sB)
+function [iA, iB, final_permutation, sA, sB]=parse(s, sA, sB)
 msg='argument should be a string of the form ''ijk,kjl->il''';
 if ~ischar(s)
     error(msg)
@@ -105,6 +105,17 @@ if length(in)~=2
 end
 inA=in{1};
 inB=in{2};
+
+%SJS: handle singleton dimensions
+if length(inA)>length(sA)
+    sA = [sA, ones(1,length(inA)-length(sA))];
+end
+
+if length(inB)>length(sB)
+    sB = [sB, ones(1,length(inB)-length(sB))];
+end
+
+
 if length(inA)~=length(sA)
     error(['''%s'' has %d dimensions while the '...
         'first argument has %d'],inA, length(inA), length(sA))

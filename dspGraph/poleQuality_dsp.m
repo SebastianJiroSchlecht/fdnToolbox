@@ -14,7 +14,7 @@ for it=1:numel(quality)
     % else
     %     m = loop.atat(poles(it));
     % end
-    m = loop.atLoop(poles(it),'z');
+    m = loop.atLoop(poles(it),'z^1');
 
     if isscalar(m)
         quality(it) = abs(m);

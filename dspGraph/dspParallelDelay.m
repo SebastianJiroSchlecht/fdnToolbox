@@ -22,7 +22,7 @@ classdef dspParallelDelay < dspBlock
             switch var
                 case 'z^-1'
                     Y = X .* z.^-obj.delays;
-                case 'z'
+                case 'z^1'
                     Y = X .* z.^obj.delays;
                 otherwise
                     error('Undefined');
@@ -35,7 +35,7 @@ classdef dspParallelDelay < dspBlock
             switch var
                 case 'z^-1'
                     Y = X .* (-obj.delays .* z.^(-obj.delays-1));
-                case 'z'
+                case 'z^1'
                     Y = X .* (obj.delays .* z.^(obj.delays-1));
                 otherwise
                     error('Undefined');

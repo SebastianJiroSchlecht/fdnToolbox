@@ -14,12 +14,20 @@ for it1 = 1:size(B,2)
         switch var
             case 'z^1'
                 [q,p] = polyder(B(:,it1,it2),A(:,it1,it2));
-                Q(end-length(q)+1:end,it1,it2) = q;
-                P(end-length(p)+1:end,it1,it2) = p;
+                % Q(end-length(q)+1:end,it1,it2) = q; % old version
+                % P(end-length(p)+1:end,it1,it2) = p;
+                Q(1:length(q),it1,it2) = q;
+                P(1:length(p),it1,it2) = p;
             case 'z^-1'
                 [q,p] = negpolyder(B(:,it1,it2),A(:,it1,it2));
                 Q(1:length(q),it1,it2) = q;
                 P(1:length(p),it1,it2) = p;
         end
     end
+end
+
+switch var
+      case 'z^1'
+        Q = flip(Q,1);
+        P = flip(P,1);
 end

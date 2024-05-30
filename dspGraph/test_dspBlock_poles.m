@@ -1,19 +1,27 @@
 % test dspBlock poles
 clear; clc; close all;
 
-
-signalLength = 1000;
+fs = 48000;
+signalLength = 40000;
 blockSize = 30;
 numberOfChannels = 2;
 
 delays = 30+[5 11];
-gainPerSample = 0.98;
+
+% gainPerSample = 0.98;
+% G = dspParallelGains(gainPerSample .^ delays);
+
+% Generate absorption filters
+RT_DC = 0.2; % seconds
+RT_NY = 0.1; % seconds
+crossover_frequency = 2000; % Hz
+[absorption.b,absorption.a] = firstOrderAbsorption(RT_DC, RT_NY, crossover_frequency, delays, fs);
+G = dspParallelFilters(absorption.b,absorption.a);
 
 A = dspMatrix(orth(randn(numberOfChannels)));
 % A = dspMatrix(hadamard(2)/sqrt(2));
 
 Z = dspParallelDelay(delays);
-G = dspParallelGains(gainPerSample .^ delays);
 
 ZG = dspSequential(Z,G);
 
@@ -27,8 +35,6 @@ D = dspMatrix(1);
 FDN = dspSequential(dspSequential(B,F),C);
 
 % z-domain processing
-numberOfDelays = sum(delays + 0*blockSize);
-
 [residues, poles, direct, isConjugatePolePair, metaData] = dss2pr_dsp(F,B,C,D);
 response = pr2impz(residues, poles, 0, isConjugatePolePair, signalLength);
 
@@ -54,3 +60,6 @@ figure; hold on;
 plot(fdnz)
 plot(response+1)
 legend('Frequency sampling','Pole-residue')
+
+figure; hold on;
+plot(fdnz - response)

@@ -1,8 +1,8 @@
 % test dspBlock
 clear; clc; close all;
 
-
-signalLength = 4000;
+fs = 48000;
+signalLength = 40000;
 blockSize = 30;
 numberOfChannels = 3;
 
@@ -11,12 +11,21 @@ x = x*0;
 x(1,1) = 1;
 
 delays = 30+[5 7 8];
-gainPerSample = 0.99;
+
+% gainPerSample = 0.99;
+% G = dspParallelGains(gainPerSample .^ delays);
+
+% Generate absorption filters
+RT_DC = 0.4; % seconds
+RT_NY = 0.1; % seconds
+crossover_frequency = 2000; % Hz
+[absorption.b,absorption.a] = firstOrderAbsorption(RT_DC, RT_NY, crossover_frequency, delays, fs);
+G = dspParallelFilters(absorption.b,absorption.a);
 
 A = dspMatrix(orth(randn(numberOfChannels)));
 
 Z = dspParallelDelay(delays);
-G = dspParallelGains(gainPerSample .^ delays);
+
 
 ZG = dspSequential(Z,G);
 
