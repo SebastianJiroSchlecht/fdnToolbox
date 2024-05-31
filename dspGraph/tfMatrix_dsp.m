@@ -28,12 +28,8 @@ classdef tfMatrix_dsp < handle
             if nargin > 0
 
                 obj.numerator = b;
-                if nargin == 2 % IIR
-                    obj.denominator = a;
-                else % FIR
-                    obj.denominator = 1 + 0*b(:,:,1);
-                end
-
+                obj.denominator = a;
+                
                 % computation acceleration
                 obj.flipNumerator = flip(obj.numerator,3); % flip time
                 obj.flipDenominator = flip(obj.denominator,3);

@@ -5,7 +5,6 @@ classdef dspRecursive < dspBlock
     % sampling as well so the two methods align.
 
     properties
-        blockSize
         feedforward
         feedback
         feedbackWithoutBufferDelay
@@ -22,7 +21,7 @@ classdef dspRecursive < dspBlock
 
             obj.bufferDelay = dspParallelDelay(blockSize * ones(obj.numberOfInputs,1));
 
-            obj.feedforward = feedforward;
+            obj.feedforward = dspSequential(obj.bufferDelay,feedforward);
             obj.feedback = dspSequential(feedback,obj.bufferDelay);
             obj.feedbackWithoutBufferDelay = feedback; % for time-domain processing
 

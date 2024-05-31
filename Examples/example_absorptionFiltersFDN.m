@@ -13,37 +13,50 @@ fs = 48000;
 impulseResponseLength = fs*2;
 
 % define FDN
-N = 4;
+N = 2; % N = 4
 numInput = 1;
 numOutput = 1;
-inputGain = ones(N,numInput);
-outputGain = ones(numOutput,N);
+inputGain = randn(N,numInput);
+outputGain = randn(numOutput,N);
 direct = zeros(numOutput,numInput);
-delays = randi([500,2000],[1,N]);
+delays = randi([500,2000]/50,[1,N]);
 feedbackMatrix = randomOrthogonal(N);
 
 % absorption filters
-filterOrder = 32;
+filterOrder = 8; 64;
 
-T60frequency = [0; 500; 5000; 8000; fs/2];
+T60frequency = [0, 63, 125, 250, 500, 1000, 2000, 4000, 8000, fs/2]'; % Hz
+targetT60 = [2 linspace(2,0.5,8) 0.5]'.^0.3;
 
-targetT60 = [2;1.5;0.5]*ones(1,N);  % seconds; copy for each channel
-targetT60 = [targetT60(1,:); targetT60; targetT60(end,:)];
-
-absorption = absorptionFilters(T60frequency, targetT60, filterOrder, delays, fs);
+absorption = absorptionFilters(T60frequency, targetT60*ones(1,N), filterOrder, delays, fs);
 absorptionMatrix = polydiag( absorption );
 
 absorptionFeedbackMatrix = zFIR(matrixConvolution(feedbackMatrix, absorptionMatrix));
 
+absorptionFeedbackMatrix = feedbackMatrix;
+
 % compute impulse response and poles/zeros
 irTimeDomain = dss2impz(impulseResponseLength, delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
 [res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
-irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength, 'lowMemory');
+
+% dsp based
+[FDN,F,B,C,D] = makeFDN_dsp(delays, feedbackMatrix, inputGain, outputGain, direct, permute(absorption,[1 3 2]));
+% irTimeDomain = dsp2impz(impulseResponseLength,FDN);
+[res2, pol2, directTerm2, isConjugatePolePair2,metaData2] = dss2pr_dsp(F,B,C,D);
+
+% place absorption some where else for testing
+irResPol = pr2impz(res2, pol2, directTerm2, isConjugatePolePair2, impulseResponseLength, 'lowMemory');
 
 difference = irTimeDomain - irResPol;
 fprintf('Maximum devation betwen time-domain and pole-residues is %f\n', permute(max(abs(difference),[],1),[2 3 1]));
 
-[reverberationTimeEarly, reverberationTimeLate, F0, powerSpectrum, edr] = reverberationTime(irTimeDomain, fs);
+% reverberation time analysis - approximate RIR with a single slope
+fBands = T60frequency(2:end-1); % center bands
+nSlopes = 1;
+net = DecayFitNetToolbox(nSlopes, fs, fBands);
+estimatedT60 = net.estimateParameters(irTimeDomain);
+
+
 
 %% plot
 figure(1); hold on; grid on;
@@ -55,24 +68,22 @@ legend('Difference', 'TimeDomain', 'Res Pol')
 
 
 figure(2); hold on; grid on;
-plot(T60frequency,targetT60(:,1));
-plot(rad2hertz(angle(pol),fs),slope2RT60(mag2db(abs(pol)), fs),'x');
-plot(F0,reverberationTimeLate);
-plot(F0,reverberationTimeEarly);
+plot(T60frequency,targetT60,'LineWidth',2);
+plot(rad2hertz(angle(pol),fs),slope2RT60(mag2db(abs(pol)), fs),'.');
+plot(fBands,estimatedT60,'LineWidth',2);
 set(gca,'XScale','log');
 xlim([50 fs/2]);
 xlabel('Frequency [hz]')
 ylabel('Pole RT60 [s]')
-legend({'Target Curve','Poles','T60 Late','T60 Early'})
+legend({'Target Curve','Poles','T60 Late'})
 
 %% Test: Impulse Response Error
 [isZ, maxVal] = isAlmostZero(difference, 'tol', 10^-4);
 assert(isZ)
 
 %% Test: Reverberation Time Accuracy
-targetT60_interp = interp1( T60frequency,targetT60(:,1), F0);
-T60_relativeError = reverberationTimeLate ./ targetT60_interp - 1;
-[isZ, maxVal] = isAlmostZero(T60_relativeError, 'tol', 0.80); % 80% error; not very good
+T60_relativeError = (estimatedT60 ./ targetT60(2:end-1) - 1) * 100; % in %
+[isZ, maxVal] = isAlmostZero(abs(T60_relativeError), 'tol', 10); % 10% error
 assert( isZ )
 
 

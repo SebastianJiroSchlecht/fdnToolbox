@@ -8,6 +8,7 @@ classdef dspBlock < handle
     properties
         numberOfInputs
         numberOfOutputs
+        blockSize = 100000; % large number
     end
     
     methods

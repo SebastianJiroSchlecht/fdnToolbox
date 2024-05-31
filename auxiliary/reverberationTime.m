@@ -73,7 +73,7 @@ powerSpectrum = ((edr(1,:) ) ./ reverberationTimeLate - bandwidthEnergyCompensat
 
 function [y, F0] = filterOctaveBands(x, bandsPerOctave, filterOrder, fs)
 % calculates warped octave filter banks
-switch 'useToolbox'
+switch 'usePrecalculate'
     case 'useToolbox'
         % get valied frequencies
         BandsPerOctave = 1;

@@ -13,7 +13,8 @@ classdef dspSequential < dspBlock
             obj.blockB = blockB;
             
             obj.numberOfInputs = obj.blockA.numberOfInputs;
-            obj.numberOfOutputs = obj.blockB.numberOfOutputs;  
+            obj.numberOfOutputs = obj.blockB.numberOfOutputs; 
+            obj.blockSize = min(obj.blockA.blockSize,obj.blockB.blockSize);
         end
 
         

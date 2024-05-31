@@ -6,7 +6,7 @@ function FIR = absorptionFilters(frequency, targetRT60, filterOrder, delays, fs)
 %and last elements of frequency must equal 0 and fs/2, respectively.
 %
 %
-% Syntax:  FIR = absorptionFilters(unitFrequency, targetRT60, filterOrder, delays, fs)
+% Syntax:  FIR = absorptionFilters(frequency, targetRT60, filterOrder, delays, fs)
 %
 % Inputs:
 %    frequency - Frequency points for T60 definition in [hertz]
