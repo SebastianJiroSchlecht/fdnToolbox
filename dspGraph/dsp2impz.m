@@ -1,4 +1,4 @@
-function impulseResponse = dsp2impz(irLen, FDN, varargin)
+function impulseResponse = dsp2impz(irLen, FDN, domain, varargin)
 %dss2impz - From state-space to impulse response
 % Uses the standard time-domain recursion to compute the impulse response
 % of the given feedback delay network (FDN).
@@ -17,8 +17,8 @@ function impulseResponse = dsp2impz(irLen, FDN, varargin)
 % Outputs:
 %    impulseResponse - matrix of impulse response [irLen,out,in]
 %
-% See also: 
-% Author: Dr.-Ing. Sebastian Jiro Schlecht, 
+% See also:
+% Author: Dr.-Ing. Sebastian Jiro Schlecht,
 % Aalto University, Finland
 % email address: sebastian.schlecht@aalto.fi
 % Website: sebastianjiroschlecht.com
@@ -26,23 +26,38 @@ function impulseResponse = dsp2impz(irLen, FDN, varargin)
 
 % TODO split input is missing
 
+switch domain
+    case 'time'
+        %% Create dirac pulse
+        blockSize = FDN.blockSize;
 
-%% Create dirac pulse
-blockSize = FDN.blockSize;
+        input = zeros(irLen, FDN.numberOfInputs);
+        input(1,:) = 1;
 
-input = zeros(irLen, FDN.numberOfInputs);
-input(1+blockSize,:) = 1;
+        % time-domain processing
+        blockStart = 0;
 
-% time-domain processing
-blockStart = 0;
+        impulseResponse = zeros(irLen,FDN.numberOfOutputs);
 
-impulseResponse = zeros(irLen,FDN.numberOfOutputs);
+        while (blockStart < irLen - blockSize) % TODO: fix the last block
+            blockIndex = blockStart + (1:blockSize);
+            block = input(blockIndex,:);
 
-while (blockStart < irLen - blockSize) % fix the last block
-    blockIndex = blockStart + (1:blockSize);
-    block = input(blockIndex,:);
-    
-    impulseResponse(blockIndex,:) = FDN.process(block);
+            impulseResponse(blockIndex,:) = FDN.process(block);
 
-    blockStart = blockStart + blockSize;
+            blockStart = blockStart + blockSize;
+        end
+
+        impulseResponse = circshift(impulseResponse,blockSize,1);
+
+    case 'frequency'
+        % frequency-domain sampling
+        w = circspace(irLen).';
+        z = exp(1i .* w);
+
+        X = ones(numel(w),FDN.numberOfInputs);
+        
+        Fz = FDN.at(X,z,'z^-1');
+
+        impulseResponse = real(ifft(Fz));
 end

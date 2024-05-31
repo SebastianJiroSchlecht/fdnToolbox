@@ -20,48 +20,28 @@ RT_DC = 0.4; % seconds
 RT_NY = 0.1; % seconds
 crossover_frequency = 2000; % Hz
 [absorption.b,absorption.a] = firstOrderAbsorption(RT_DC, RT_NY, crossover_frequency, delays, fs);
+
 G = dspParallelFilters(absorption.b,absorption.a);
-
 A = dspMatrix(orth(randn(numberOfChannels)));
-
 Z = dspParallelDelay(delays);
+Ff = dspRecursive(blockSize,dspSequential(Z,G),A);
 
-
-ZG = dspSequential(Z,G);
-
-F = dspRecursive(blockSize,ZG,A);
+% 
+Zt = dspParallelDelay(delays-blockSize);
+Ft = dspRecursive(blockSize,dspSequential(Zt,G),A);
 
 % time-domain processing
-blockStart = 0;
-y = zeros(signalLength,numberOfChannels);
-while (blockStart < signalLength - blockSize)
-    blockIndex = blockStart + (1:blockSize);
-    block = x(blockIndex,:);
-    
-    y(blockIndex,:) = F.process(block);
-
-    blockStart = blockStart + blockSize;
-end
+yt = dsp2impz(signalLength, Ft, 'time');
 
 % z-domain processing
-w = circspace(signalLength).';
-z = exp(1i .* w);
-
-X = zeros(numel(w),numberOfChannels);
-X(:,1) = 1;
-
-Fz = F.at(X,z,'z^-1');
-
-fz = real(ifft(Fz));
+yf = dsp2impz(signalLength, Ff, 'frequency');
 
 %% plot
 figure; hold on;
-plot(y)
-
+plot(yt)
 set(gca,'ColorOrderIndex',1)
-% figure;
-plot(fz - 0*y + 1);
+plot(yf + 1);
 legend('Time-domain processing','Frequency domain sampling')
 
 figure;
-plot(fz - y);
+plot(yf - yt);

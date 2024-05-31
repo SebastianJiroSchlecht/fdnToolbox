@@ -15,14 +15,14 @@ classdef dspRecursive < dspBlock
 
     methods
         function obj = dspRecursive(blockSize, feedforward, feedback, varargin)
-            obj.blockSize = blockSize;
+            obj.blockSize = blockSize; % inactive for frequency domain
             obj.numberOfOutputs = feedforward.numberOfOutputs;
             obj.numberOfInputs = feedforward.numberOfInputs;
 
             obj.bufferDelay = dspParallelDelay(blockSize * ones(obj.numberOfInputs,1));
 
-            obj.feedforward = dspSequential(obj.bufferDelay,feedforward);
-            obj.feedback = dspSequential(feedback,obj.bufferDelay);
+            obj.feedforward = feedforward;
+            obj.feedback = feedback;
             obj.feedbackWithoutBufferDelay = feedback; % for time-domain processing
 
             obj.lastOutput = zeros(blockSize,obj.numberOfOutputs);
@@ -47,7 +47,7 @@ classdef dspRecursive < dspBlock
         end
 
         function val = der(obj,z,var)
-            % val = 0*obj.matrix; % TODO
+            % val = 0*obj.matrix; % TODO remove
         end
 
 

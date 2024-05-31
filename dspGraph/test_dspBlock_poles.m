@@ -39,15 +39,7 @@ FDN = dspSequential(dspSequential(B,F),C);
 response = pr2impz(residues, poles, 0, isConjugatePolePair, signalLength);
 
 % z-domain processing
-w = circspace(signalLength).';
-z = exp(1i .* w);
-
-X = zeros(numel(w),1);
-X(:,1) = 1;
-
-FDNz = FDN.at(X,z,'z^-1');
-
-fdnz = real(ifft(FDNz));
+fdnz = dsp2impz(signalLength, FDN, 'frequency');
 
 %% plot
 figure; hold on;
