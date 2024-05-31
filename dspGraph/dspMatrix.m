@@ -12,13 +12,10 @@ classdef dspMatrix < dspBlock
         end
 
         function Y = at(obj,X,z,var)
-            if ndims(X) == 2 %&& size(X,1) = 1
-                Y = einsum(obj.matrix, X, 'mn,fn->fm'); 
-            elseif ndims(X) == 3
-                Y = einsum(obj.matrix, X, 'mn,fnk->fmk');
-            else
-                error('Size not defined');
-            end
+            % Y = einsum(obj.matrix, X, 'mn,fnk->fmk'); % parsing is too
+            % slow
+            Y = sum(permute(obj.matrix, [3 1 4 2]) .* permute(X, [1 4 3 2]),4); 
+            % ok = 1;
         end
          
          function val = der(obj,X,z,var)

@@ -7,8 +7,7 @@ classdef dspRecursive < dspBlock
     properties
         feedforward
         feedback
-        feedbackWithoutBufferDelay
-
+        
         lastOutput
         bufferDelay
     end
@@ -23,11 +22,8 @@ classdef dspRecursive < dspBlock
 
             obj.feedforward = feedforward;
             obj.feedback = feedback;
-            obj.feedbackWithoutBufferDelay = feedback; % for time-domain processing
-
+            
             obj.lastOutput = zeros(blockSize,obj.numberOfOutputs);
-
-
         end
 
         % G is the feedforward path with size (nfft,m,n)
@@ -75,7 +71,7 @@ classdef dspRecursive < dspBlock
         end
 
         function output = process(obj,input)
-            output = obj.feedforward.process(input + obj.feedbackWithoutBufferDelay.process(obj.lastOutput));
+            output = obj.feedforward.process(input + obj.feedback.process(obj.lastOutput));
             obj.lastOutput = output; % loop delay
         end
 

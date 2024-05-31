@@ -39,12 +39,12 @@ classdef tfMatrix_dsp < handle
         function val = at(obj,z,var)
             switch var
                 case 'z^-1'
-                    num = matrix_polyval_batch(obj.numerator,z);
-                    den = matrix_polyval_batch(obj.denominator,z);
+                    num = matrix_polyval_batch(obj.numerator,z,var);
+                    den = matrix_polyval_batch(obj.denominator,z,var);
                     val = num./den;
                 case 'z^1'
-                    num = matrix_polyval_batch(obj.flipNumerator,z);
-                    den = matrix_polyval_batch(obj.flipDenominator,z);
+                    num = matrix_polyval_batch(obj.flipNumerator,z,var);
+                    den = matrix_polyval_batch(obj.flipDenominator,z,var);
                     val = num./den;
             end
         end

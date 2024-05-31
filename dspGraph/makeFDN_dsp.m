@@ -1,7 +1,5 @@
 function [FDN,F,B,C,D] = makeFDN_dsp(delays, feedbackMatrix, inputGain, outputGain, direct, absorption)
 
-% define block size of time-domain processing (for rescursion) 
-blockSize = min(delays) - 1;
 
 % convert to dsp
 A = dspMatrix(feedbackMatrix);
@@ -9,12 +7,13 @@ B = dspMatrix(inputGain);
 C = dspMatrix(outputGain);
 D = dspMatrix(direct);
 
-Z = dspParallelDelay(delays - blockSize);
+Z = dspParallelDelay(delays);
 G = dspParallelFilters(absorption);
 
 % connect dsp
-ZG = dspSequential(Z,G);
+blockSize = 10000; % TODO: not used
+% ZG = dspSequential(Z,G); % absorption is after delay
 % F = dspRecursive(blockSize,ZG,A);
-F = dspRecursive(blockSize,Z,A);dspSequential(A,G)
+F = dspRecursive(blockSize,Z,dspSequential(G,A)); % absorption is before matrix
 FDN = dspSequential(dspSequential(B,F),C);
 

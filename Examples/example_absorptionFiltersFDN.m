@@ -13,40 +13,37 @@ fs = 48000;
 impulseResponseLength = fs*2;
 
 % define FDN
-N = 2; % N = 4
+N = 4;
 numInput = 1;
 numOutput = 1;
 inputGain = randn(N,numInput);
-outputGain = randn(numOutput,N);
+outputGain = ones(numOutput,N);
 direct = zeros(numOutput,numInput);
-delays = randi([500,2000]/50,[1,N]);
+delays = randi([500,2000],[1,N]);
 feedbackMatrix = randomOrthogonal(N);
 
 % absorption filters
-filterOrder = 8; 64;
-
+filterOrder = 64;
 T60frequency = [0, 63, 125, 250, 500, 1000, 2000, 4000, 8000, fs/2]'; % Hz
 targetT60 = [2 linspace(2,0.5,8) 0.5]'.^0.3;
-
 absorption = absorptionFilters(T60frequency, targetT60*ones(1,N), filterOrder, delays, fs);
-absorptionMatrix = polydiag( absorption );
-
-absorptionFeedbackMatrix = zFIR(matrixConvolution(feedbackMatrix, absorptionMatrix));
-
-absorptionFeedbackMatrix = feedbackMatrix;
 
 % compute impulse response and poles/zeros
-irTimeDomain = dss2impz(impulseResponseLength, delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
-[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
+% absorptionMatrix = polydiag( absorption );
+% absorptionFeedbackMatrix = zFIR(matrixConvolution(feedbackMatrix, absorptionMatrix));
+% irTimeDomain = dss2impz(impulseResponseLength, delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
+% [res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
+% irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength, 'lowMemory');
 
 % dsp based
 [FDN,F,B,C,D] = makeFDN_dsp(delays, feedbackMatrix, inputGain, outputGain, direct, permute(absorption,[1 3 2]));
-% irTimeDomain = dsp2impz(impulseResponseLength,FDN);
-[res2, pol2, directTerm2, isConjugatePolePair2,metaData2] = dss2pr_dsp(F,B,C,D);
 
-% place absorption some where else for testing
-irResPol = pr2impz(res2, pol2, directTerm2, isConjugatePolePair2, impulseResponseLength, 'lowMemory');
+[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr_dsp(F,B,C,D);
+irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength); % , 'lowMemory'
 
+irTimeDomain = dsp2impz(impulseResponseLength,FDN,'frequency');
+
+% evaluation
 difference = irTimeDomain - irResPol;
 fprintf('Maximum devation betwen time-domain and pole-residues is %f\n', permute(max(abs(difference),[],1),[2 3 1]));
 
@@ -55,8 +52,6 @@ fBands = T60frequency(2:end-1); % center bands
 nSlopes = 1;
 net = DecayFitNetToolbox(nSlopes, fs, fBands);
 estimatedT60 = net.estimateParameters(irTimeDomain);
-
-
 
 %% plot
 figure(1); hold on; grid on;

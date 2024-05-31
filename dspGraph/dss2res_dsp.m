@@ -66,19 +66,17 @@ r_nominator = zeros(numberOfPoles,numberOfOutputs,numberOfInputs);
 % eigenvectors.left = zeros(N,numberOfPoles);
 for it = 1:numberOfPoles
     pole = poles(it);
-    % b = B.at(pole);
-    % c = C.at(pole);
-    % l = loop.at(pole);
-    % 
-    % adjP = adjugate(l);
-    % r_nominator(it,:,:) = c*adjP*b;
-
-    adjP = adjugate(F.atLoop(pole,'z^-1'));
-
-    I = ones(1,1,1);
-    r_nominator(it,:,:) = C.at( F.feedforward.at(B.at(I,pole) * adjP,pole,'z^-1') ,pole);
     
-    % r_nominator(it,:,:) = C.at( B.at(I,pole) * adjP,pole);
+    % VERY important; the leading dimensions is the z-sampling points (which is here a singleton)
+    adjP = adjugate(F.atLoop(pole,'z^-1')); % is missing the leading dimension
+    I = ones(1,1,1);
+    bb = B.at(I,pole);
+    ff = F.feedforward.at(bb,pole,'z^-1');
+    pp = einsum(adjP, ff, 'mn,fnk->fmk'); % especially here
+    cc = C.at(pp ,pole,'z^-1');
+    r_nominator(it,:,:) = cc;
+
+    
     
 
     % find rank 1 decomposition
