@@ -13,7 +13,7 @@ fs = 48000;
 impulseResponseLength = fs*2;
 
 % define FDN
-N = 4;
+N = 8;
 numInput = 1;
 numOutput = 1;
 inputGain = randn(N,numInput);
@@ -23,40 +23,38 @@ delays = randi([500,2000],[1,N]);
 feedbackMatrix = randomOrthogonal(N);
 
 % absorption filters
-% T60frequency = [0, 46, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 11360, fs/2]'; % Hz
-T60frequency = [0, 63, 125, 250, 500, 1000, 2000, 4000, 8000, fs/2]'; % Hz
-targetT60 = [2 linspace(2,0.5,8) 0.5]'.^0.3;
-switch 'FIR'
+T60frequency = [46, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 11360]'; % Hz
+targetT60 = [2 linspace(2,0.5,8) 0.5]'.^0.3;  % seconds
+switch 'graphicEQ'
     case 'FIR'
-        filterOrder = 12;
-        absorption.b = absorptionFilters(T60frequency, targetT60*ones(1,N), filterOrder, delays, fs);
+        filterOrder = 64;
+        absorption.b = absorptionFilters([0; T60frequency(2:end-1); fs/2], targetT60*ones(1,N), filterOrder, delays, fs);
         absorption.b = permute(absorption.b,[1 3 2]);
-        absorption.a = 1 + 0*absorption.b(:,:,1);
-    % case 'onePole'
-    %     [absorption.b,absorption.a] = onePoleAbsorption(targetT60(1), targetT60(end), delays, fs);
-    % case 'firstOrder'
-    %     crossover_frequency = 1000;
-    %     [absorption.b,absorption.a] = firstOrderAbsorption(targetT60(1), targetT60(end), crossover_frequency, delays, fs);
-    % case 'graphicEQ'
-    %     targetT60 = [2, 2, 2.2, 2.3, 2.1, 1.5, 1.1, 0.8, 0.7, 0.7];  % seconds
-    %     [absorption.b,absorption.a] = absorptionGEQ(targetT60, delays, fs);
+        absorptionFilter = dspParallelFilters(absorption.b);
+    case 'onePole'
+        [absorption.b,absorption.a] = onePoleAbsorption(targetT60(1), targetT60(end), delays, fs);
+        absorptionFilter = dspParallelFilters(absorption.b,absorption.a);
+    case 'firstOrder'
+        crossover_frequency = 1000;
+        [absorption.b,absorption.a] = firstOrderAbsorption(targetT60(1), targetT60(end), crossover_frequency, delays, fs);
+        absorptionFilter = dspParallelFilters(absorption.b,absorption.a);
+    case 'graphicEQ'
+        [sos] = absorptionGEQ(targetT60, delays, fs);
+        absorptionFilter = dspParallelSOS(sos);
 end
 
-% compute impulse response and poles/zeros
-% absorptionMatrix = polydiag( absorption );
-% absorptionFeedbackMatrix = zFIR(matrixConvolution(feedbackMatrix, absorptionMatrix));
-% irTimeDomain = dss2impz(impulseResponseLength, delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
-% [res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, absorptionFeedbackMatrix, inputGain, outputGain, direct);
-% irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength, 'lowMemory');
-
 % dsp based
-[FDN,F,B,C,D] = makeFDN_dsp(delays, feedbackMatrix, inputGain, outputGain, direct, absorption);
-
-[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr_dsp(F,B,C,D);
-irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength); % , 'lowMemory'
+[FDN,F,B,C,D] = makeFDN_dsp(delays, feedbackMatrix, inputGain, outputGain, direct, absorptionFilter);
 
 irTimeDomain = dsp2impz(impulseResponseLength,FDN,'frequency');
 
+switch 'none'
+    case 'useModalDecomposition'
+        [res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr_dsp(F,B,C,D);
+        irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
+    case 'none'
+        irResPol = 0*irTimeDomain;
+end
 % evaluation
 difference = irTimeDomain - irResPol;
 fprintf('Maximum devation betwen time-domain and pole-residues is %f\n', permute(max(abs(difference),[],1),[2 3 1]));
@@ -78,13 +76,13 @@ legend('Difference', 'TimeDomain', 'Res Pol')
 
 figure(2); hold on; grid on;
 plot(T60frequency,targetT60,'LineWidth',2);
-plot(rad2hertz(angle(pol),fs),slope2RT60(mag2db(abs(pol)), fs),'.');
 plot(fBands,estimatedT60,'LineWidth',2);
+% plot(rad2hertz(angle(pol),fs),slope2RT60(mag2db(abs(pol)), fs),'.');
 set(gca,'XScale','log');
 xlim([50 fs/2]);
 xlabel('Frequency [hz]')
 ylabel('Pole RT60 [s]')
-legend({'Target Curve','Poles','T60 Late'})
+legend({'Target T60','Estimated T60 Late','Poles'})
 
 %% Test: Impulse Response Error
 [isZ, maxVal] = isAlmostZero(difference, 'tol', 10^-4);

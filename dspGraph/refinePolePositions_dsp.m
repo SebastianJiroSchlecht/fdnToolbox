@@ -51,6 +51,7 @@ isVerbose = p.Results.Verbose;
 stepCounter = 0;
 exactCounter = 0;
 poles = sortby(poles,angle(poles));
+poles = sortby(poles,abs(angle(poles))); % TODO
 numberOfPoles = length(poles);
 
 recordNeighborDeflation = [];
@@ -94,13 +95,16 @@ for steps = 1:MaximumIterations
             
             [ehrlichAberthStep,isExact] = EhrlichAberthStep( it, poles, loop, DeflationType, numberOfNeighbors, deflationMaxError, steps);
             pole = pole - ehrlichAberthStep;
+
             exactCounter = exactCounter + isExact;
                         
             poles(it) = pole;
             quality(it) = poleQuality_dsp(pole, loop);
         end
     end
-        
+
+    % poles(abs(poles)>1) = exp(1i.*angle(poles(abs(poles)>1)));
+
     if isVerbose
         recordPoles(end+1,:) = poles;
     end
@@ -150,7 +154,19 @@ ehrlichAberthStep = 1 ./ (invNewtonStep - deflation);
 function invNewtonStep = computeNewtonStep( it, poles, loop)
 %% Compute inverse Newton step
 pole = poles(it);
-invNewtonStep = trace( loop.atLoop(pole,'z^1')  \ loop.derLoop(pole,'z^1')  );
+
+% if abs(pole) > 1
+%     ok = 1;
+% end
+% if abs(pole) > 1
+%     % TODO check performance
+    % invNewtonStep2 = numel(poles)/pole - 1./trace( loop.atLoop(1/pole,'z^1')  \ loop.derLoop(1/pole,'z^1')) /pole.^2
+    % invNewtonStep2 = trace( loop.atLoop(1/pole,'z^1')  \ loop.derLoop(1/pole,'z^1')) 
+% else
+    invNewtonStep = trace( loop.atLoop(pole,'z^1')  \ loop.derLoop(pole,'z^1')  );
+% end
+
+% ok = 1;
 
 function [deflation,isExact] = computeDeflation( it, poles, invNewtonStep, DeflationType, numberOfNeighbors, deflationMaxError, steps)
 %% Compute deflation depending on type
