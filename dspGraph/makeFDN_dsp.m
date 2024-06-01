@@ -8,7 +8,7 @@ C = dspMatrix(outputGain);
 D = dspMatrix(direct);
 
 Z = dspParallelDelay(delays);
-G = dspParallelFilters(absorption);
+G = dspParallelFilters(absorption.b,absorption.a);
 
 % connect dsp
 blockSize = 10000; % TODO: not used
