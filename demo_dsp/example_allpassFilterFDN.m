@@ -10,7 +10,7 @@ clear; clc; close all;
 
 rng(5)
 fs = 48000;
-impulseResponseLength = fs/4;
+impulseResponseLength = fs;
 
 % Define FDN
 N = 4;
@@ -20,7 +20,8 @@ inputGain = eye(N,numInput);
 outputGain = eye(numOutput,N);
 direct = zeros(numOutput,numInput);
 delays = randi([200,900],[1,N]);
-feedbackMatrix = randomOrthogonal(N);
+gainPerSample = 0.9995;
+feedbackMatrix = randomOrthogonal(N) * diag(gainPerSample.^delays);
 
 % Allpass Filter
 filterLen = 7;
@@ -29,27 +30,39 @@ allpass.a(:,:,1) = 1;
 allpass.b = allpass.a(:,:,end:-1:1);
 zAllpass = zTF(allpass.b,allpass.a,'isDiagonal',true);
 
-% compute
-irTimeDomain = dss2impz(impulseResponseLength, delays, feedbackMatrix, inputGain, outputGain, direct, 'inputType', 'splitInput', 'AbsorptionFilters', zAllpass);
-[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr(delays, feedbackMatrix, inputGain, outputGain, direct, 'AbsorptionFilters', zAllpass);
-resLS = impz2res(irTimeDomain, pol, isConjugatePolePair);
+A = dspMatrixFilters(feedbackMatrix);
+B = dspMatrix(inputGain);
+C = dspMatrix(outputGain);
+D = dspMatrix(direct);
+Z = dspParallelDelay(delays);
+G = dspParallelFilters(allpass.b,allpass.a);
+
+% connect dsp
+blockSize = 10000; % TODO: not used
+F = dspRecursive(blockSize,dspSequential(Z,G),A); 
+FDN = dspSequential(dspSequential(B,F),C);
+
+irTimeDomain = dsp2impz(impulseResponseLength,FDN,'frequency');
+
+[res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr_dsp(F,B,C,D);
 irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);
 
-difference = irTimeDomain - irResPol;
+
 
 % plot
 close all;
 
 figure(1); hold on; grid on;
 t = 1:size(irTimeDomain,1);
-plot( t(1:end), difference(1:end) );
+difference = irTimeDomain - irResPol;
+plot( t(1:end), difference );
 plot( t, irTimeDomain - 2 );
 plot( t, irResPol - 4 );
 legend('Difference', 'TimeDomain', 'Res Pol')
 
 figure(2); hold on; grid on;
 plot(angle(pol),mag2db(abs(res)),'x');
-plot(angle(pol),mag2db(abs(resLS)),'o');
+% plot(angle(pol),mag2db(abs(resLS)),'o');
 xlabel('Pole Angle [rad]')
 ylabel('Residue Magnitude [dB]')
 
@@ -61,5 +74,5 @@ ylabel('Pole Magnitude [dB]')
 %% Test: Impulse Response Accuracy
 assert( isAlmostZero(difference, 'tol', 10^-10))
 
-%% Test: FDN is lossless 
-assert( isAlmostZero( abs(pol) - 1) )
+% %% Test: FDN is lossless 
+% assert( isAlmostZero( abs(pol) - 1) )

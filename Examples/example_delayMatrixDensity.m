@@ -22,11 +22,50 @@ inputGain = ones(N,numInput);
 outputGain = ones(numOutput,N);
 direct = zeros(numOutput,numInput);
 delays = ( randi([3000,8000],[1,N]) ); 
-feedbackMatrix.Scalar = hadamard(N)/sqrt(N); randomOrthogonal(N);
+feedbackMatrix.Scalar = hadamard(N)/sqrt(N);
 
 degree = 50;
 delayIndices = randi(degree,[N 1]) + randi(degree,[1 N]);
 feedbackMatrix.Delay = zFIR(constructDelayFeedbackMatrix(delayIndices,feedbackMatrix.Scalar));
+
+
+% Delay feedback matrix
+extraDelayIn = randi([1,70],[N,1]); 
+extraDelayOut = randi([1,70],[1,N]);
+
+totalDelay = delays + extraDelayIn.' + extraDelayOut;
+
+gainPerSample = 0.9995;
+feedbackMatrix = randomOrthogonal(N) * diag(gainPerSample.^totalDelay);
+
+% dsp
+% delay feedback matrix
+A = dspSequential( dspSequential( dspParallelDelay(extraDelayIn), dspMatrixFilters(feedbackMatrix)), dspParallelDelay(extraDelayOut));
+B = dspMatrix(inputGain);
+C = dspMatrix(outputGain);
+D = dspMatrix(direct);
+Z = dspParallelDelay(delays);
+
+% connect dsp
+blockSize = 10000; % TODO: not used
+F = dspRecursive(blockSize,Z,A); 
+FDN = dspSequential(dspSequential(B,F),C);
+
+irTimeDomain_withDelayMatrix = dsp2impz(impulseResponseLength,FDN,'frequency');
+
+% same total delay lengths but not disentangled
+A = dspMatrixFilters(feedbackMatrix);
+B = dspMatrix(inputGain);
+C = dspMatrix(outputGain);
+D = dspMatrix(direct);
+Z = dspParallelDelay(totalDelay);
+
+% connect dsp
+blockSize = 10000; % TODO: not used
+F = dspRecursive(blockSize,Z,A); 
+FDN2 = dspSequential(dspSequential(B,F),C);
+
+irTimeDomain_standardMatrix = dsp2impz(impulseResponseLength,FDN2,'frequency');
 
 
 % compute
