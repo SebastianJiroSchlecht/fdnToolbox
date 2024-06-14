@@ -52,12 +52,16 @@ switch domain
 
     case 'frequency'
         % frequency-domain sampling
+        gainPerSample = db2mag(120 / irLen); % extra damping to avoid aliasing
+
         w = circspace(irLen).';
-        z = exp(1i .* w);
+        z = gainPerSample * exp(1i .* w);
 
         X = ones(numel(w),FDN.numberOfInputs,FDN.numberOfOutputs);
         
         Fz = FDN.at(X,z,'z^-1');
 
         impulseResponse = real(ifft(Fz));
+
+        impulseResponse = gainPerSample.^(0:irLen-1)' .* impulseResponse; % compensate extra damping
 end

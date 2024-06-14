@@ -33,7 +33,7 @@ extraDelayOut = randi([1,70],[1,N]);
 
 totalDelay = delays + extraDelayIn.' + extraDelayOut;
 
-gainPerSample = 0.9995;
+gainPerSample = 1; 0.9995;
 feedbackMatrix = randomOrthogonal(N) * diag(gainPerSample.^totalDelay);
 
 % dsp

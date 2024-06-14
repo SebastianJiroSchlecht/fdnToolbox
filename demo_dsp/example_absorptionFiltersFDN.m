@@ -25,7 +25,7 @@ feedbackMatrix = randomOrthogonal(N);
 % absorption filters
 T60frequency = [46, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 11360]'; % Hz
 targetT60 = [2 linspace(2,0.5,8) 0.5]'.^0.3;  % seconds
-switch 'graphicEQ'
+switch 'firstOrder'
     case 'FIR'
         filterOrder = 64;
         absorption.b = absorptionFilters([0; T60frequency(2:end-1); fs/2], targetT60*ones(1,N), filterOrder, delays, fs);
@@ -48,7 +48,7 @@ end
 
 irTimeDomain = dsp2impz(impulseResponseLength,FDN,'frequency');
 
-switch 'none'
+switch 'useModalDecomposition'
     case 'useModalDecomposition'
         [res, pol, directTerm, isConjugatePolePair,metaData] = dss2pr_dsp(F,B,C,D);
         irResPol = pr2impz(res, pol, directTerm, isConjugatePolePair, impulseResponseLength);

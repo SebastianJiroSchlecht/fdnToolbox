@@ -20,7 +20,7 @@ inputGain = eye(N,numInput);
 outputGain = eye(numOutput,N);
 direct = zeros(numOutput,numInput);
 delays = randi([200,900],[1,N]);
-gainPerSample = 0.9995;
+gainPerSample = 0.9999;
 feedbackMatrix = randomOrthogonal(N) * diag(gainPerSample.^delays);
 
 % Allpass Filter
