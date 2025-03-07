@@ -14,7 +14,9 @@ classdef dspMatrix < dspBlock
         function Y = at(obj,X,z,var)
             % Y = einsum(obj.matrix, X, 'mn,fnk->fmk'); % parsing is too
             % slow
+            assert(size(X,2) == obj.numberOfInputs); % TODO: add more of these asserts
             Y = sum(permute(obj.matrix, [3 1 4 2]) .* permute(X, [1 4 3 2]),4); 
+            assert(size(Y,2) == obj.numberOfOutputs);
             % ok = 1;
         end
          

@@ -57,7 +57,7 @@ switch domain
         w = circspace(irLen).';
         z = gainPerSample * exp(1i .* w);
 
-        X = ones(numel(w),FDN.numberOfInputs,FDN.numberOfOutputs);
+        X = ones(numel(w),FDN.numberOfInputs); % TODO: ,FDN.numberOfOutputs
         
         Fz = FDN.at(X,z,'z^-1');
 

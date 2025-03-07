@@ -38,9 +38,9 @@ feedbackMatrix = randomOrthogonal(N) * diag(gainPerSample.^totalDelay);
 
 % dsp
 % delay feedback matrix
-A = dspSequential( dspSequential( dspParallelDelay(extraDelayIn), dspMatrixFilters(feedbackMatrix)), dspParallelDelay(extraDelayOut));
-B = dspMatrix(inputGain);
-C = dspMatrix(outputGain);
+A = dspSequential( dspSequential( dspParallelDelay(extraDelayOut), dspMatrixFilters(feedbackMatrix)), dspParallelDelay(extraDelayIn));
+B = dspSequential( dspMatrix(inputGain), dspParallelDelay(extraDelayIn));
+C = dspSequential( dspParallelDelay(extraDelayOut), dspMatrix(outputGain));
 D = dspMatrix(direct);
 Z = dspParallelDelay(delays);
 
@@ -69,7 +69,7 @@ irTimeDomain_standardMatrix = dsp2impz(impulseResponseLength,FDN2,'frequency');
 figure; hold on; grid on;
 t = 1:size(irTimeDomain_withDelayMatrix,1);
 plot( t, irTimeDomain_withDelayMatrix,'.' );
-plot( t, irTimeDomain_standardMatrix-1,'.');
+plot( t, irTimeDomain_standardMatrix-0.01,'.');
 legend('with delay matrix', 'with standard matrix ');
 xlabel('Time (samples)')
 ylabel('Sample value')
